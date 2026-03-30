@@ -37,44 +37,65 @@
         .rule-editor-item textarea{min-height:80px;resize:vertical;}
         .rule-editor-item button{background:#ef4444;color:white;border:none;padding:.7rem 1rem;border-radius:10px;cursor:pointer;font-size:.9rem;}
         
+        /* Admin tabs */
+        .admin-tabs{display:flex;gap:1rem;margin-bottom:2rem;border-bottom:1px solid rgba(255,255,255,0.2);padding-bottom:0.5rem;}
+        .admin-tab{background:transparent;border:none;padding:0.8rem 1.5rem;font-size:1rem;font-weight:600;color:#f8f9fa;cursor:pointer;border-radius:30px;transition:all 0.3s;}
+        .admin-tab:hover{background:rgba(255,255,255,0.1);}
+        .admin-tab.active{background:linear-gradient(45deg,#ff6b6b,#ffd93d);color:white;box-shadow:0 5px 15px rgba(255,107,107,0.3);}
+        
+        /* Changelog editor */
+        .changelog-editor-item{background:rgba(255,255,255,.05);padding:1.5rem;border-radius:15px;margin-bottom:1rem;border-left:4px solid #4ecdc4;}
+        .changelog-editor-item input,.changelog-editor-item textarea{width:100%;margin-bottom:1rem;padding:0.8rem;border-radius:10px;border:1px solid rgba(255,255,255,.2);background:rgba(255,255,255,.1);color:#f8f9fa;font-family:inherit;}
+        .delete-changelog-btn{background:#ef4444;color:white;border:none;padding:0.5rem 1rem;border-radius:10px;cursor:pointer;}
+        
         .hint{text-align:center;margin-top:1rem;color:#ffd93d;font-size:.9rem;}
         .success{text-align:center;color:#4ade80;font-weight:500;}
         
         @keyframes float{0%,100%{transform:translateY(0);}50%{transform:translateY(-20px);}}
         @keyframes fadeInUp{from{opacity:0;transform:translateY(30px);}to{opacity:1;transform:translateY(0);}}
+        @keyframes glowPulse{0%,100%{transform:scale(1) rotate(0deg);opacity:0.3;}50%{transform:scale(1.2) rotate(180deg);opacity:0.6;}}
+        
+        .login-button-container{position:relative;display:flex;justify-content:center;margin-top:1rem;}
+        .btn-admin-glow{position:relative;padding:1.2rem 3rem;background:linear-gradient(135deg,#ff6b6b 0%,#ffd93d 50%,#ff6b6b 100%);border:none;border-radius:50px;font-size:1.2rem;font-weight:700;color:white;cursor:pointer;overflow:hidden;box-shadow:0 10px 30px rgba(255,107,107,0.4),0 0 0 1px rgba(255,255,255,0.2);transition:all 0.4s cubic-bezier(0.4,0,0.2,1);display:flex;align-items:center;gap:0.8rem;text-transform:uppercase;letter-spacing:1px;}
+        .btn-admin-glow:hover{transform:translateY(-5px) scale(1.05);box-shadow:0 20px 40px rgba(255,107,107,0.6),0 0 0 1px rgba(255,255,255,0.3),inset 0 1px 0 rgba(255,255,255,0.4);}
+        .btn-admin-glow:active{transform:translateY(-2px) scale(1.02);}
+        .btn-icon{font-size:1.4rem;transition:transform 0.3s ease;}
+        .btn-admin-glow:hover .btn-icon{transform:rotate(360deg);}
+        .btn-glow{position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:radial-gradient(circle,rgba(255,255,255,0.3) 0%,transparent 70%);opacity:0;transition:opacity 0.4s ease;pointer-events:none;}
+        .btn-admin-glow:hover .btn-glow{opacity:1;animation:glowPulse 1.5s infinite;}
+        
         @media(max-width:768px){.admin-card{padding:2rem 1.5rem;}.admin-header{flex-direction:column;gap:1rem;text-align:center;}}
     </style>
 </head>
 <body>
-    <!-- Particles -->
     <div id="particles"></div>
     
     <!-- LOGIN SECTION -->
     <div id="loginSection" class="admin-section active">
         <div class="admin-card">
             <h1>🔧 Panel Administratora</h1>
-            <p style="text-align:center;margin-bottom:2rem;color:#4ecdc4;font-size:1.1rem;">Edytuj regulamin serwera</p>
+            <p style="text-align:center;margin-bottom:2rem;color:#4ecdc4;font-size:1.1rem;">Edytuj regulamin i changelog serwera</p>
             
             <form id="loginForm">
                 <div class="form-group">
                     <label>👤 Login</label>
-                    <input type="text" id="username" placeholder="Wpisz nazwę..." required>
+                    <input type="text" id="username" placeholder="damixsigmaprime" required>
                 </div>
                 <div class="form-group">
                     <label>🔑 Hasło</label>
-                    <input type="password" id="password" placeholder="Wpisz hasło..." required>
+                    <input type="password" id="password" placeholder="kupadupa123" required>
                 </div>
                 <div class="login-button-container">
-    <button type="submit" class="btn-admin-glow">
-        <span class="btn-icon">🔐</span>
-        <span class="btn-text">ZALOGUJ SIĘ</span>
-        <div class="btn-glow"></div>
-    </button>
-</div>
+                    <button type="submit" class="btn-admin-glow">
+                        <span class="btn-icon">🔐</span>
+                        <span class="btn-text">ZALOGUJ SIĘ</span>
+                        <div class="btn-glow"></div>
+                    </button>
+                </div>
             </form>
             
             <div class="hint">
-
+                💡 Demo: <strong>damixsigmaprime</strong> / <strong>kupadupa123</strong>
             </div>
         </div>
     </div>
@@ -87,9 +108,21 @@
                 <button id="logoutBtn" class="btn-logout">❌ Wyloguj</button>
             </div>
             
-            <h2>📜 Edytor Regulaminu</h2>
+            <!-- ZAKŁADKI -->
+            <div class="admin-tabs">
+                <button id="tabRulesBtn" class="admin-tab active">📜 Regulamin</button>
+                <button id="tabChangelogBtn" class="admin-tab">📋 Changelog</button>
+            </div>
+            
+            <!-- EDYTOR REGULAMINU -->
             <div id="rulesEditor" style="min-height:400px;border:1px solid rgba(255,255,255,.1);border-radius:15px;padding:1.5rem;background:rgba(255,255,255,.02);">
                 <!-- Reguły pojawią się tutaj -->
+            </div>
+            
+            <!-- EDYTOR CHANGELOGU -->
+            <div id="changelogEditor" style="display: none;">
+                <div id="changelogList"></div>
+                <button id="addChangelogBtn" class="btn-add">➕ Dodaj wpis do changelogu</button>
             </div>
             
             <button id="saveRulesBtn" class="btn-save">💾 ZAPisz REGULAMIN</button>
@@ -101,12 +134,12 @@
 
     <script>
         // ============================================
-        // SKRYPT - WSZYSTKO W JEDNYM MIEJSCU
+        // SKRYPT ADMINA
         // ============================================
         
         const ADMIN_CREDENTIALS = {
-            username: 'supportodpalamy',
-            password: 'aternosiksigma'
+            username: 'damixsigmaprime',
+            password: 'kupadupa123'
         };
         
         const DEFAULT_RULES = [
@@ -116,19 +149,26 @@
             {title:'Zakaz reklamy',description:'Promowanie innych serwerów = permaban'}
         ];
         
-        let currentRules = [];
+        const DEFAULT_CHANGELOG = [
+            {version: "v1.0.0", date: "2024-01-15", content: "🎉 Oficjalne uruchomienie serwera!\n- Dodano tryby PvP, SkyWars, BedWars\n- Anti-Cheat system\n- Panel administracyjny"},
+            {version: "v1.1.0", date: "2024-02-01", content: "✨ Nowości:\n- Dodano tryb Duels\n- Ranking graczy\n- Poprawki wydajności"}
+        ];
         
-        // ELEMENTY
+        let currentRules = [];
+        let currentChangelog = [];
+        
         const loginSection = document.getElementById('loginSection');
         const adminPanel = document.getElementById('adminPanel');
         const loginForm = document.getElementById('loginForm');
         const rulesEditor = document.getElementById('rulesEditor');
         const saveMessage = document.getElementById('saveMessage');
+        const tabRulesBtn = document.getElementById('tabRulesBtn');
+        const tabChangelogBtn = document.getElementById('tabChangelogBtn');
+        const changelogEditorDiv = document.getElementById('changelogEditor');
         
         // LOGIN
         loginForm.addEventListener('submit', function(e) {
-            e.preventDefault(); // STOP ODŚWIĘŻENIA!
-            
+            e.preventDefault();
             const username = document.getElementById('username').value.trim();
             const password = document.getElementById('password').value.trim();
             
@@ -136,8 +176,9 @@
                 loginSection.classList.remove('active');
                 adminPanel.classList.add('active');
                 loadRules();
+                loadChangelogAdmin();
             } else {
-
+                alert('❌ BŁĄD!\n\nLogin: damixsigmaprime\nHasło: kupadupa123');
                 loginForm.reset();
             }
         });
@@ -149,7 +190,7 @@
             loginForm.reset();
         });
         
-        // LOAD RULES
+        // ==================== REGULAMIN ====================
         function loadRules() {
             try {
                 const saved = localStorage.getItem('odpalamycheaterow_rules');
@@ -160,14 +201,13 @@
             renderRules();
         }
         
-        // RENDER RULES
         function renderRules() {
             let html = '';
             currentRules.forEach((rule, index) => {
                 html += `
                     <div class="rule-editor-item" data-index="${index}">
-                        <input type="text" value="${rule.title}" placeholder="Tytuł reguły">
-                        <textarea placeholder="Opis reguły">${rule.description}</textarea>
+                        <input type="text" value="${rule.title.replace(/"/g, '&quot;')}" placeholder="Tytuł reguły">
+                        <textarea placeholder="Opis reguły">${rule.description.replace(/</g, '&lt;')}</textarea>
                         <button type="button">🗑️ Usuń</button>
                     </div>
                 `;
@@ -175,41 +215,137 @@
             html += '<button type="button" class="btn-add" onclick="addRule()">➕ Dodaj regułę</button>';
             rulesEditor.innerHTML = html;
             
-            // Dodaj eventy delete
             document.querySelectorAll('.rule-editor-item button').forEach((btn, index) => {
                 btn.onclick = () => deleteRule(index);
             });
         }
         
-        // ADD RULE
         function addRule() {
             currentRules.push({title:'',description:''});
             renderRules();
         }
         
-        // DELETE RULE
         function deleteRule(index) {
             currentRules.splice(index, 1);
             renderRules();
         }
         
-        // SAVE
         document.getElementById('saveRulesBtn').addEventListener('click', function() {
             const items = rulesEditor.querySelectorAll('.rule-editor-item');
             const newRules = [];
-            
             items.forEach((item) => {
                 const title = item.querySelector('input').value.trim();
                 const desc = item.querySelector('textarea').value.trim();
                 if (title) newRules.push({title, description:desc});
             });
-            
             currentRules = newRules;
             localStorage.setItem('odpalamycheaterow_rules', JSON.stringify(currentRules));
-            
             saveMessage.style.display = 'block';
             setTimeout(() => saveMessage.style.display = 'none', 5000);
         });
+        
+        // ==================== CHANGELOG ====================
+        function loadChangelogAdmin() {
+            try {
+                const saved = localStorage.getItem('odpalamycheaterow_changelog');
+                currentChangelog = saved ? JSON.parse(saved) : DEFAULT_CHANGELOG;
+            } catch(e) {
+                currentChangelog = DEFAULT_CHANGELOG;
+            }
+            renderChangelogAdmin();
+        }
+        
+        function renderChangelogAdmin() {
+            let html = '';
+            currentChangelog.forEach((item, index) => {
+                html += `
+                    <div class="changelog-editor-item" data-index="${index}">
+                        <div style="display: flex; gap: 1rem; margin-bottom: 1rem;">
+                            <input type="text" placeholder="Wersja (np. v1.2.0)" value="${item.version.replace(/"/g, '&quot;')}" style="flex: 1;">
+                            <input type="date" placeholder="Data" value="${item.date}" style="flex: 1;">
+                        </div>
+                        <textarea placeholder="Treść changelogu (użyj \n dla nowej linii)" rows="4">${item.content.replace(/</g, '&lt;')}</textarea>
+                        <button type="button" class="delete-changelog-btn">🗑️ Usuń wpis</button>
+                    </div>
+                `;
+            });
+            document.getElementById('changelogList').innerHTML = html;
+            
+            document.querySelectorAll('.delete-changelog-btn').forEach((btn, index) => {
+                btn.onclick = () => deleteChangelogItem(index);
+            });
+        }
+        
+        function deleteChangelogItem(index) {
+            currentChangelog.splice(index, 1);
+            renderChangelogAdmin();
+        }
+        
+        function addChangelogItem() {
+            const today = new Date().toISOString().split('T')[0];
+            currentChangelog.push({
+                version: "v1.2.0",
+                date: today,
+                content: "Nowa aktualizacja!\n- Dodano nowe funkcje\n- Poprawiono błędy"
+            });
+            renderChangelogAdmin();
+        }
+        
+        function saveChangelog() {
+            const items = document.querySelectorAll('.changelog-editor-item');
+            const newChangelog = [];
+            items.forEach((item) => {
+                const version = item.querySelector('input[type="text"]').value.trim();
+                const date = item.querySelector('input[type="date"]').value;
+                const content = item.querySelector('textarea').value.trim();
+                if (version && content) {
+                    newChangelog.push({version, date, content});
+                }
+            });
+            currentChangelog = newChangelog;
+            localStorage.setItem('odpalamycheaterow_changelog', JSON.stringify(currentChangelog));
+            
+            const saveMessageChangelog = document.getElementById('saveMessageChangelog') || (() => {
+                const div = document.createElement('div');
+                div.id = 'saveMessageChangelog';
+                div.className = 'success';
+                div.style.display = 'none';
+                div.innerHTML = '✅ Zapisano changelog! Odśwież index.html aby zobaczyć zmiany!';
+                document.querySelector('.admin-card').appendChild(div);
+                return div;
+            })();
+            saveMessageChangelog.style.display = 'block';
+            setTimeout(() => saveMessageChangelog.style.display = 'none', 3000);
+        }
+        
+        // Obsługa zakładek
+        if (tabRulesBtn && tabChangelogBtn) {
+            tabRulesBtn.addEventListener('click', () => {
+                tabRulesBtn.classList.add('active');
+                tabChangelogBtn.classList.remove('active');
+                rulesEditor.style.display = 'block';
+                changelogEditorDiv.style.display = 'none';
+                document.getElementById('saveRulesBtn').style.display = 'block';
+            });
+            tabChangelogBtn.addEventListener('click', () => {
+                tabChangelogBtn.classList.add('active');
+                tabRulesBtn.classList.remove('active');
+                rulesEditor.style.display = 'none';
+                changelogEditorDiv.style.display = 'block';
+                document.getElementById('saveRulesBtn').style.display = 'none';
+                loadChangelogAdmin();
+            });
+        }
+        
+        document.getElementById('addChangelogBtn').addEventListener('click', addChangelogItem);
+        
+        const saveChangelogBtn = document.createElement('button');
+        saveChangelogBtn.id = 'saveChangelogBtn';
+        saveChangelogBtn.className = 'btn-save';
+        saveChangelogBtn.innerHTML = '💾 ZAPISZ CHANGELOG';
+        saveChangelogBtn.style.marginTop = '1rem';
+        saveChangelogBtn.addEventListener('click', saveChangelog);
+        changelogEditorDiv.appendChild(saveChangelogBtn);
         
         // Particles
         for(let i=0; i<30; i++) {
@@ -220,89 +356,3 @@
     </script>
 </body>
 </html>
-
-<style> */
-.login-button-container {
-    position: relative;
-    display: flex;
-    justify-content: center;
-    margin-top: 1rem;
-}
-
-.btn-admin-glow {
-    position: relative;
-    padding: 1.2rem 3rem;
-    background: linear-gradient(135deg, #ff6b6b 0%, #ffd93d 50%, #ff6b6b 100%);
-    border: none;
-    border-radius: 50px;
-    font-size: 1.2rem;
-    font-weight: 700;
-    color: white;
-    cursor: pointer;
-    overflow: hidden;
-    box-shadow: 
-        0 10px 30px rgba(255, 107, 107, 0.4),
-        0 0 0 1px rgba(255, 255, 255, 0.2);
-    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    display: flex;
-    align-items: center;
-    gap: 0.8rem;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-}
-
-.btn-admin-glow:hover {
-    transform: translateY(-5px) scale(1.05);
-    box-shadow: 
-        0 20px 40px rgba(255, 107, 107, 0.6),
-        0 0 0 1px rgba(255, 255, 255, 0.3),
-        inset 0 1px 0 rgba(255, 255, 255, 0.4);
-}
-
-.btn-admin-glow:active {
-    transform: translateY(-2px) scale(1.02);
-}
-
-.btn-icon {
-    font-size: 1.4rem;
-    transition: transform 0.3s ease;
-}
-
-.btn-admin-glow:hover .btn-icon {
-    transform: rotate(360deg);
-}
-
-.btn-glow {
-    position: absolute;
-    top: -50%;
-    left: -50%;
-    width: 200%;
-    height: 200%;
-    background: radial-gradient(circle, rgba(255, 255, 255, 0.3) 0%, transparent 70%);
-    opacity: 0;
-    transition: opacity 0.4s ease;
-    pointer-events: none;
-}
-
-.btn-admin-glow:hover .btn-glow {
-    opacity: 1;
-    animation: glowPulse 1.5s infinite;
-}
-
-@keyframes glowPulse {
-    0%, 100% { transform: scale(1) rotate(0deg); opacity: 0.3; }
-    50% { transform: scale(1.2) rotate(180deg); opacity: 0.6; }
-}
-
-/* Poprawka dla pozostałych przycisków */
-.btn-save, .btn-add {
-    position: relative;
-    overflow: hidden;
-    border-radius: 50px !important;
-    box-shadow: 0 8px 25px rgba(74, 205, 196, 0.3);
-}
-
-.btn-save:hover, .btn-add:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 15px 35px rgba(74, 205, 196, 0.5);
-}
