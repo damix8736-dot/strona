@@ -80,24 +80,36 @@
     </div>
 
     <!-- ADMIN PANEL -->
-    <div id="adminPanel" class="admin-section">
-        <div class="admin-card">
-            <div class="admin-header">
-                <h1>✅ Zalogowany!</h1>
-                <button id="logoutBtn" class="btn-logout">❌ Wyloguj</button>
-            </div>
-            
-            <h2>📜 Edytor Regulaminu</h2>
-            <div id="rulesEditor" style="min-height:400px;border:1px solid rgba(255,255,255,.1);border-radius:15px;padding:1.5rem;background:rgba(255,255,255,.02);">
-                <!-- Reguły pojawią się tutaj -->
-            </div>
-            
-            <button id="saveRulesBtn" class="btn-save">💾 ZAPisz REGULAMIN</button>
-            <div class="success" style="display:none;" id="saveMessage">
-                ✅ Zapisano! Odśwież <strong>index.html</strong> aby zobaczyć zmiany!
-            </div>
+<div id="adminPanel" class="admin-section">
+    <div class="admin-card">
+        <div class="admin-header">
+            <h1>✅ Zalogowany!</h1>
+            <button id="logoutBtn" class="btn-logout">❌ Wyloguj</button>
+        </div>
+        
+        <!-- ZAKŁADKI -->
+        <div class="admin-tabs">
+            <button id="tabRulesBtn" class="admin-tab active">📜 Regulamin</button>
+            <button id="tabChangelogBtn" class="admin-tab">📋 Changelog</button>
+        </div>
+        
+        <!-- EDYTOR REGULAMINU -->
+        <div id="rulesEditor" style="min-height:400px;border:1px solid rgba(255,255,255,.1);border-radius:15px;padding:1.5rem;background:rgba(255,255,255,.02);">
+            <!-- Reguły pojawią się tutaj -->
+        </div>
+        
+        <!-- EDYTOR CHANGELOGU (ukryty początkowo) -->
+        <div id="changelogEditor" style="display: none;">
+            <div id="changelogList"></div>
+            <button id="addChangelogBtn" class="btn-add">➕ Dodaj wpis do changelogu</button>
+        </div>
+        
+        <button id="saveRulesBtn" class="btn-save">💾 ZAPisz REGULAMIN</button>
+        <div class="success" style="display:none;" id="saveMessage">
+            ✅ Zapisano! Odśwież <strong>index.html</strong> aby zobaczyć zmiany!
         </div>
     </div>
+</div>
 
     <script>
         // ============================================
