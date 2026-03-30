@@ -1,0 +1,206 @@
+    <!DOCTYPE html>
+    <html lang="pl">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>OdpalamyCheaterow - Serwer Minecraft</title>
+        <link rel="stylesheet" href="style.css">
+        <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+        <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚔️</text></svg>">
+    </head>
+    <body>
+        <!-- Particles Background -->
+        <div id="particles"></div>
+
+        <!-- Navigation -->
+        <nav class="navbar">
+            <div class="nav-container">
+                <div class="logo">
+                    <h2>⚔️ OdpalamyCheaterow</h2>
+                </div>
+                <ul class="nav-menu">
+                    <li><a href="#home" class="nav-link">🏠 Strona Główna</a></li>
+                    <li><a href="#server" class="nav-link">🖥️ Serwer</a></li>
+                    <li><a href="#features" class="nav-link">⭐ Funkcje</a></li>
+                    <li><a href="#rules" class="nav-link">📜 Regulamin</a></li>
+                    <li><a href="#discord" class="nav-link">💬 Discord</a></li>
+                    <li><a href="admin.html" class="nav-link admin-btn">🔧 Admin</a></li>
+                </ul>
+                <div class="hamburger">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Hero Section -->
+        <section id="home" class="hero">
+            <div class="hero-content">
+                <h1 class="hero-title">Odpalamy<span class="gradient-text">Cheaterow</span></h1>
+                <p class="hero-subtitle">Najgorszy serwer PvP gdzie cheaterzy mają szanse!</p>
+                <div class="hero-buttons">
+                    <button class="btn-primary copy-ip" onclick="copyIP()">
+                        <span>📋</span> Skopiuj IP
+                    </button>
+                    <button class="btn-secondary" onclick="joinDiscord()">
+                        <span>💬</span> Dołącz do Discorda
+                    </button>
+                </div>
+                <div class="server-ip">
+                    <code>odpalamycheaterow.aternos.me</code>
+                </div>
+                
+
+        <!-- Server Info -->
+        <section id="server" class="section">
+            <div class="container">
+                <h2 class="section-title">Informacje o Serwerze</h2>
+                <div class="server-grid">
+                    <div class="server-card">
+                        <div class="card-icon">🖥️</div>
+                        <h3>IP Serwera</h3>
+                        <code class="ip-display">odpalamycheaterow.aternos.me</code>
+                        <button class="btn-small" onclick="copyIP()">📋 Kopiuj</button>
+                    </div>
+                    <div class="server-card">
+                        <div class="card-icon">⚔️</div>
+                        <h3>Wersja</h3>
+                        <div class="version">1.8 - 1.21.11</div>
+                    </div>
+                    <div class="server-card">
+                        <div class="card-icon">👥</div>
+                        <h3>Tryb Gry</h3>
+                        <div class="game-mode">Survival</div>
+                    </div>
+                    <div class="server-card">
+                        <div class="card-icon">⭐</div>
+                        <h3>Ranking</h3>
+                        <div class="rank">#1 w kategorii Polska PvP w najgorszych graczy</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Features -->
+        <section id="features" class="section features-section">
+            <div class="container">
+                <h2 class="section-title">Cechy Serwera</h2>
+                <div class="features-grid">
+                    <div class="feature-card">
+                        <div class="feature-icon">🛡️</div>
+                        <h3>Zaawansowany Anti-Cheat (nie) </h3>
+                        <p>Każdy cheater przejdzie nasz system ochrony!</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">⚡</div>
+                        <h3>100 Ping Lag</h3>
+                        <p>Polskie serwery z idealnym połączeniem</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">💎</div>
+                        <h3>Sklep z Rangami (p2w)</h3>
+                        <p>Ekskluzywne rangi i kosmetyki (za ringi)</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">🏆</div>
+                        <h3>Turnieje PvP (z miernotami)</h3>
+                        <p>Codzienne eventy z nagrodami (jak sie chce to sie zrobi (nie codziennie) </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Rules -->
+        <section id="rules" class="section">
+            <div class="container">
+                <h2 class="section-title">Regulamin Serwera</h2>
+                <div class="rules-container">
+                    <div id="rules-content">
+                        <!-- Regulamin ładowany przez JS -->
+                    </div>
+                    <div class="rules-admin-note">
+                        <p>🔧 <strong>Admin:</strong> Regulamin może być ciągle edytowany.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Discord Section - ZMIEŃ NA TO -->
+    <section id="discord" class="section discord-section">
+        <div class="container">
+            <div class="discord-card">
+                <h2>Dołącz do Naszej Społeczności!</h2>
+                <div class="discord-buttons">
+                    <button class="btn-discord" onclick="joinDiscord()">
+                        💬 Dołącz na Discord
+                    </button>
+                
+        <!-- Footer -->
+        <footer class="footer">
+            <div class="container">
+                <p>&copy; 2026 OdpalamyCheaterow.aternos.me - Wszelkie prawa zastrzeżone</p>
+                <div class="social-links">
+                    <a href="#">📱 Instagram</a>
+                    <a href="#">🐦 Twitter</a>
+                    <a href="#">📘 Facebook</a>
+                </div>
+            </div>
+        </footer>
+
+        
+
+
+    <!-- ===================== DODATKOWE ELEMENTY ===================== -->
+    <!-- Koło zębate (ustawienia) -->
+    <div id="settingsCog" class="settings-cog">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94 0 .31.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.57 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-2 0-3.6-1.6-3.6-3.6s1.6-3.6 3.6-3.6 3.6 1.6 3.6 3.6-1.6 3.6-3.6 3.6z"/>
+        </svg>
+    </div>
+
+    <!-- Panel ustawień (początkowo ukryty) -->
+    <div id="settingsPanel" class="settings-panel">
+        <div class="settings-header">
+            <h3>⚙️ Ustawienia</h3>
+            <button id="closeSettings" class="close-settings">&times;</button>
+        </div>
+        <div class="settings-content">
+            <div class="setting-item">
+                <span>🌗 Motyw</span>
+                <div class="toggle-switch">
+                    <input type="checkbox" id="themeToggle">
+                    <label for="themeToggle" class="toggle-label">
+                        <span class="toggle-text">Ciemny</span>
+                        <span class="toggle-text">Jasny</span>
+                    </label>
+                </div>
+            </div>
+            <div class="setting-item">
+                <span>🔔 Powiadomienia</span>
+                <label class="switch">
+                    <input type="checkbox" id="notifToggle">
+                    <span class="slider round"></span>
+                </label>
+            </div>
+            <div class="setting-item">
+                <span>🔊 Dźwięk powiadomień</span>
+                <label class="switch">
+                    <input type="checkbox" id="soundToggle" disabled>
+                    <span class="slider round"></span>
+                </label>
+            </div>
+            <button id="testNotificationBtn" class="test-notif-btn">🔔 Testuj powiadomienie</button>
+        </div>
+    </div>
+
+    <!-- Kontener dla toastów (powiadomień) -->
+    <div id="toastContainer" class="toast-container"></div>
+
+
+    <script src="script.js"></script>
+
+
+
+    </body>
+    </html>
