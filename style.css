@@ -898,3 +898,43 @@ body.light-theme .settings-panel {
 .settings-panel.active {
     transform: translateX(0); /* pokazany */
 }
+
+/* Kontrolka rozmiaru tekstu */
+.font-size-control {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: rgba(255,255,255,0.1);
+    padding: 8px 15px;
+    border-radius: 40px;
+}
+.font-size-value {
+    min-width: 45px;
+    font-weight: bold;
+    color: #ff6b6b;
+    font-family: 'Orbitron', monospace;
+}
+#fontSizeSlider {
+    width: 140px;
+    height: 4px;
+    -webkit-appearance: none;
+    background: linear-gradient(90deg, #ff6b6b, #ffd93d);
+    border-radius: 5px;
+    outline: none;
+    cursor: pointer;
+}
+#fontSizeSlider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 16px;
+    height: 16px;
+    background: #ff6b6b;
+    border-radius: 50%;
+    cursor: pointer;
+    box-shadow: 0 0 5px #ff6b6b;
+}
+#fontSizeSlider::-webkit-slider-thumb:hover {
+    transform: scale(1.2);
+}
+body.light-theme .font-size-control {
+    background: rgba(0,0,0,0.05);
+}
