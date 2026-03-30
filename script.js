@@ -3,7 +3,7 @@
 // ============================================
 
 // IP serwera
-const SERVER_IP = 'odpalamycheaterow.pl';
+const SERVER_IP = 'odpalamycheaterow.aternos.me';
 
 // Nawigacja mobilna
 document.addEventListener('DOMContentLoaded', function() {
