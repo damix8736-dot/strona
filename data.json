@@ -1,0 +1,32 @@
+{
+    "rules": [
+        {
+            "title": "Zakaz używania cheatów",
+            "description": "Automatyczny ban za KillAurę, AutoClicker, Jesus itp."
+        },
+        {
+            "title": "Szanuj innych graczy",
+            "description": "Brak toksyczności i spamu na czacie"
+        },
+        {
+            "title": "Zakaz exploitów",
+            "description": "Brak dupowania itemów i bugów serwera"
+        },
+        {
+            "title": "Zakaz reklamy",
+            "description": "Promowanie innych serwerów = permaban"
+        }
+    ],
+    "changelog": [
+        {
+            "version": "v1.0.0",
+            "date": "2024-01-15",
+            "content": "🎉 Oficjalne uruchomienie serwera!\n- Dodano tryby PvP, SkyWars, BedWars\n- Anti-Cheat system\n- Panel administracyjny"
+        },
+        {
+            "version": "v1.1.0",
+            "date": "2024-02-01",
+            "content": "✨ Nowości:\n- Dodano tryb Duels\n- Ranking graczy\n- Poprawki wydajności"
+        }
+    ]
+}  
