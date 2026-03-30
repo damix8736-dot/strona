@@ -148,49 +148,6 @@ function loadRules() {
     }
 }
 
-// ===================== CHANGELOG =====================
-
-const DEFAULT_CHANGELOG = [
-    {
-        version: "v1.0.0",
-        date: "2024-01-15",
-        content: "🎉 Oficjalne uruchomienie serwera!\n- Dodano tryby PvP, SkyWars, BedWars\n- Anti-Cheat system\n- Panel administracyjny"
-    },
-    {
-        version: "v1.1.0",
-        date: "2024-02-01",
-        content: "✨ Nowości:\n- Dodano tryb Duels\n- Ranking graczy\n- Poprawki wydajności"
-    }
-];
-
-function loadChangelog() {
-    const changelogContent = document.getElementById('changelog-content');
-    if (!changelogContent) return;
-    
-    try {
-        const savedChangelog = localStorage.getItem('odpalamycheaterow_changelog');
-        const changelog = savedChangelog ? JSON.parse(savedChangelog) : DEFAULT_CHANGELOG;
-        
-        if (changelog.length === 0) {
-            changelogContent.innerHTML = '<div class="changelog-empty">✨ Brak wpisów. Admin wkrótce doda changelog!</div>';
-            return;
-        }
-        
-        changelogContent.innerHTML = changelog.map(item => `
-            <div class="changelog-item">
-                <div class="changelog-header">
-                    <span class="changelog-version">${item.version}</span>
-                    <span class="changelog-date">📅 ${item.date}</span>
-                </div>
-                <div class="changelog-content">${item.content.replace(/\n/g, '<br>')}</div>
-            </div>
-        `).join('');
-    } catch (error) {
-        console.warn('Błąd ładowania changelogu:', error);
-        changelogContent.innerHTML = '<div class="changelog-empty">⚠️ Błąd ładowania changelogu</div>';
-    }
-}
-
 // Discord
 function joinDiscord() {
     window.open('https://discord.gg/odpalamycheaterow', '_blank');
@@ -296,7 +253,6 @@ function init() {
     animateStatusBar();
     observeSections();
     updateServerStatus();
-    loadChangelog();
     
     // Auto-copy IP po 3s (opcjonalne)
     setTimeout(() => {
@@ -375,68 +331,42 @@ loadDiscordStats();
 
 // ===================== USTAWIENIA, MOTYW, POWIADOMIENIA =====================
 
-// ===================== USTAWIENIA, MOTYW, POWIADOMIENIA =====================
-
 // Elementy DOM
 const settingsCog = document.getElementById('settingsCog');
 const settingsPanel = document.getElementById('settingsPanel');
 const closeSettingsBtn = document.getElementById('closeSettings');
-const themeDarkBtn = document.getElementById('themeDarkBtn');
-const themeLightBtn = document.getElementById('themeLightBtn');
+const themeToggle = document.getElementById('themeToggle');
 const notifToggle = document.getElementById('notifToggle');
 const soundToggle = document.getElementById('soundToggle');
 const testNotifBtn = document.getElementById('testNotificationBtn');
 const toastContainer = document.getElementById('toastContainer');
-const fontSizeSlider = document.getElementById('fontSizeSlider');
-const fontSizeValue = document.getElementById('fontSizeValue');
 
 // Zmienne stanu
 let notificationsEnabled = true;
 let soundEnabled = true;
-let currentTheme = 'dark';
-let fontSize = 100;
+let currentTheme = 'dark'; // 'dark' lub 'light'
 
 // --- Odczyt ustawień z localStorage ---
 function loadSettings() {
-    // Motyw
     const savedTheme = localStorage.getItem('theme');
     if (savedTheme === 'light') {
         currentTheme = 'light';
         document.body.classList.add('light-theme');
-        if (themeDarkBtn && themeLightBtn) {
-            themeDarkBtn.classList.remove('active');
-            themeLightBtn.classList.add('active');
-        }
+        themeToggle.checked = true;
     } else {
         currentTheme = 'dark';
         document.body.classList.remove('light-theme');
-        if (themeDarkBtn && themeLightBtn) {
-            themeDarkBtn.classList.add('active');
-            themeLightBtn.classList.remove('active');
-        }
+        themeToggle.checked = false;
     }
 
-    // Powiadomienia
     const savedNotif = localStorage.getItem('notifications');
     notificationsEnabled = savedNotif !== 'false';
-    if (notifToggle) notifToggle.checked = notificationsEnabled;
+    notifToggle.checked = notificationsEnabled;
 
-    // Dźwięk
     const savedSound = localStorage.getItem('sound');
     soundEnabled = savedSound !== 'false';
-    if (soundToggle) {
-        soundToggle.checked = soundEnabled;
-        soundToggle.disabled = !notificationsEnabled;
-    }
-    
-    // Rozmiar czcionki
-    const savedFontSize = localStorage.getItem('fontSize');
-    if (savedFontSize) {
-        fontSize = parseInt(savedFontSize);
-        document.body.style.fontSize = fontSize + '%';
-        if (fontSizeSlider) fontSizeSlider.value = fontSize;
-        if (fontSizeValue) fontSizeValue.textContent = fontSize + '%';
-    }
+    soundToggle.checked = soundEnabled;
+    soundToggle.disabled = !notificationsEnabled;
 }
 
 // --- Zapisywanie ustawień ---
@@ -444,7 +374,6 @@ function saveSettings() {
     localStorage.setItem('theme', currentTheme);
     localStorage.setItem('notifications', notificationsEnabled);
     localStorage.setItem('sound', soundEnabled);
-    localStorage.setItem('fontSize', fontSize);
 }
 
 // --- Zmiana motywu ---
@@ -452,21 +381,13 @@ function setTheme(theme) {
     currentTheme = theme;
     if (theme === 'light') {
         document.body.classList.add('light-theme');
-        if (themeDarkBtn && themeLightBtn) {
-            themeDarkBtn.classList.remove('active');
-            themeLightBtn.classList.add('active');
-        }
     } else {
         document.body.classList.remove('light-theme');
-        if (themeDarkBtn && themeLightBtn) {
-            themeDarkBtn.classList.add('active');
-            themeLightBtn.classList.remove('active');
-        }
     }
     saveSettings();
 }
 
-// --- Odtwarzanie dźwięku ---
+// --- Odtwarzanie dźwięku (krótki beep) ---
 function playNotificationSound() {
     if (!soundEnabled) return;
     try {
@@ -475,27 +396,36 @@ function playNotificationSound() {
         const gain = audioCtx.createGain();
         oscillator.connect(gain);
         gain.connect(audioCtx.destination);
-        oscillator.frequency.value = 880;
+        oscillator.frequency.value = 880; // dźwięk A5
         gain.gain.value = 0.2;
         oscillator.start();
         gain.gain.exponentialRampToValueAtTime(0.00001, audioCtx.currentTime + 0.5);
         oscillator.stop(audioCtx.currentTime + 0.5);
+        // Uwaga: AudioContext może być zablokowany do pierwszego kliknięcia; uruchomimy go przy pierwszym dźwięku
         if (audioCtx.state === 'suspended') {
             audioCtx.resume();
         }
     } catch(e) {
-        console.warn("Web Audio nie wspierany");
+        console.warn("Web Audio nie wspierany, pomijam dźwięk");
     }
 }
 
-// --- Wyświetlanie powiadomienia ---
+// --- Wyświetlanie powiadomienia (toast) ---
 function showNotification(title, message, type = 'info') {
     if (!notificationsEnabled) return;
+
     const toast = document.createElement('div');
     toast.className = `toast ${type}`;
-    toast.innerHTML = `<strong>${title}</strong><br><small>${message}</small>`;
-    if (toastContainer) toastContainer.appendChild(toast);
+    toast.innerHTML = `
+        <strong>${title}</strong><br>
+        <small>${message}</small>
+    `;
+    toastContainer.appendChild(toast);
+
+    // Odtwórz dźwięk
     playNotificationSound();
+
+    // Automatyczne usunięcie po 5 sekundach
     setTimeout(() => {
         toast.style.opacity = '0';
         toast.style.transform = 'translateX(100%)';
@@ -503,71 +433,82 @@ function showNotification(title, message, type = 'info') {
     }, 5000);
 }
 
+// --- Testowe powiadomienie (przycisk w panelu) ---
 function testNotification() {
-    showNotification('🔔 Test powiadomienia', 'To jest przykładowe powiadomienie.', 'success');
-}
-
-// --- Obsługa panelu ustawień ---
-if (settingsCog && settingsPanel && closeSettingsBtn) {
-    settingsCog.addEventListener('click', (e) => {
-        e.stopPropagation();
-        settingsPanel.classList.toggle('active');
-    });
-    closeSettingsBtn.addEventListener('click', () => {
-        settingsPanel.classList.remove('active');
-    });
-    document.addEventListener('click', (e) => {
-        if (!settingsPanel.contains(e.target) && !settingsCog.contains(e.target)) {
-            settingsPanel.classList.remove('active');
-        }
-    });
+    showNotification('🔔 Test powiadomienia', 'To jest przykładowe powiadomienie z dźwiękiem (jeśli włączony).', 'success');
 }
 
 // --- Obsługa przełączników ---
-if (notifToggle) {
-    notifToggle.addEventListener('change', (e) => {
-        notificationsEnabled = e.target.checked;
-        if (soundToggle) {
-            soundToggle.disabled = !notificationsEnabled;
-            if (!notificationsEnabled) {
-                soundEnabled = false;
-                soundToggle.checked = false;
-            }
-        }
-        saveSettings();
+notifToggle.addEventListener('change', (e) => {
+    notificationsEnabled = e.target.checked;
+    soundToggle.disabled = !notificationsEnabled;
+    if (!notificationsEnabled) {
+        soundEnabled = false;
+        soundToggle.checked = false;
+    }
+    saveSettings();
+});
+
+soundToggle.addEventListener('change', (e) => {
+    soundEnabled = e.target.checked;
+    saveSettings();
+});
+
+themeToggle.addEventListener('change', (e) => {
+    setTheme(e.target.checked ? 'light' : 'dark');
+});
+
+// --- Panel ustawień ---
+settingsCog.addEventListener('click', () => {
+    settingsPanel.classList.toggle('active');
+});
+closeSettingsBtn.addEventListener('click', () => {
+    settingsPanel.classList.remove('active');
+});
+// Kliknięcie poza panelem zamyka go
+document.addEventListener('click', (e) => {
+    if (!settingsPanel.contains(e.target) && !settingsCog.contains(e.target)) {
+        settingsPanel.classList.remove('active');// Kopiuj IP - ulepszone
+function copyIP() {
+    navigator.clipboard.writeText(SERVER_IP).then(() => {
+        const btn = event ? event.target.closest('button') : document.querySelector('.copy-ip');
+        const originalText = btn.innerHTML;
+        btn.innerHTML = '✅ SKOPIOWANO!';
+        btn.style.background = '#10b981';
+        btn.style.transform = 'scale(1.05)';
+        
+        // 🔔 Powiadomienie
+        showNotification('📋 Skopiowano!', `IP ${SERVER_IP} zostało skopiowane do schowka.`, 'success');
+        
+        setTimeout(() => {
+            btn.innerHTML = originalText;
+            btn.style.background = '';
+            btn.style.transform = '';
+        }, 2000);
+    }).catch(() => {
+        // Fallback dla starszych przeglądarek
+        const textArea = document.createElement('textarea');
+        textArea.value = SERVER_IP;
+        document.body.appendChild(textArea);
+        textArea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textArea);
+        alert('IP skopiowane: ' + SERVER_IP);
+        
+        // 🔔 Powiadomienie
+        showNotification('📋 Skopiowano!', `IP ${SERVER_IP} zostało skopiowane (fallback).`, 'success');
     });
 }
-if (soundToggle) {
-    soundToggle.addEventListener('change', (e) => {
-        soundEnabled = e.target.checked;
-        saveSettings();
-    });
-}
-if (themeDarkBtn && themeLightBtn) {
-    themeDarkBtn.addEventListener('click', () => setTheme('dark'));
-    themeLightBtn.addEventListener('click', () => setTheme('light'));
-}
-if (testNotifBtn) {
-    testNotifBtn.addEventListener('click', testNotification);
-}
+    }
+});
 
-// --- Obsługa suwaka rozmiaru czcionki ---
-if (fontSizeSlider && fontSizeValue) {
-    fontSizeSlider.addEventListener('input', (e) => {
-        fontSize = parseInt(e.target.value);
-        document.body.style.fontSize = fontSize + '%';
-        fontSizeValue.textContent = fontSize + '%';
-        saveSettings();
-    });
-}
+testNotifBtn.addEventListener('click', testNotification);
 
-// --- Inicjalizacja ---
-loadSettings();
-
-// --- Powitanie ---
+// --- Przykładowe powiadomienia przy starcie (jeśli włączone) ---
+// Opcjonalnie: powiadomienie o statusie serwera po 2 sekundach
 setTimeout(() => {
     if (notificationsEnabled) {
-        showNotification('🟢 Serwer online', 'Witaj na OdpalamyCheaterow!', 'info');
+        showNotification('🟢 Serwer online', 'Witaj na OdpalamyCheaterow! Miłej gry.', 'info');
     }
 }, 3000);
 
