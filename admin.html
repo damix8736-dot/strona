@@ -318,3 +318,119 @@
     transform: translateY(-3px);
     box-shadow: 0 15px 35px rgba(74, 205, 196, 0.5);
 }
+
+
+
+// ===================== CHANGELOG ADMIN =====================
+
+let currentChangelog = [];
+
+// Funkcje do zarządzania changelogiem
+function loadChangelogAdmin() {
+    try {
+        const saved = localStorage.getItem('odpalamycheaterow_changelog');
+        currentChangelog = saved ? JSON.parse(saved) : [
+            {version: "v1.0.0", date: "2024-01-15", content: "🎉 Oficjalne uruchomienie serwera!\n- Dodano tryby PvP, SkyWars, BedWars\n- Anti-Cheat system\n- Panel administracyjny"},
+            {version: "v1.1.0", date: "2024-02-01", content: "✨ Nowości:\n- Dodano tryb Duels\n- Ranking graczy\n- Poprawki wydajności"}
+        ];
+    } catch(e) {
+        currentChangelog = [];
+    }
+    renderChangelogAdmin();
+}
+
+function renderChangelogAdmin() {
+    let html = '';
+    currentChangelog.forEach((item, index) => {
+        html += `
+            <div class="changelog-editor-item" data-index="${index}">
+                <div style="display: flex; gap: 1rem; margin-bottom: 1rem;">
+                    <input type="text" placeholder="Wersja (np. v1.2.0)" value="${item.version}" style="flex: 1;">
+                    <input type="date" placeholder="Data" value="${item.date}" style="flex: 1;">
+                </div>
+                <textarea placeholder="Treść changelogu (użyj \n dla nowej linii)" rows="4">${item.content}</textarea>
+                <button type="button" class="delete-changelog-btn">🗑️ Usuń wpis</button>
+            </div>
+        `;
+    });
+    document.getElementById('changelogList').innerHTML = html;
+    
+    // Dodaj eventy delete
+    document.querySelectorAll('.delete-changelog-btn').forEach((btn, index) => {
+        btn.onclick = () => deleteChangelogItem(index);
+    });
+}
+
+function deleteChangelogItem(index) {
+    currentChangelog.splice(index, 1);
+    renderChangelogAdmin();
+}
+
+function addChangelogItem() {
+    const today = new Date().toISOString().split('T')[0];
+    currentChangelog.push({
+        version: "v1.2.0",
+        date: today,
+        content: "Nowa aktualizacja!\n- Dodano nowe funkcje\n- Poprawiono błędy"
+    });
+    renderChangelogAdmin();
+}
+
+function saveChangelog() {
+    const items = document.querySelectorAll('.changelog-editor-item');
+    const newChangelog = [];
+    
+    items.forEach((item) => {
+        const version = item.querySelector('input[type="text"]').value.trim();
+        const date = item.querySelector('input[type="date"]').value;
+        const content = item.querySelector('textarea').value.trim();
+        if (version && content) {
+            newChangelog.push({version, date, content});
+        }
+    });
+    
+    currentChangelog = newChangelog;
+    localStorage.setItem('odpalamycheaterow_changelog', JSON.stringify(currentChangelog));
+    
+    saveMessageChangelog.style.display = 'block';
+    setTimeout(() => saveMessageChangelog.style.display = 'none', 3000);
+}
+
+// Obsługa zakładek
+const tabRulesBtn = document.getElementById('tabRulesBtn');
+const tabChangelogBtn = document.getElementById('tabChangelogBtn');
+const rulesEditorDiv = document.getElementById('rulesEditor');
+const changelogEditorDiv = document.getElementById('changelogEditor');
+const saveMessageChangelog = document.createElement('div');
+saveMessageChangelog.className = 'success';
+saveMessageChangelog.style.display = 'none';
+saveMessageChangelog.innerHTML = '✅ Zapisano changelog! Odśwież index.html aby zobaczyć zmiany!';
+document.querySelector('.admin-card').appendChild(saveMessageChangelog);
+
+if (tabRulesBtn && tabChangelogBtn) {
+    tabRulesBtn.addEventListener('click', () => {
+        tabRulesBtn.classList.add('active');
+        tabChangelogBtn.classList.remove('active');
+        rulesEditorDiv.style.display = 'block';
+        changelogEditorDiv.style.display = 'none';
+    });
+    
+    tabChangelogBtn.addEventListener('click', () => {
+        tabChangelogBtn.classList.add('active');
+        tabRulesBtn.classList.remove('active');
+        rulesEditorDiv.style.display = 'none';
+        changelogEditorDiv.style.display = 'block';
+        loadChangelogAdmin();
+    });
+}
+
+document.getElementById('addChangelogBtn').addEventListener('click', addChangelogItem);
+
+// Dodaj przycisk zapisu changelogu
+const saveChangelogBtn = document.createElement('button');
+saveChangelogBtn.id = 'saveChangelogBtn';
+saveChangelogBtn.className = 'btn-save';
+saveChangelogBtn.innerHTML = '💾 ZAPISZ CHANGELOG';
+saveChangelogBtn.style.marginTop = '1rem';
+saveChangelogBtn.addEventListener('click', saveChangelog);
+changelogEditorDiv.appendChild(saveChangelogBtn);    
