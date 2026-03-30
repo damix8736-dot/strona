@@ -881,3 +881,51 @@ body.light-theme .changelog-item {
         bottom: 70px;
     }
 }
+
+
+/* Wyśrodkowanie formularza */
+.admin-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    max-width: 400px;
+    margin: 0 auto;
+    width: 100%;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+}
+
+.form-group label {
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+    color: #4ecdc4;
+}
+
+.form-group input {
+    padding: 1rem;
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    border-radius: 15px;
+    background: rgba(255, 255, 255, 0.1);
+    color: #f8f9fa;
+    font-size: 1rem;
+    transition: all 0.3s;
+    text-align: center; /* wyśrodkowanie tekstu w inputach */
+}
+
+.login-button-container {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    margin-top: 1rem;
+}
+
+.hint {
+    text-align: center;
+    margin-top: 1rem;
+    color: #ffd93d;
+    font-size: 0.9rem;
+}
