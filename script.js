@@ -3,7 +3,7 @@
 // ============================================
 
 // IP serwera
-const SERVER_IP = 'odpalamycheaterow.pl';
+const SERVER_IP = 'odpalamycheaterow.aternos.me';
 
 // Nawigacja mobilna
 document.addEventListener('DOMContentLoaded', function() {
@@ -67,7 +67,7 @@ function copyIP() {
 
 // Discord
 function joinDiscord() {
-    window.open('https://discord.gg/odpalamycheaterow', '_blank');
+    window.open('https://discord.gg/Gnq4KE7tf2', '_blank');
     showNotification('💬 Discord', 'Przekierowanie na serwer Discord...', 'info');
 }
 
@@ -94,77 +94,65 @@ function createParticles() {
     }
 }
 
-// ===================== ŁADOWANIE DANYCH Z SERWERA =====================
-
-// Funkcja do ładowania danych z serwera
-async function loadDataFromServer() {
-    try {
-        const response = await fetch('save_data.php');
-        const data = await response.json();
-        return data;
-    } catch (error) {
-        console.error('Błąd ładowania danych:', error);
-        return null;
-    }
-}
-
-// Regulamin z serwera
-async function loadRules() {
+// Regulamin z localStorage
+function loadRules() {
     const rulesContent = document.getElementById('rules-content');
     if (!rulesContent) return;
     
-    rulesContent.innerHTML = '<div class="loading">Ładowanie regulaminu...</div>';
-    
-    const data = await loadDataFromServer();
-    
-    if (data && data.rules && data.rules.length > 0) {
-        rulesContent.innerHTML = data.rules.map((rule, index) => `
+    try {
+        const savedRules = localStorage.getItem('odpalamycheaterow_rules');
+        const rules = savedRules ? JSON.parse(savedRules) : [
+            {title: 'Zakaz używania cheatów', description: 'Automatyczny ban za KillAurę, AutoClicker, Jesus itp.'},
+            {title: 'Szanuj innych graczy', description: 'Brak toksyczności i spamu na czacie'},
+            {title: 'Zakaz exploitów', description: 'Brak dupowania itemów i bugów serwera'},
+            {title: 'Zakaz reklamy', description: 'Promowanie innych serwerów = permaban'}
+        ];
+        
+        rulesContent.innerHTML = rules.map((rule, index) => `
             <div class="rule-item">
                 <span class="rule-number">${index + 1}.</span>
                 <div>
-                    <h4>${escapeHtml(rule.title)}</h4>
-                    <p>${escapeHtml(rule.description)}</p>
+                    <h4>${rule.title}</h4>
+                    <p>${rule.description}</p>
                 </div>
             </div>
         `).join('');
-    } else {
-        rulesContent.innerHTML = '<div class="changelog-empty">📜 Regulamin jest pusty. Admin wkrótce go uzupełni!</div>';
+    } catch (error) {
+        console.warn('Błąd ładowania regulaminu:', error);
+        rulesContent.innerHTML = '<div class="rule-item"><p>Regulamin tymczasowo niedostępny</p></div>';
     }
 }
 
-// Changelog z serwera
-async function loadChangelog() {
+// ===================== CHANGELOG =====================
+function loadChangelog() {
     const changelogContent = document.getElementById('changelog-content');
     if (!changelogContent) return;
     
-    changelogContent.innerHTML = '<div class="loading">Ładowanie changelogu...</div>';
-    
-    const data = await loadDataFromServer();
-    
-    if (data && data.changelog && data.changelog.length > 0) {
-        changelogContent.innerHTML = data.changelog.map(item => `
+    try {
+        const savedChangelog = localStorage.getItem('odpalamycheaterow_changelog');
+        const changelog = savedChangelog ? JSON.parse(savedChangelog) : [
+            {version: "v1.0.0", date: "2024-01-15", content: "🎉 Oficjalne uruchomienie serwera!\n- Dodano tryby PvP, SkyWars, BedWars\n- Anti-Cheat system\n- Panel administracyjny"},
+            {version: "v1.1.0", date: "2024-02-01", content: "✨ Nowości:\n- Dodano tryb Duels\n- Ranking graczy\n- Poprawki wydajności"}
+        ];
+        
+        if (changelog.length === 0) {
+            changelogContent.innerHTML = '<div class="changelog-empty">✨ Brak wpisów. Admin wkrótce doda changelog!</div>';
+            return;
+        }
+        
+        changelogContent.innerHTML = changelog.map(item => `
             <div class="changelog-item">
                 <div class="changelog-header">
-                    <span class="changelog-version">${escapeHtml(item.version)}</span>
-                    <span class="changelog-date">📅 ${escapeHtml(item.date)}</span>
+                    <span class="changelog-version">${item.version}</span>
+                    <span class="changelog-date">📅 ${item.date}</span>
                 </div>
-                <div class="changelog-content">${escapeHtml(item.content).replace(/\n/g, '<br>')}</div>
+                <div class="changelog-content">${item.content.replace(/\n/g, '<br>')}</div>
             </div>
         `).join('');
-    } else {
-        changelogContent.innerHTML = '<div class="changelog-empty">✨ Brak wpisów. Admin wkrótce doda changelog!</div>';
+    } catch (error) {
+        console.warn('Błąd ładowania changelogu:', error);
+        changelogContent.innerHTML = '<div class="changelog-empty">⚠️ Błąd ładowania changelogu</div>';
     }
-}
-
-// Funkcja pomocnicza do escape HTML
-function escapeHtml(str) {
-    if (!str) return '';
-    return str.replace(/[&<>]/g, function(m) {
-        if (m === '&') return '&amp;';
-        if (m === '<') return '&lt;';
-        if (m === '>') return '&gt;';
-        return m;
-    });
 }
 
 // Navbar scroll effect
@@ -338,7 +326,7 @@ function showNotification(title, message, type = 'info') {
     if (!notificationsEnabled) return;
     const toast = document.createElement('div');
     toast.className = `toast ${type}`;
-    toast.innerHTML = `<strong>${escapeHtml(title)}</strong><br><small>${escapeHtml(message)}</small>`;
+    toast.innerHTML = `<strong>${title}</strong><br><small>${message}</small>`;
     if (toastContainer) toastContainer.appendChild(toast);
     playNotificationSound();
     setTimeout(() => {
@@ -407,11 +395,11 @@ if (fontSizeSlider && fontSizeValue) {
 }
 
 // --- Inicjalizacja wszystkiego ---
-async function init() {
+function init() {
     console.log('🚀 OdpalamyCheaterow - Inicjalizacja...');
     createParticles();
-    await loadRules();
-    await loadChangelog();
+    loadRules();
+    loadChangelog();
     observeSections();
     loadSettings();
     
