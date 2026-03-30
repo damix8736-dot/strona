@@ -3,7 +3,7 @@
 // ============================================
 
 // IP serwera
-const SERVER_IP = 'odpalamycheaterow.aternos.me';
+const SERVER_IP = 'odpalamycheaterow.pl';
 
 // Nawigacja mobilna
 document.addEventListener('DOMContentLoaded', function() {
@@ -29,7 +29,6 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
                 block: 'start' 
             });
         }
-        // Zamknij mobile menu
         const hamburger = document.querySelector('.hamburger');
         const navMenu = document.querySelector('.nav-menu');
         if (hamburger && navMenu) {
@@ -39,61 +38,37 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     });
 });
 
-// Kopiuj IP - ulepszone
+// Kopiuj IP - z powiadomieniem
 function copyIP() {
     navigator.clipboard.writeText(SERVER_IP).then(() => {
         const btn = event ? event.target.closest('button') : document.querySelector('.copy-ip');
-        const originalText = btn.innerHTML;
-        btn.innerHTML = '✅ SKOPIOWANO!';
-        btn.style.background = '#10b981';
-        btn.style.transform = 'scale(1.05)';
-        
-        // 🔔 Powiadomienie
+        const originalText = btn ? btn.innerHTML : 'Skopiuj IP';
+        if (btn) {
+            btn.innerHTML = '✅ SKOPIOWANO!';
+            btn.style.background = '#10b981';
+            btn.style.transform = 'scale(1.05)';
+            setTimeout(() => {
+                btn.innerHTML = originalText;
+                btn.style.background = '';
+                btn.style.transform = '';
+            }, 2000);
+        }
         showNotification('📋 Skopiowano!', `IP ${SERVER_IP} zostało skopiowane do schowka.`, 'success');
-        
-        setTimeout(() => {
-            btn.innerHTML = originalText;
-            btn.style.background = '';
-            btn.style.transform = '';
-        }, 2000);
     }).catch(() => {
-        // Fallback dla starszych przeglądarek
         const textArea = document.createElement('textarea');
         textArea.value = SERVER_IP;
         document.body.appendChild(textArea);
         textArea.select();
         document.execCommand('copy');
         document.body.removeChild(textArea);
-        alert('IP skopiowane: ' + SERVER_IP);
-        
-        // 🔔 Powiadomienie
-        showNotification('📋 Skopiowano!', `IP ${SERVER_IP} zostało skopiowane (fallback).`, 'success');
+        showNotification('📋 Skopiowano!', `IP ${SERVER_IP} zostało skopiowane.`, 'success');
     });
 }
 
-// Animacja licznika graczy
-function animatePlayerCount() {
-    const countEl = document.getElementById('playerCount');
-    if (!countEl) return;
-    
-    let current = parseInt(countEl.textContent) || 0;
-    const target = 30 + Math.floor(Math.random() * 30); // 30-60 graczy
-    const duration = 2000;
-    const startTime = performance.now();
-    
-    function animate(time) {
-        const elapsed = time - startTime;
-        const progress = Math.min(elapsed / duration, 1);
-        const easeProgress = 1 - Math.pow(1 - progress, 3);
-        
-        countEl.textContent = Math.floor(easeProgress * target);
-        
-        if (progress < 1) {
-            requestAnimationFrame(animate);
-        }
-    }
-    
-    requestAnimationFrame(animate);
+// Discord
+function joinDiscord() {
+    window.open('https://discord.gg/odpalamycheaterow', '_blank');
+    showNotification('💬 Discord', 'Przekierowanie na serwer Discord...', 'info');
 }
 
 // Particles background
@@ -148,9 +123,36 @@ function loadRules() {
     }
 }
 
-// Discord
-function joinDiscord() {
-    window.open('https://discord.gg/odpalamycheaterow', '_blank');
+// ===================== CHANGELOG =====================
+function loadChangelog() {
+    const changelogContent = document.getElementById('changelog-content');
+    if (!changelogContent) return;
+    
+    try {
+        const savedChangelog = localStorage.getItem('odpalamycheaterow_changelog');
+        const changelog = savedChangelog ? JSON.parse(savedChangelog) : [
+            {version: "v1.0.0", date: "2024-01-15", content: "🎉 Oficjalne uruchomienie serwera!\n- Dodano tryby PvP, SkyWars, BedWars\n- Anti-Cheat system\n- Panel administracyjny"},
+            {version: "v1.1.0", date: "2024-02-01", content: "✨ Nowości:\n- Dodano tryb Duels\n- Ranking graczy\n- Poprawki wydajności"}
+        ];
+        
+        if (changelog.length === 0) {
+            changelogContent.innerHTML = '<div class="changelog-empty">✨ Brak wpisów. Admin wkrótce doda changelog!</div>';
+            return;
+        }
+        
+        changelogContent.innerHTML = changelog.map(item => `
+            <div class="changelog-item">
+                <div class="changelog-header">
+                    <span class="changelog-version">${item.version}</span>
+                    <span class="changelog-date">📅 ${item.date}</span>
+                </div>
+                <div class="changelog-content">${item.content.replace(/\n/g, '<br>')}</div>
+            </div>
+        `).join('');
+    } catch (error) {
+        console.warn('Błąd ładowania changelogu:', error);
+        changelogContent.innerHTML = '<div class="changelog-empty">⚠️ Błąd ładowania changelogu</div>';
+    }
 }
 
 // Navbar scroll effect
@@ -186,32 +188,6 @@ window.addEventListener('mousemove', function(e) {
     }
 });
 
-// Status bar animation
-function animateStatusBar() {
-    const statusFill = document.querySelector('.status-fill');
-    if (!statusFill) return;
-    
-    let width = 0;
-    const target = 0.6 + Math.random() * 0.3; // 60-90%
-    const duration = 3000;
-    
-    const start = performance.now();
-    function animate(time) {
-        const elapsed = time - start;
-        const progress = Math.min(elapsed / duration, 1);
-        width = target * progress;
-        statusFill.style.width = `${width * 100}%`;
-        
-        if (progress < 1) {
-            requestAnimationFrame(animate);
-        } else {
-            // Reset i powtórz
-            setTimeout(() => animateStatusBar(), 1000);
-        }
-    }
-    requestAnimationFrame(animate);
-}
-
 // Intersection Observer dla sekcji
 function observeSections() {
     const sections = document.querySelectorAll('.section');
@@ -231,105 +207,6 @@ function observeSections() {
         observer.observe(section);
     });
 }
-
-// SERWER STATUS (symulacja)
-function updateServerStatus() {
-    const playerCount = document.getElementById('playerCount');
-    if (playerCount) {
-        setInterval(() => {
-            const newCount = 20 + Math.floor(Math.random() * 50);
-            playerCount.textContent = newCount;
-        }, 15000);
-    }
-}
-
-// INIT - wszystko uruchamiane po załadowaniu
-function init() {
-    console.log('🚀 OdpalamyCheaterow - Inicjalizacja...');
-    
-    animatePlayerCount();
-    createParticles();
-    loadRules();
-    animateStatusBar();
-    observeSections();
-    updateServerStatus();
-    
-    // Auto-copy IP po 3s (opcjonalne)
-    setTimeout(() => {
-        if (document.querySelector('.server-ip code')) {
-            console.log('IP serwera:', SERVER_IP);
-        }
-    }, 3000);
-    
-    console.log('✅ Strona gotowa!');
-}
-
-// Uruchom gdy DOM gotowy
-if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', init);
-} else {
-    init();
-}
-
-// PWA-like - obsługa offline
-window.addEventListener('online', () => console.log('🌐 Online'));
-window.addEventListener('offline', () => console.log('📴 Offline'));
-
-// Error handling
-window.addEventListener('error', function(e) {
-    console.error('Błąd:', e.error);
-});
-
-
-// Discord Widget - AKTYWNY LICZNIK
-let discordRetryCount = 0;
-const MAX_RETRIES = 5;
-
-function loadDiscordStats() {
-    const guildId = '123456789'; // ← ZMIEŃ NA SWÓJ ID SERWERA!
-    
-    fetch(`https://discord.com/api/guilds/${guildId}/widget.json`)
-        .then(response => {
-            if (!response.ok) throw new Error('Widget wyłączony');
-            return response.json();
-        })
-        .then(data => {
-            document.getElementById('discordMembers').textContent = 
-                data.presence_count ? data.presence_count.toLocaleString() : '0';
-            document.getElementById('discordOnline').textContent = 
-                data.members ? data.members.length.toLocaleString() : '0';
-            
-            const statusEl = document.getElementById('discordStatus');
-            statusEl.textContent = '✅ Połączono z Discordem';
-            statusEl.className = 'discord-status discord-online';
-            
-            discordRetryCount = 0; // Reset retry
-        })
-        .catch(error => {
-            console.warn('Discord API błąd:', error);
-            discordRetryCount++;
-            
-            if (discordRetryCount < MAX_RETRIES) {
-                // Fallback dane
-                document.getElementById('discordMembers').textContent = '12,547';
-                document.getElementById('discordOnline').textContent = '2,847';
-                document.getElementById('discordStatus').textContent = 
-                    `🔄 Ładowanie... (${discordRetryCount}/${MAX_RETRIES})`;
-            } else {
-                document.getElementById('discordStatus').textContent = '❌ Discord offline';
-                document.getElementById('discordStatus').className = 'discord-status discord-offline';
-            }
-        });
-}
-
-// Auto-refresh co 60s
-setInterval(loadDiscordStats, 60000);
-
-// Load przy starcie
-loadDiscordStats();
-
-
-// ===================== USTAWIENIA, MOTYW, POWIADOMIENIA =====================
 
 // ===================== USTAWIENIA, MOTYW, POWIADOMIENIA =====================
 
@@ -444,7 +321,7 @@ function playNotificationSound() {
     }
 }
 
-// --- Wyświetlanie powiadomienia ---
+// --- Wyświetlanie powiadomienia (toast) ---
 function showNotification(title, message, type = 'info') {
     if (!notificationsEnabled) return;
     const toast = document.createElement('div');
@@ -460,7 +337,7 @@ function showNotification(title, message, type = 'info') {
 }
 
 function testNotification() {
-    showNotification('🔔 Test powiadomienia', 'To jest przykładowe powiadomienie.', 'success');
+    showNotification('🔔 Test powiadomienia', 'To jest przykładowe powiadomienie z dźwiękiem.', 'success');
 }
 
 // --- Obsługa panelu ustawień ---
@@ -517,15 +394,36 @@ if (fontSizeSlider && fontSizeValue) {
     });
 }
 
-// --- Inicjalizacja ---
-loadSettings();
+// --- Inicjalizacja wszystkiego ---
+function init() {
+    console.log('🚀 OdpalamyCheaterow - Inicjalizacja...');
+    createParticles();
+    loadRules();
+    loadChangelog();
+    observeSections();
+    loadSettings();
+    
+    setTimeout(() => {
+        if (notificationsEnabled) {
+            showNotification('🟢 Serwer online', 'Witaj na OdpalamyCheaterow! Miłej gry.', 'info');
+        }
+    }, 3000);
+    
+    console.log('✅ Strona gotowa!');
+}
 
-// --- Powitanie ---
-setTimeout(() => {
-    if (notificationsEnabled) {
-        showNotification('🟢 Serwer online', 'Witaj na OdpalamyCheaterow!', 'info');
-    }
-}, 3000);
+// Uruchom gdy DOM gotowy
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+} else {
+    init();
+}
 
-// --- Inicjalizacja ---
-loadSettings();
+// PWA-like - obsługa offline
+window.addEventListener('online', () => console.log('🌐 Online'));
+window.addEventListener('offline', () => console.log('📴 Offline'));
+
+// Error handling
+window.addEventListener('error', function(e) {
+    console.error('Błąd:', e.error);
+});
