@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🔧 Admin - OdpalamyCheaterow</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box;}
+        body{font-family:'Roboto',sans-serif;background:linear-gradient(135deg,#1a1a2e 0%,#16213e 100%);color:#f8f9fa;overflow-x:hidden;position:relative;}
+        
+        #particles{position:fixed;top:0;left:0;width:100%;height:100%;z-index:-1;background:radial-gradient(circle at 20% 50%,rgba(120,119,198,.3) 0%,transparent 50%),radial-gradient(circle at 80% 20%,rgba(255,119,198,.3) 0%,transparent 50%);}
+        
+        .admin-container{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:2rem;}
+        .admin-section{width:100%;max-width:700px;display:none;}
+        .admin-section.active{display:block;animation:fadeInUp 0.5s ease-out;}
+        
+        .admin-card{background:rgba(255,255,255,.08);backdrop-filter:blur(20px);border-radius:25px;padding:3rem;border:1px solid rgba(255,255,255,.1);box-shadow:0 25px 50px rgba(0,0,0,.3);}
+        .admin-card h1{font-family:'Orbitron',monospace;font-size:2.5rem;text-align:center;margin-bottom:1rem;background:linear-gradient(45deg,#ff6b6b,#ffd93d);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+        .admin-card h2{font-family:'Orbitron',monospace;font-size:1.8rem;margin-bottom:2rem;color:#f8f9fa;}
+        
+        .admin-form{display:flex;flex-direction:column;gap:1.5rem;max-width:400px;margin:0 auto;}
+        .form-group{display:flex;flex-direction:column;}
+        .form-group label{margin-bottom:.5rem;font-weight:500;color:#4ecdc4;}
+        .form-group input{padding:1rem;border:2px solid rgba(255,255,255,.2);border-radius:15px;background:rgba(255,255,255,.1);color:#f8f9fa;font-size:1rem;transition:all .3s;}
+        .form-group input:focus{outline:none;border-color:#ff6b6b;box-shadow:0 0 20px rgba(255,107,107,.3);}
+        
+        .btn{padding:1rem 2rem;border:none;border-radius:25px;font-size:1.1rem;font-weight:600;cursor:pointer;transition:all .3s;color:white;display:inline-flex;align-items:center;gap:.5rem;justify-content:center;}
+        .btn-admin{background:linear-gradient(45deg,#ff6b6b,#ffd93d);width:100%;font-size:1.2rem;}
+        .btn-save{background:linear-gradient(45deg,#4ade80,#22c55e);width:100%;font-size:1.2rem;margin-top:2rem;}
+        .btn-logout{background:#ef4444;padding:.7rem 1.5rem;border-radius:20px;font-size:1rem;}
+        .btn-add{background:#4ecdc4;color:white;border:none;padding:1rem 2rem;border-radius:20px;cursor:pointer;margin-top:1rem;font-size:1rem;width:100%;}
+        
+        .admin-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:2rem;}
+        .rule-editor-item{background:rgba(255,255,255,.05);padding:1.5rem;border-radius:15px;margin-bottom:1rem;border-left:4px solid #ff6b6b;}
+        .rule-editor-item input,.rule-editor-item textarea{width:100%;margin-bottom:1rem;padding:1rem;border-radius:10px;border:1px solid rgba(255,255,255,.2);background:rgba(255,255,255,.1);color:#f8f9fa;font-family:inherit;box-sizing:border-box;}
+        .rule-editor-item textarea{min-height:80px;resize:vertical;}
+        .rule-editor-item button{background:#ef4444;color:white;border:none;padding:.7rem 1rem;border-radius:10px;cursor:pointer;font-size:.9rem;}
+        
+        .hint{text-align:center;margin-top:1rem;color:#ffd93d;font-size:.9rem;}
+        .success{text-align:center;color:#4ade80;font-weight:500;}
+        
+        @keyframes float{0%,100%{transform:translateY(0);}50%{transform:translateY(-20px);}}
+        @keyframes fadeInUp{from{opacity:0;transform:translateY(30px);}to{opacity:1;transform:translateY(0);}}
+        @media(max-width:768px){.admin-card{padding:2rem 1.5rem;}.admin-header{flex-direction:column;gap:1rem;text-align:center;}}
+    </style>
+</head>
+<body>
+    <!-- Particles -->
+    <div id="particles"></div>
+    
+    <!-- LOGIN SECTION -->
+    <div id="loginSection" class="admin-section active">
+        <div class="admin-card">
+            <h1>🔧 Panel Administratora</h1>
+            <p style="text-align:center;margin-bottom:2rem;color:#4ecdc4;font-size:1.1rem;">Edytuj regulamin serwera</p>
+            
+            <form id="loginForm">
+                <div class="form-group">
+                    <label>👤 Login</label>
+                    <input type="text" id="username" placeholder="Wpisz nazwę..." required>
+                </div>
+                <div class="form-group">
+                    <label>🔑 Hasło</label>
+                    <input type="password" id="password" placeholder="Wpisz hasło..." required>
+                </div>
+                <div class="login-button-container">
+    <button type="submit" class="btn-admin-glow">
+        <span class="btn-icon">🔐</span>
+        <span class="btn-text">ZALOGUJ SIĘ</span>
+        <div class="btn-glow"></div>
+    </button>
+</div>
+            </form>
+            
+            <div class="hint">
+
+            </div>
+        </div>
+    </div>
+
+    <!-- ADMIN PANEL -->
+    <div id="adminPanel" class="admin-section">
+        <div class="admin-card">
+            <div class="admin-header">
+                <h1>✅ Zalogowany!</h1>
+                <button id="logoutBtn" class="btn-logout">❌ Wyloguj</button>
+            </div>
+            
+            <h2>📜 Edytor Regulaminu</h2>
+            <div id="rulesEditor" style="min-height:400px;border:1px solid rgba(255,255,255,.1);border-radius:15px;padding:1.5rem;background:rgba(255,255,255,.02);">
+                <!-- Reguły pojawią się tutaj -->
+            </div>
+            
+            <button id="saveRulesBtn" class="btn-save">💾 ZAPisz REGULAMIN</button>
+            <div class="success" style="display:none;" id="saveMessage">
+                ✅ Zapisano! Odśwież <strong>index.html</strong> aby zobaczyć zmiany!
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ============================================
+        // SKRYPT - WSZYSTKO W JEDNYM MIEJSCU
+        // ============================================
+        
+        const ADMIN_CREDENTIALS = {
+            username: 'supportodpalamy',
+            password: 'aternosiksigma'
+        };
+        
+        const DEFAULT_RULES = [
+            {title:'Zakaz używania cheatów',description:'Automatyczny ban za KillAurę, AutoClicker, Jesus itp.'},
+            {title:'Szanuj innych graczy',description:'Brak toksyczności i spamu na czacie'},
+            {title:'Zakaz exploitów',description:'Brak dupowania itemów i bugów serwera'},
+            {title:'Zakaz reklamy',description:'Promowanie innych serwerów = permaban'}
+        ];
+        
+        let currentRules = [];
+        
+        // ELEMENTY
+        const loginSection = document.getElementById('loginSection');
+        const adminPanel = document.getElementById('adminPanel');
+        const loginForm = document.getElementById('loginForm');
+        const rulesEditor = document.getElementById('rulesEditor');
+        const saveMessage = document.getElementById('saveMessage');
+        
+        // LOGIN
+        loginForm.addEventListener('submit', function(e) {
+            e.preventDefault(); // STOP ODŚWIĘŻENIA!
+            
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value.trim();
+            
+            if (username === ADMIN_CREDENTIALS.username && password === ADMIN_CREDENTIALS.password) {
+                loginSection.classList.remove('active');
+                adminPanel.classList.add('active');
+                loadRules();
+            } else {
+
+                loginForm.reset();
+            }
+        });
+        
+        // LOGOUT
+        document.getElementById('logoutBtn').addEventListener('click', function() {
+            loginSection.classList.add('active');
+            adminPanel.classList.remove('active');
+            loginForm.reset();
+        });
+        
+        // LOAD RULES
+        function loadRules() {
+            try {
+                const saved = localStorage.getItem('odpalamycheaterow_rules');
+                currentRules = saved ? JSON.parse(saved) : DEFAULT_RULES;
+            } catch(e) {
+                currentRules = DEFAULT_RULES;
+            }
+            renderRules();
+        }
+        
+        // RENDER RULES
+        function renderRules() {
+            let html = '';
+            currentRules.forEach((rule, index) => {
+                html += `
+                    <div class="rule-editor-item" data-index="${index}">
+                        <input type="text" value="${rule.title}" placeholder="Tytuł reguły">
+                        <textarea placeholder="Opis reguły">${rule.description}</textarea>
+                        <button type="button">🗑️ Usuń</button>
+                    </div>
+                `;
+            });
+            html += '<button type="button" class="btn-add" onclick="addRule()">➕ Dodaj regułę</button>';
+            rulesEditor.innerHTML = html;
+            
+            // Dodaj eventy delete
+            document.querySelectorAll('.rule-editor-item button').forEach((btn, index) => {
+                btn.onclick = () => deleteRule(index);
+            });
+        }
+        
+        // ADD RULE
+        function addRule() {
+            currentRules.push({title:'',description:''});
+            renderRules();
+        }
+        
+        // DELETE RULE
+        function deleteRule(index) {
+            currentRules.splice(index, 1);
+            renderRules();
+        }
+        
+        // SAVE
+        document.getElementById('saveRulesBtn').addEventListener('click', function() {
+            const items = rulesEditor.querySelectorAll('.rule-editor-item');
+            const newRules = [];
+            
+            items.forEach((item) => {
+                const title = item.querySelector('input').value.trim();
+                const desc = item.querySelector('textarea').value.trim();
+                if (title) newRules.push({title, description:desc});
+            });
+            
+            currentRules = newRules;
+            localStorage.setItem('odpalamycheaterow_rules', JSON.stringify(currentRules));
+            
+            saveMessage.style.display = 'block';
+            setTimeout(() => saveMessage.style.display = 'none', 5000);
+        });
+        
+        // Particles
+        for(let i=0; i<30; i++) {
+            const p = document.createElement('div');
+            p.style.cssText = `position:fixed;width:3px;height:3px;background:rgba(255,107,107,.4);border-radius:50%;left:${Math.random()*100}%;top:${Math.random()*100}%;animation:float ${2+Math.random()*3}s infinite;animation-delay:${Math.random()*3}s;z-index:-1;`;
+            document.getElementById('particles').appendChild(p);
+        }
+    </script>
+</body>
+</html>
+
+<style> */
+.login-button-container {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    margin-top: 1rem;
+}
+
+.btn-admin-glow {
+    position: relative;
+    padding: 1.2rem 3rem;
+    background: linear-gradient(135deg, #ff6b6b 0%, #ffd93d 50%, #ff6b6b 100%);
+    border: none;
+    border-radius: 50px;
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: white;
+    cursor: pointer;
+    overflow: hidden;
+    box-shadow: 
+        0 10px 30px rgba(255, 107, 107, 0.4),
+        0 0 0 1px rgba(255, 255, 255, 0.2);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.btn-admin-glow:hover {
+    transform: translateY(-5px) scale(1.05);
+    box-shadow: 
+        0 20px 40px rgba(255, 107, 107, 0.6),
+        0 0 0 1px rgba(255, 255, 255, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.4);
+}
+
+.btn-admin-glow:active {
+    transform: translateY(-2px) scale(1.02);
+}
+
+.btn-icon {
+    font-size: 1.4rem;
+    transition: transform 0.3s ease;
+}
+
+.btn-admin-glow:hover .btn-icon {
+    transform: rotate(360deg);
+}
+
+.btn-glow {
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.3) 0%, transparent 70%);
+    opacity: 0;
+    transition: opacity 0.4s ease;
+    pointer-events: none;
+}
+
+.btn-admin-glow:hover .btn-glow {
+    opacity: 1;
+    animation: glowPulse 1.5s infinite;
+}
+
+@keyframes glowPulse {
+    0%, 100% { transform: scale(1) rotate(0deg); opacity: 0.3; }
+    50% { transform: scale(1.2) rotate(180deg); opacity: 0.6; }
+}
+
+/* Poprawka dla pozostałych przycisków */
+.btn-save, .btn-add {
+    position: relative;
+    overflow: hidden;
+    border-radius: 50px !important;
+    box-shadow: 0 8px 25px rgba(74, 205, 196, 0.3);
+}
+
+.btn-save:hover, .btn-add:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 15px 35px rgba(74, 205, 196, 0.5);
+}
