@@ -148,6 +148,49 @@ function loadRules() {
     }
 }
 
+// ===================== CHANGELOG =====================
+
+const DEFAULT_CHANGELOG = [
+    {
+        version: "v1.0.0",
+        date: "2024-01-15",
+        content: "🎉 Oficjalne uruchomienie serwera!\n- Dodano tryby PvP, SkyWars, BedWars\n- Anti-Cheat system\n- Panel administracyjny"
+    },
+    {
+        version: "v1.1.0",
+        date: "2024-02-01",
+        content: "✨ Nowości:\n- Dodano tryb Duels\n- Ranking graczy\n- Poprawki wydajności"
+    }
+];
+
+function loadChangelog() {
+    const changelogContent = document.getElementById('changelog-content');
+    if (!changelogContent) return;
+    
+    try {
+        const savedChangelog = localStorage.getItem('odpalamycheaterow_changelog');
+        const changelog = savedChangelog ? JSON.parse(savedChangelog) : DEFAULT_CHANGELOG;
+        
+        if (changelog.length === 0) {
+            changelogContent.innerHTML = '<div class="changelog-empty">✨ Brak wpisów. Admin wkrótce doda changelog!</div>';
+            return;
+        }
+        
+        changelogContent.innerHTML = changelog.map(item => `
+            <div class="changelog-item">
+                <div class="changelog-header">
+                    <span class="changelog-version">${item.version}</span>
+                    <span class="changelog-date">📅 ${item.date}</span>
+                </div>
+                <div class="changelog-content">${item.content.replace(/\n/g, '<br>')}</div>
+            </div>
+        `).join('');
+    } catch (error) {
+        console.warn('Błąd ładowania changelogu:', error);
+        changelogContent.innerHTML = '<div class="changelog-empty">⚠️ Błąd ładowania changelogu</div>';
+    }
+}
+
 // Discord
 function joinDiscord() {
     window.open('https://discord.gg/odpalamycheaterow', '_blank');
@@ -253,6 +296,7 @@ function init() {
     animateStatusBar();
     observeSections();
     updateServerStatus();
+    loadChangelog();
     
     // Auto-copy IP po 3s (opcjonalne)
     setTimeout(() => {
