@@ -1,132 +1,146 @@
- <!DOCTYPE html>
-    <html lang="pl">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>OdpalamyCheaterow - Serwer Minecraft</title>
-        <link rel="stylesheet" href="style.css">
-        <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
-        <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚔️</text></svg>">
-    </head>
-    <body>
-        <!-- Particles Background -->
-        <div id="particles"></div>
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OdpalamyCheaterow - Serwer Minecraft</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚔️</text></svg>">
+</head>
+<body>
+    <!-- Particles Background -->
+    <div id="particles"></div>
 
-        <!-- Navigation -->
-        <nav class="navbar">
-            <div class="nav-container">
-                <div class="logo">
-                    <h2>⚔️ OdpalamyCheaterow </h2>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo">
+                <h2>⚔️ OdpalamyCheaterow</h2>
+            </div>
+            <ul class="nav-menu">
+                <li><a href="#home" class="nav-link">🏠 Strona Główna</a></li>
+                <li><a href="#server" class="nav-link">🖥️ Serwer</a></li>
+                <li><a href="#features" class="nav-link">⭐ Funkcje</a></li>
+                <li><a href="#rules" class="nav-link">📜 Regulamin</a></li>
+                <li><a href="#changelog" class="nav-link">📋 Changelog</a></li>
+                <li><a href="#discord" class="nav-link">💬 Discord</a></li>
+                <li><a href="admin.html" class="nav-link admin-btn">🔧 Admin</a></li>
+            </ul>
+            <div class="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero">
+        <div class="hero-content">
+            <h1 class="hero-title">Odpalamy<span class="gradient-text">Cheaterow</span></h1>
+            <p class="hero-subtitle">Najlepszy serwer PvP gdzie cheaterzy nie mają szans!</p>
+            <div class="hero-buttons">
+                <button class="btn-primary copy-ip" onclick="copyIP()">
+                    <span>📋</span> Skopiuj IP
+                </button>
+                <button class="btn-secondary" onclick="joinDiscord()">
+                    <span>💬</span> Dołącz do Discorda
+                </button>
+            </div>
+            <div class="server-ip">
+                <code>odpalamycheaterow.pl</code>
+            </div>
+        </div>
+    </section>
+
+    <!-- Server Info -->
+    <section id="server" class="section">
+        <div class="container">
+            <h2 class="section-title">Informacje o Serwerze</h2>
+            <div class="server-grid">
+                <div class="server-card">
+                    <div class="card-icon">🖥️</div>
+                    <h3>IP Serwera</h3>
+                    <code class="ip-display">odpalamycheaterow.pl</code>
+                    <button class="btn-small" onclick="copyIP()">📋 Kopiuj</button>
                 </div>
-                <ul class="nav-menu">
-                    <li><a href="#home" class="nav-link">🏠 Strona Główna</a></li>
-                    <li><a href="#server" class="nav-link">🖥️ Serwer</a></li>
-                    <li><a href="#features" class="nav-link">⭐ Funkcje</a></li>
-                    <li><a href="#rules" class="nav-link">📜 Regulamin</a></li>
-                    <li><a href="#discord" class="nav-link">💬 Discord</a></li>
-                    <li><a href="admin.html" class="nav-link admin-btn">🔧 Admin</a></li>
-                </ul>
-                <div class="hamburger">
-                    <span></span>
-                    <span></span>
-                    <span></span>
+                <div class="server-card">
+                    <div class="card-icon">⚔️</div>
+                    <h3>Wersja</h3>
+                    <div class="version">1.8 - 1.20.x</div>
+                </div>
+                <div class="server-card">
+                    <div class="card-icon">👥</div>
+                    <h3>Tryb Gry</h3>
+                    <div class="game-mode">PvP | SkyWars | BedWars | Duels</div>
+                </div>
+                <div class="server-card">
+                    <div class="card-icon">⭐</div>
+                    <h3>Ranking</h3>
+                    <div class="rank">#1 Polska PvP</div>
                 </div>
             </div>
-        </nav>
+        </div>
+    </section>
 
-        <!-- Hero Section -->
-        <section id="home" class="hero">
-            <div class="hero-content">
-                <h1 class="hero-title">Odpalamy<span class="gradient-text">Cheaterow</span></h1>
-                <p class="hero-subtitle">Najgorszy serwer PvP gdzie cheaterzy mają szanse!</p>
-                <div class="hero-buttons">
-                    <button class="btn-primary copy-ip" onclick="copyIP()">
-                        <span>📋</span> Skopiuj IP
-                    </button>
-                    <button class="btn-secondary" onclick="joinDiscord()">
-                        <span>💬</span> Dołącz do Discorda
-                    </button>
+    <!-- Features -->
+    <section id="features" class="section features-section">
+        <div class="container">
+            <h2 class="section-title">Cechy Serwera</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">🛡️</div>
+                    <h3>Zaawansowany Anti-Cheat</h3>
+                    <p>Żaden cheater nie przejdzie naszego systemu ochrony!</p>
                 </div>
-                <div class="server-ip">
-                    <code>odpalamycheaterow.aternos.me</code>
+                <div class="feature-card">
+                    <div class="feature-icon">⚡</div>
+                    <h3>0 Ping Lag</h3>
+                    <p>Polskie serwery z idealnym połączeniem</p>
                 </div>
-                
-
-        <!-- Server Info -->
-        <section id="server" class="section">
-            <div class="container">
-                <h2 class="section-title">Informacje o Serwerze</h2>
-                <div class="server-grid">
-                    <div class="server-card">
-                        <div class="card-icon">🖥️</div>
-                        <h3>IP Serwera</h3>
-                        <code class="ip-display">odpalamycheaterow.aternos.me</code>
-                        <button class="btn-small" onclick="copyIP()">📋 Kopiuj</button>
-                    </div>
-                    <div class="server-card">
-                        <div class="card-icon">⚔️</div>
-                        <h3>Wersja</h3>
-                        <div class="version">1.8 - 1.21.11</div>
-                    </div>
-                    <div class="server-card">
-                        <div class="card-icon">👥</div>
-                        <h3>Tryb Gry</h3>
-                        <div class="game-mode">Survival</div>
-                    </div>
-                    <div class="server-card">
-                        <div class="card-icon">⭐</div>
-                        <h3>Ranking</h3>
-                        <div class="rank">#1 w kategorii Polska PvP w najgorszych graczy</div>
-                    </div>
+                <div class="feature-card">
+                    <div class="feature-icon">💎</div>
+                    <h3>Sklep z Rangami</h3>
+                    <p>Ekskluzywne rangi i kosmetyki</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🏆</div>
+                    <h3>Turnieje PvP</h3>
+                    <p>Codzienne eventy z nagrodami</p>
                 </div>
             </div>
-        </section>
+        </div>
+    </section>
 
-        <!-- Features -->
-        <section id="features" class="section features-section">
-            <div class="container">
-                <h2 class="section-title">Cechy Serwera</h2>
-                <div class="features-grid">
-                    <div class="feature-card">
-                        <div class="feature-icon">🛡️</div>
-                        <h3>Zaawansowany Anti-Cheat (nie) </h3>
-                        <p>Każdy cheater przejdzie nasz system ochrony!</p>
-                    </div>
-                    <div class="feature-card">
-                        <div class="feature-icon">⚡</div>
-                        <h3>100 Ping Lag</h3>
-                        <p>Polskie serwery z idealnym połączeniem</p>
-                    </div>
-                    <div class="feature-card">
-                        <div class="feature-icon">💎</div>
-                        <h3>Sklep z Rangami (p2w)</h3>
-                        <p>Ekskluzywne rangi i kosmetyki (za ringi)</p>
-                    </div>
-                    <div class="feature-card">
-                        <div class="feature-icon">🏆</div>
-                        <h3>Turnieje PvP (z miernotami)</h3>
-                        <p>Codzienne eventy z nagrodami (jak sie chce to sie zrobi (nie codziennie) </p>
-                    </div>
+    <!-- Rules -->
+    <section id="rules" class="section">
+        <div class="container">
+            <h2 class="section-title">Regulamin Serwera</h2>
+            <div class="rules-container">
+                <div id="rules-content">
+                    <!-- Regulamin ładowany przez JS -->
+                </div>
+                <div class="rules-admin-note">
+                    <p>🔧 <strong>Admin:</strong> Regulamin może być ciągle edytowany.</p>
                 </div>
             </div>
-        </section>
+        </div>
+    </section>
 
-        <!-- Rules -->
-        <section id="rules" class="section">
-            <div class="container">
-                <h2 class="section-title">Regulamin Serwera</h2>
-                <div class="rules-container">
-                    <div id="rules-content">
-                        <!-- Regulamin ładowany przez JS -->
-                    </div>
-                    <div class="rules-admin-note">
-                        <p>🔧 <strong>Admin:</strong> Regulamin może być ciągle edytowany.</p>
-                    </div>
+    <!-- Changelog Section -->
+    <section id="changelog" class="section">
+        <div class="container">
+            <h2 class="section-title">📋 Changelog</h2>
+            <div class="changelog-container">
+                <div id="changelog-content">
+                    <!-- Changelog ładowany przez JS -->
                 </div>
             </div>
-        </section>
+        </div>
+    </section>
 
-        <!-- Discord Section - ZMIEŃ NA TO -->
+    <!-- Discord Section -->
     <section id="discord" class="section discord-section">
         <div class="container">
             <div class="discord-card">
@@ -135,21 +149,22 @@
                     <button class="btn-discord" onclick="joinDiscord()">
                         💬 Dołącz na Discord
                     </button>
-                
-        <!-- Footer -->
-        <footer class="footer">
-            <div class="container">
-                <p>&copy; 2026 OdpalamyCheaterow.aternos.me - Wszelkie prawa zastrzeżone</p>
-                <div class="social-links">
-                    <a href="#">📱 Instagram</a>
-                    <a href="#">🐦 Twitter</a>
-                    <a href="#">📘 Facebook</a>
                 </div>
             </div>
-        </footer>
+        </div>
+    </section>
 
-        
-
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2024 OdpalamyCheaterow.pl - Wszelkie prawa zastrzeżone</p>
+            <div class="social-links">
+                <a href="#">📱 Instagram</a>
+                <a href="#">🐦 Twitter</a>
+                <a href="#">📘 Facebook</a>
+            </div>
+        </div>
+    </footer>
 
     <!-- ===================== DODATKOWE ELEMENTY ===================== -->
     <!-- Koło zębate (ustawienia) -->
@@ -159,7 +174,7 @@
         </svg>
     </div>
 
-    <!-- Panel ustawień (początkowo ukryty) -->
+    <!-- Panel ustawień -->
     <div id="settingsPanel" class="settings-panel">
         <div class="settings-header">
             <h3>⚙️ Ustawienia</h3>
@@ -168,12 +183,9 @@
         <div class="settings-content">
             <div class="setting-item">
                 <span>🌗 Motyw</span>
-                <div class="toggle-switch">
-                    <input type="checkbox" id="themeToggle">
-                    <label for="themeToggle" class="toggle-label">
-                        <span class="toggle-text">Ciemny</span>
-                        <span class="toggle-text">Jasny</span>
-                    </label>
+                <div class="theme-buttons">
+                    <button id="themeDarkBtn" class="theme-btn active">🌙 Ciemny</button>
+                    <button id="themeLightBtn" class="theme-btn">☀️ Jasny</button>
                 </div>
             </div>
             <div class="setting-item">
@@ -190,17 +202,20 @@
                     <span class="slider round"></span>
                 </label>
             </div>
+            <div class="setting-item">
+                <span>🔠 Rozmiar tekstu</span>
+                <div class="font-size-control">
+                    <span id="fontSizeValue" class="font-size-value">100%</span>
+                    <input type="range" id="fontSizeSlider" min="70" max="150" step="5" value="100">
+                </div>
+            </div>
             <button id="testNotificationBtn" class="test-notif-btn">🔔 Testuj powiadomienie</button>
         </div>
     </div>
 
-    <!-- Kontener dla toastów (powiadomień) -->
+    <!-- Kontener dla toastów -->
     <div id="toastContainer" class="toast-container"></div>
 
-
     <script src="script.js"></script>
-
-
-
-    </body>
-    </html>
+</body>
+</html>
