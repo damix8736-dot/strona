@@ -938,3 +938,133 @@ body.light-theme .settings-panel {
 body.light-theme .font-size-control {
     background: rgba(0,0,0,0.05);
 }
+
+
+/* Changelog styles */
+.changelog-container {
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.changelog-item {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    padding: 1.8rem;
+    margin-bottom: 1.5rem;
+    border-left: 5px solid #ff6b6b;
+    transition: all 0.3s ease;
+}
+
+.changelog-item:hover {
+    transform: translateX(10px);
+    box-shadow: 0 10px 30px rgba(255, 107, 107, 0.2);
+}
+
+.changelog-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.changelog-version {
+    font-family: 'Orbitron', monospace;
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: #ff6b6b;
+    background: rgba(255, 107, 107, 0.2);
+    padding: 0.3rem 1rem;
+    border-radius: 30px;
+    display: inline-block;
+}
+
+.changelog-date {
+    color: #4ecdc4;
+    font-size: 0.9rem;
+}
+
+.changelog-content {
+    font-size: 1rem;
+    line-height: 1.6;
+    white-space: pre-wrap;
+}
+
+.changelog-empty {
+    text-align: center;
+    padding: 3rem;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 20px;
+    color: #ffd93d;
+}
+
+body.light-theme .changelog-item {
+    background: rgba(0, 0, 0, 0.05);
+}
+
+body.light-theme .changelog-version {
+    background: rgba(255, 107, 107, 0.1);
+}
+
+.admin-tabs {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 2rem;
+    border-bottom: 1px solid rgba(255,255,255,0.2);
+    padding-bottom: 0.5rem;
+}
+
+.admin-tab {
+    background: transparent;
+    border: none;
+    padding: 0.8rem 1.5rem;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #f8f9fa;
+    cursor: pointer;
+    border-radius: 30px;
+    transition: all 0.3s;
+}
+
+.admin-tab:hover {
+    background: rgba(255,255,255,0.1);
+}
+
+.admin-tab.active {
+    background: linear-gradient(45deg, #ff6b6b, #ffd93d);
+    color: white;
+    box-shadow: 0 5px 15px rgba(255,107,107,0.3);
+}
+
+
+.changelog-editor-item {
+    background: rgba(255,255,255,.05);
+    padding: 1.5rem;
+    border-radius: 15px;
+    margin-bottom: 1rem;
+    border-left: 4px solid #4ecdc4;
+}
+
+.changelog-editor-item input,
+.changelog-editor-item textarea {
+    width: 100%;
+    margin-bottom: 1rem;
+    padding: 0.8rem;
+    border-radius: 10px;
+    border: 1px solid rgba(255,255,255,.2);
+    background: rgba(255,255,255,.1);
+    color: #f8f9fa;
+    font-family: inherit;
+}
+
+.delete-changelog-btn {
+    background: #ef4444;
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 10px;
+    cursor: pointer;
+}
