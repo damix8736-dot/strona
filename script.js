@@ -441,3 +441,109 @@ if (document.readyState === 'loading') {
 window.addEventListener('error', function(e) {
     console.error('Błąd:', e.error);
 });
+
+
+
+// ===================== STATUS SERWERA MINECRAFT =====================
+
+// IP serwera Minecraft (zmień na swoje!)
+const MC_SERVER_IP = 'odpalamycheaterow.pl';
+const MC_SERVER_PORT = '25565'; // domyślny port, zmień jeśli inny
+
+// Funkcja sprawdzająca status serwera
+async function checkServerStatus() {
+    const statusElement = document.getElementById('serverStatus');
+    const playerCountElement = document.getElementById('playerCountNumber');
+    
+    if (!statusElement) return;
+    
+    // Pokaż ładowanie
+    statusElement.innerHTML = `
+        <div class="status-loading">
+            <div class="loading-spinner"></div>
+            <span>Sprawdzanie statusu...</span>
+        </div>
+    `;
+    
+    try {
+        // Użyjemy darmowego API mcsrvstat.us (nie wymaga klucza API)
+        const response = await fetch(`https://api.mcsrvstat.us/2/${MC_SERVER_IP}:${MC_SERVER_PORT}`);
+        const data = await response.json();
+        
+        if (data.online) {
+            // Serwer online
+            statusElement.innerHTML = `
+                <div class="status-online">
+                    <span>Serwer ONLINE</span>
+                </div>
+            `;
+            
+            // Liczba graczy
+            const playersOnline = data.players?.online || 0;
+            if (playerCountElement) {
+                playerCountElement.textContent = playersOnline;
+            }
+            
+            // Dodaj efekt do karty
+            const card = document.getElementById('serverStatusCard');
+            if (card) {
+                card.style.borderLeft = '4px solid #4ade80';
+            }
+            
+            // Opcjonalnie: pokaż listę graczy (jeśli jest dostępna)
+            if (data.players?.list && data.players.list.length > 0) {
+                const playerList = data.players.list.slice(0, 5).join(', ');
+                if (playerCountElement) {
+                    playerCountElement.title = `Gracze online: ${playerList}${data.players.list.length > 5 ? '...' : ''}`;
+                }
+            }
+            
+        } else {
+            // Serwer offline
+            statusElement.innerHTML = `
+                <div class="status-offline">
+                    <span>Serwer OFFLINE</span>
+                </div>
+            `;
+            
+            if (playerCountElement) {
+                playerCountElement.textContent = '0';
+            }
+            
+            const card = document.getElementById('serverStatusCard');
+            if (card) {
+                card.style.borderLeft = '4px solid #ef4444';
+            }
+        }
+        
+    } catch (error) {
+        console.error('Błąd sprawdzania statusu serwera:', error);
+        statusElement.innerHTML = `
+            <div class="status-offline">
+                <span>❌ Błąd połączenia</span>
+            </div>
+        `;
+        if (playerCountElement) {
+            playerCountElement.textContent = '?';
+        }
+    }
+}
+
+// Odświeżanie statusu co 30 sekund
+let statusInterval;
+
+function startStatusChecker() {
+    // Sprawdź od razu
+    checkServerStatus();
+    
+    // Potem co 30 sekund
+    if (statusInterval) clearInterval(statusInterval);
+    statusInterval = setInterval(checkServerStatus, 30000);
+}
+
+function stopStatusChecker() {
+    if (statusInterval) {
+        clearInterval(statusInterval);
+        statusInterval = null;
+    }
+}
