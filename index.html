@@ -216,6 +216,31 @@
     <!-- Kontener dla toastów -->
     <div id="toastContainer" class="toast-container"></div>
 
+
+    <!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+
+<script>
+    // 🔥 WKLEJ SWOJE DANE Z FIREBASE (skopiowane z konsoli Firebase)
+    const firebaseConfig = {
+        apiKey: "AIzaSy...",      // <- WKLEJ SWOJE
+        authDomain: "odpalamycheaterow.firebaseapp.com",
+        databaseURL: "https://odpalamycheaterow-default-rtdb.europe-west1.firebasedatabase.app",
+        projectId: "odpalamycheaterow",
+        storageBucket: "odpalamycheaterow.firebasestorage.app",
+        messagingSenderId: "123456789",
+        appId: "1:123456789:web:abcdef"
+    };
+    
+    // Inicjalizacja Firebase
+    firebase.initializeApp(firebaseConfig);
+    const database = firebase.database();
+    
+    // Zapisz referencję do bazy w zmiennej globalnej
+    window.db = database;
+</script>
+
     <script src="script.js"></script>
 </body>
 </html>
