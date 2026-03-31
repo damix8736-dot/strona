@@ -988,3 +988,77 @@ body.light-theme .changelog-item {
     background: #5a6268;
     transform: scale(1.02);
 }
+
+
+
+/* Status serwera */
+.status-loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    color: #ffd93d;
+}
+
+.loading-spinner {
+    width: 20px;
+    height: 20px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-top: 2px solid #ff6b6b;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.status-online {
+    color: #4ade80;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.status-online::before {
+    content: "●";
+    font-size: 1.2rem;
+    animation: pulse 1.5s infinite;
+}
+
+.status-offline {
+    color: #ef4444;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.status-offline::before {
+    content: "●";
+    font-size: 1.2rem;
+}
+
+.player-count-status {
+    margin-top: 1rem;
+    padding-top: 0.5rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    font-weight: 500;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(1.1); }
+}
+
+body.light-theme .status-online {
+    color: #22c55e;
+}
+
+body.light-theme .status-offline {
+    color: #dc2626;
+}
