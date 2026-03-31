@@ -415,6 +415,111 @@ if (fontSizeSlider && fontSizeValue) {
 }
 
 // Inicjalizacja
+
+// ===================== STATUS SERWERA MINECRAFT =====================
+
+// IP serwera Minecraft (zmień na swoje!)
+const MC_SERVER_IP = 'odpalamycheaterow.pl';
+const MC_SERVER_PORT = '25565';
+
+// Funkcja sprawdzająca status serwera
+let lastStatus = null;
+let statusInterval = null;
+
+async function checkServerStatus() {
+    const statusElement = document.getElementById('serverStatus');
+    const playerCountElement = document.getElementById('playerCountNumber');
+    
+    if (!statusElement) return;
+    
+    // Pokaż ładowanie
+    statusElement.innerHTML = `
+        <div class="status-loading">
+            <div class="loading-spinner"></div>
+            <span>Sprawdzanie statusu...</span>
+        </div>
+    `;
+    
+    try {
+        const response = await fetch(`https://api.mcsrvstat.us/2/${MC_SERVER_IP}:${MC_SERVER_PORT}`);
+        const data = await response.json();
+        
+        if (data.online) {
+            // Serwer online
+            statusElement.innerHTML = `
+                <div class="status-online">
+                    <span>Serwer ONLINE</span>
+                </div>
+            `;
+            
+            const playersOnline = data.players?.online || 0;
+            if (playerCountElement) {
+                playerCountElement.textContent = playersOnline;
+            }
+            
+            const card = document.getElementById('serverStatusCard');
+            if (card) {
+                card.style.borderLeft = '4px solid #4ade80';
+            }
+            
+            // Powiadomienie o zmianie statusu
+            if (lastStatus === false) {
+                showNotification('🟢 Serwer ONLINE', 'Serwer Minecraft jest teraz dostępny!', 'success');
+            }
+            lastStatus = true;
+            
+        } else {
+            // Serwer offline
+            statusElement.innerHTML = `
+                <div class="status-offline">
+                    <span>Serwer OFFLINE</span>
+                </div>
+            `;
+            
+            if (playerCountElement) {
+                playerCountElement.textContent = '0';
+            }
+            
+            const card = document.getElementById('serverStatusCard');
+            if (card) {
+                card.style.borderLeft = '4px solid #ef4444';
+            }
+            
+            if (lastStatus === true) {
+                showNotification('🔴 Serwer OFFLINE', 'Serwer Minecraft jest obecnie wyłączony.', 'error');
+            }
+            lastStatus = false;
+        }
+        
+    } catch (error) {
+        console.error('Błąd sprawdzania statusu serwera:', error);
+        statusElement.innerHTML = `
+            <div class="status-offline">
+                <span>❌ Błąd połączenia</span>
+            </div>
+        `;
+        if (playerCountElement) {
+            playerCountElement.textContent = '?';
+        }
+    }
+}
+
+function startStatusChecker() {
+    checkServerStatus();
+    if (statusInterval) clearInterval(statusInterval);
+    statusInterval = setInterval(checkServerStatus, 30000);
+}
+
+function stopStatusChecker() {
+    if (statusInterval) {
+        clearInterval(statusInterval);
+        statusInterval = null;
+    }
+}
+
+// ===================== KONIEC STATUSU SERWERA =====================
+
+
 async function init() {
     console.log('🚀 OdpalamyCheaterow - Inicjalizacja...');
     createParticles();
@@ -422,6 +527,7 @@ async function init() {
     await loadChangelog();
     observeSections();
     loadSettings();
+    startStatusChecker();
     
     setTimeout(() => {
         if (notificationsEnabled) {
