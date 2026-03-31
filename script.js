@@ -120,6 +120,7 @@ async function loadRules() {
         let rules = snapshot.val();
         
         if (!rules || rules.length === 0) {
+            // Jeśli brak danych, zapisz domyślne
             rules = DEFAULT_RULES;
             await window.db.ref('rules').set(rules);
         }
