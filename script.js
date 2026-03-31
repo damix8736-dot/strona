@@ -441,3 +441,13 @@ if (document.readyState === 'loading') {
 window.addEventListener('error', function(e) {
     console.error('Błąd:', e.error);
 });
+
+
+
+// Przycisk wyjścia - przekierowanie do index.html
+const exitBtn = document.getElementById('exitBtn');
+if (exitBtn) {
+    exitBtn.addEventListener('click', function() {
+        window.location.href = 'index.html';
+    });
+}
