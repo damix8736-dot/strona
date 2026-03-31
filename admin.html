@@ -1,4 +1,4 @@
-!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pl">
 <head>
     <meta charset="UTF-8">
@@ -6,65 +6,41 @@
     <title>🔧 Admin - OdpalamyCheaterow</title>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
     <style>
+        /* WSZYSTKIE STYLE TAKIE SAME JAK WCZEŚNIEJ */
         *{margin:0;padding:0;box-sizing:border-box;}
-        body{font-family:'Roboto',sans-serif;background:linear-gradient(135deg,#1a1a2e 0%,#16213e 100%);color:#f8f9fa;overflow-x:hidden;position:relative;}
-        
+        body{font-family:'Roboto',sans-serif;background:linear-gradient(135deg,#1a1a2e 0%,#16213e 100%);color:#f8f9fa;overflow-x:hidden;position:relative;min-height:100vh;display:flex;align-items:center;justify-content:center;}
         #particles{position:fixed;top:0;left:0;width:100%;height:100%;z-index:-1;background:radial-gradient(circle at 20% 50%,rgba(120,119,198,.3) 0%,transparent 50%),radial-gradient(circle at 80% 20%,rgba(255,119,198,.3) 0%,transparent 50%);}
-        
-        .admin-container{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:2rem;}
+        .admin-container{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:2rem;width:100%;}
         .admin-section{width:100%;max-width:700px;display:none;}
         .admin-section.active{display:block;animation:fadeInUp 0.5s ease-out;}
-        
         .admin-card{background:rgba(255,255,255,.08);backdrop-filter:blur(20px);border-radius:25px;padding:3rem;border:1px solid rgba(255,255,255,.1);box-shadow:0 25px 50px rgba(0,0,0,.3);}
-        .admin-card h1{font-family:'Orbitron',monospace;font-size:2.5rem;text-align:center;margin-bottom:1rem;background:linear-gradient(45deg,#ff6b6b,#ffd93d);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
-        .admin-card h2{font-family:'Orbitron',monospace;font-size:1.8rem;margin-bottom:2rem;color:#f8f9fa;}
-        
-        .admin-form{display:flex;flex-direction:column;gap:1.5rem;max-width:400px;margin:0 auto;}
-        .form-group{display:flex;flex-direction:column;}
+        .admin-card h1{font-family:'Orbitron',monospace;font-size:2.5rem;text-align:center;margin-bottom:0.5rem;background:linear-gradient(45deg,#ff6b6b,#ffd93d);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+        .admin-card > p{text-align:center;margin-bottom:2rem;color:#4ecdc4;font-size:1.1rem;}
+        .admin-form{display:flex;flex-direction:column;gap:1.5rem;max-width:400px;margin:0 auto;width:100%;}
+        .form-group{display:flex;flex-direction:column;text-align:left;}
         .form-group label{margin-bottom:.5rem;font-weight:500;color:#4ecdc4;}
-        .form-group input{padding:1rem;border:2px solid rgba(255,255,255,.2);border-radius:15px;background:rgba(255,255,255,.1);color:#f8f9fa;font-size:1rem;transition:all .3s;}
+        .form-group input{padding:1rem;border:2px solid rgba(255,255,255,.2);border-radius:15px;background:rgba(255,255,255,.1);color:#f8f9fa;font-size:1rem;transition:all .3s;text-align:center;}
         .form-group input:focus{outline:none;border-color:#ff6b6b;box-shadow:0 0 20px rgba(255,107,107,.3);}
-        
-        .btn{padding:1rem 2rem;border:none;border-radius:25px;font-size:1.1rem;font-weight:600;cursor:pointer;transition:all .3s;color:white;display:inline-flex;align-items:center;gap:.5rem;justify-content:center;}
-        .btn-admin{background:linear-gradient(45deg,#ff6b6b,#ffd93d);width:100%;font-size:1.2rem;}
-        .btn-save{background:linear-gradient(45deg,#4ade80,#22c55e);width:100%;font-size:1.2rem;margin-top:2rem;}
-        .btn-logout{background:#ef4444;padding:.7rem 1.5rem;border-radius:20px;font-size:1rem;}
-        .btn-add{background:#4ecdc4;color:white;border:none;padding:1rem 2rem;border-radius:20px;cursor:pointer;margin-top:1rem;font-size:1rem;width:100%;}
-        
-        .admin-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:2rem;}
-        .rule-editor-item{background:rgba(255,255,255,.05);padding:1.5rem;border-radius:15px;margin-bottom:1rem;border-left:4px solid #ff6b6b;}
-        .rule-editor-item input,.rule-editor-item textarea{width:100%;margin-bottom:1rem;padding:1rem;border-radius:10px;border:1px solid rgba(255,255,255,.2);background:rgba(255,255,255,.1);color:#f8f9fa;font-family:inherit;box-sizing:border-box;}
-        .rule-editor-item textarea{min-height:80px;resize:vertical;}
-        .rule-editor-item button{background:#ef4444;color:white;border:none;padding:.7rem 1rem;border-radius:10px;cursor:pointer;font-size:.9rem;}
-        
-        /* Admin tabs */
-        .admin-tabs{display:flex;gap:1rem;margin-bottom:2rem;border-bottom:1px solid rgba(255,255,255,0.2);padding-bottom:0.5rem;}
-        .admin-tab{background:transparent;border:none;padding:0.8rem 1.5rem;font-size:1rem;font-weight:600;color:#f8f9fa;cursor:pointer;border-radius:30px;transition:all 0.3s;}
-        .admin-tab:hover{background:rgba(255,255,255,0.1);}
-        .admin-tab.active{background:linear-gradient(45deg,#ff6b6b,#ffd93d);color:white;box-shadow:0 5px 15px rgba(255,107,107,0.3);}
-        
-        /* Changelog editor */
-        .changelog-editor-item{background:rgba(255,255,255,.05);padding:1.5rem;border-radius:15px;margin-bottom:1rem;border-left:4px solid #4ecdc4;}
-        .changelog-editor-item input,.changelog-editor-item textarea{width:100%;margin-bottom:1rem;padding:0.8rem;border-radius:10px;border:1px solid rgba(255,255,255,.2);background:rgba(255,255,255,.1);color:#f8f9fa;font-family:inherit;}
-        .delete-changelog-btn{background:#ef4444;color:white;border:none;padding:0.5rem 1rem;border-radius:10px;cursor:pointer;}
-        
-        .hint{text-align:center;margin-top:1rem;color:#ffd93d;font-size:.9rem;}
-        .success{text-align:center;color:#4ade80;font-weight:500;}
-        
-        @keyframes float{0%,100%{transform:translateY(0);}50%{transform:translateY(-20px);}}
+        .btn-admin-glow{position:relative;padding:1.2rem 3rem;background:linear-gradient(135deg,#ff6b6b 0%,#ffd93d 50%,#ff6b6b 100%);border:none;border-radius:50px;font-size:1.2rem;font-weight:700;color:white;cursor:pointer;overflow:hidden;box-shadow:0 10px 30px rgba(255,107,107,0.4),0 0 0 1px rgba(255,255,255,0.2);transition:all 0.4s cubic-bezier(0.4,0,0.2,1);display:flex;align-items:center;gap:0.8rem;text-transform:uppercase;letter-spacing:1px;margin:0 auto;}
+        .btn-admin-glow:hover{transform:translateY(-5px) scale(1.05);}
+        .btn-save{background:linear-gradient(45deg,#4ade80,#22c55e);width:100%;font-size:1.2rem;margin-top:2rem;padding:1rem 2rem;border:none;border-radius:25px;font-weight:600;cursor:pointer;color:white;}
+        .btn-logout{background:#ef4444;padding:.7rem 1.5rem;border-radius:20px;border:none;color:white;cursor:pointer;}
+        .btn-add{background:#4ecdc4;color:white;border:none;padding:1rem 2rem;border-radius:20px;cursor:pointer;margin-top:1rem;width:100%;}
+        .admin-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:2rem;flex-wrap:wrap;}
+        .admin-tabs{display:flex;gap:1rem;margin-bottom:2rem;border-bottom:1px solid rgba(255,255,255,0.2);padding-bottom:0.5rem;justify-content:center;}
+        .admin-tab{background:transparent;border:none;padding:0.8rem 1.5rem;font-size:1rem;font-weight:600;color:#f8f9fa;cursor:pointer;border-radius:30px;}
+        .admin-tab.active{background:linear-gradient(45deg,#ff6b6b,#ffd93d);color:white;}
+        .rule-editor-item,.changelog-editor-item{background:rgba(255,255,255,.05);padding:1.5rem;border-radius:15px;margin-bottom:1rem;}
+        .rule-editor-item{border-left:4px solid #ff6b6b;}
+        .changelog-editor-item{border-left:4px solid #4ecdc4;}
+        .rule-editor-item input,.rule-editor-item textarea,.changelog-editor-item input,.changelog-editor-item textarea{width:100%;margin-bottom:1rem;padding:0.8rem;border-radius:10px;border:1px solid rgba(255,255,255,.2);background:rgba(255,255,255,.1);color:#f8f9fa;}
+        .rule-editor-item button,.delete-changelog-btn{background:#ef4444;color:white;border:none;padding:0.5rem 1rem;border-radius:10px;cursor:pointer;}
+        .hint{text-align:center;margin-top:1rem;color:#ffd93d;}
+        .success{text-align:center;color:#4ade80;margin-top:1rem;}
+        .loading{text-align:center;padding:2rem;color:#4ecdc4;}
         @keyframes fadeInUp{from{opacity:0;transform:translateY(30px);}to{opacity:1;transform:translateY(0);}}
-        @keyframes glowPulse{0%,100%{transform:scale(1) rotate(0deg);opacity:0.3;}50%{transform:scale(1.2) rotate(180deg);opacity:0.6;}}
-        
-        .login-button-container{position:relative;display:flex;justify-content:center;margin-top:1rem;}
-        .btn-admin-glow{position:relative;padding:1.2rem 3rem;background:linear-gradient(135deg,#ff6b6b 0%,#ffd93d 50%,#ff6b6b 100%);border:none;border-radius:50px;font-size:1.2rem;font-weight:700;color:white;cursor:pointer;overflow:hidden;box-shadow:0 10px 30px rgba(255,107,107,0.4),0 0 0 1px rgba(255,255,255,0.2);transition:all 0.4s cubic-bezier(0.4,0,0.2,1);display:flex;align-items:center;gap:0.8rem;text-transform:uppercase;letter-spacing:1px;}
-        .btn-admin-glow:hover{transform:translateY(-5px) scale(1.05);box-shadow:0 20px 40px rgba(255,107,107,0.6),0 0 0 1px rgba(255,255,255,0.3),inset 0 1px 0 rgba(255,255,255,0.4);}
-        .btn-admin-glow:active{transform:translateY(-2px) scale(1.02);}
-        .btn-icon{font-size:1.4rem;transition:transform 0.3s ease;}
-        .btn-admin-glow:hover .btn-icon{transform:rotate(360deg);}
-        .btn-glow{position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:radial-gradient(circle,rgba(255,255,255,0.3) 0%,transparent 70%);opacity:0;transition:opacity 0.4s ease;pointer-events:none;}
-        .btn-admin-glow:hover .btn-glow{opacity:1;animation:glowPulse 1.5s infinite;}
-        
-        @media(max-width:768px){.admin-card{padding:2rem 1.5rem;}.admin-header{flex-direction:column;gap:1rem;text-align:center;}}
+        @keyframes float{0%,100%{transform:translateY(0);}50%{transform:translateY(-20px);}}
+        @media(max-width:768px){.admin-card{padding:2rem 1.5rem;}}
     </style>
 </head>
 <body>
@@ -74,29 +50,19 @@
     <div id="loginSection" class="admin-section active">
         <div class="admin-card">
             <h1>🔧 Panel Administratora</h1>
-            <p style="text-align:center;margin-bottom:2rem;color:#4ecdc4;font-size:1.1rem;">Edytuj regulamin i changelog serwera</p>
-            
+            <p>Edytuj regulamin i changelog serwera</p>
             <form id="loginForm">
                 <div class="form-group">
                     <label>👤 Login</label>
-                    <input type="text" id="username" placeholder="Wpisz nazwe..." required>
+                    <input type="text" id="username" placeholder="damixsigmaprime" required>
                 </div>
                 <div class="form-group">
                     <label>🔑 Hasło</label>
-                    <input type="password" id="password" placeholder="Wpisz haslo..." required>
+                    <input type="password" id="password" placeholder="kupadupa123" required>
                 </div>
-                <div class="login-button-container">
-                    <button type="submit" class="btn-admin-glow">
-                        <span class="btn-icon">🔐</span>
-                        <span class="btn-text">ZALOGUJ SIĘ</span>
-                        <div class="btn-glow"></div>
-                    </button>
-                </div>
+                <button type="submit" class="btn-admin-glow">🔐 ZALOGUJ SIĘ</button>
             </form>
-            
-            <div class="hint">
-               
-            </div>
+            <div class="hint">💡 Demo: <strong>damixsigmaprime</strong> / <strong>kupadupa123</strong></div>
         </div>
     </div>
 
@@ -107,57 +73,43 @@
                 <h1>✅ Zalogowany!</h1>
                 <button id="logoutBtn" class="btn-logout">❌ Wyloguj</button>
             </div>
-            
-            <!-- ZAKŁADKI -->
             <div class="admin-tabs">
                 <button id="tabRulesBtn" class="admin-tab active">📜 Regulamin</button>
                 <button id="tabChangelogBtn" class="admin-tab">📋 Changelog</button>
             </div>
-            
-            <!-- EDYTOR REGULAMINU -->
-            <div id="rulesEditor" style="min-height:400px;border:1px solid rgba(255,255,255,.1);border-radius:15px;padding:1.5rem;background:rgba(255,255,255,.02);">
-                <!-- Reguły pojawią się tutaj -->
-            </div>
-            
-            <!-- EDYTOR CHANGELOGU -->
+            <div id="rulesEditor"><div class="loading">Ładowanie regulaminu...</div></div>
             <div id="changelogEditor" style="display: none;">
-                <div id="changelogList"></div>
-                <button id="addChangelogBtn" class="btn-add">➕ Dodaj wpis do changelogu</button>
+                <div id="changelogList"><div class="loading">Ładowanie changelogu...</div></div>
+                <button id="addChangelogBtn" class="btn-add">➕ Dodaj wpis</button>
             </div>
-            
-            <button id="saveRulesBtn" class="btn-save">💾 ZAPisz REGULAMIN</button>
-            <div class="success" style="display:none;" id="saveMessage">
-                ✅ Zapisano! Odśwież <strong>index.html</strong> aby zobaczyć zmiany!
-            </div>
+            <button id="saveRulesBtn" class="btn-save">💾 ZAPISZ</button>
+            <div id="saveMessage" class="success" style="display:none;">✅ Zapisano!</div>
         </div>
     </div>
 
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
     <script>
-        // ============================================
-        // SKRYPT ADMINA
-        // ============================================
-        
-        const ADMIN_CREDENTIALS = {
-            username: 'supportodpalamy',
-            password: 'aternosiksigma',
-            username: 'cinek',
-            password: 'sperma1@'
+        // 🔥 WKLEJ SWOJE DANE Z FIREBASE
+        const firebaseConfig = {
+            apiKey: "AIzaSy...",      // <- WKLEJ SWOJE
+            authDomain: "odpalamycheaterow.firebaseapp.com",
+            databaseURL: "https://odpalamycheaterow-default-rtdb.europe-west1.firebasedatabase.app",
+            projectId: "odpalamycheaterow",
+            storageBucket: "odpalamycheaterow.firebasestorage.app",
+            messagingSenderId: "123456789",
+            appId: "1:123456789:web:abcdef"
         };
         
-        const DEFAULT_RULES = [
-            {title:'Zakaz używania cheatów',description:'Automatyczny ban za KillAurę, AutoClicker, Jesus itp.'},
-            {title:'Szanuj innych graczy',description:'Brak toksyczności i spamu na czacie'},
-            {title:'Zakaz exploitów',description:'Brak dupowania itemów i bugów serwera'},
-            {title:'Zakaz reklamy',description:'Promowanie innych serwerów = permaban'}
-        ];
-        
-        const DEFAULT_CHANGELOG = [
-            {version: "v1.0.0", date: "2024-01-15", content: "🎉 Oficjalne uruchomienie serwera!\n- Dodano tryby PvP, SkyWars, BedWars\n- Anti-Cheat system\n- Panel administracyjny"},
-            {version: "v1.1.0", date: "2024-02-01", content: "✨ Nowości:\n- Dodano tryb Duels\n- Ranking graczy\n- Poprawki wydajności"}
-        ];
-        
-        let currentRules = [];
-        let currentChangelog = [];
+        firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+        window.db = database;
+    </script>
+    
+    <script>
+        const ADMIN_CREDENTIALS = { username: 'damixsigmaprime', password: 'kupadupa123' };
+        let currentRules = [], currentChangelog = [];
         
         const loginSection = document.getElementById('loginSection');
         const adminPanel = document.getElementById('adminPanel');
@@ -168,191 +120,171 @@
         const tabChangelogBtn = document.getElementById('tabChangelogBtn');
         const changelogEditorDiv = document.getElementById('changelogEditor');
         
-        // LOGIN
-        loginForm.addEventListener('submit', function(e) {
+        function escapeHtml(str) {
+            if (!str) return '';
+            return str.replace(/[&<>]/g, function(m) {
+                if (m === '&') return '&amp;';
+                if (m === '<') return '&lt;';
+                if (m === '>') return '&gt;';
+                return m;
+            });
+        }
+        
+        async function loadDataFromFirebase() {
+            try {
+                const rulesSnap = await window.db.ref('rules').once('value');
+                const changelogSnap = await window.db.ref('changelog').once('value');
+                currentRules = rulesSnap.val() || [];
+                currentChangelog = changelogSnap.val() || [];
+                return true;
+            } catch (error) {
+                console.error('Błąd:', error);
+                return false;
+            }
+        }
+        
+        async function saveDataToFirebase() {
+            try {
+                await window.db.ref('rules').set(currentRules);
+                await window.db.ref('changelog').set(currentChangelog);
+                return true;
+            } catch (error) {
+                console.error('Błąd zapisu:', error);
+                return false;
+            }
+        }
+        
+        loginForm.addEventListener('submit', async function(e) {
             e.preventDefault();
             const username = document.getElementById('username').value.trim();
             const password = document.getElementById('password').value.trim();
-            
             if (username === ADMIN_CREDENTIALS.username && password === ADMIN_CREDENTIALS.password) {
+                await loadDataFromFirebase();
                 loginSection.classList.remove('active');
                 adminPanel.classList.add('active');
-                loadRules();
-                loadChangelogAdmin();
+                renderRules();
+                renderChangelogAdmin();
             } else {
-                alert('❌ BŁĄD!\n\nLogin: damixsigmaprime\nHasło: kupadupa123');
-                loginForm.reset();
+                alert('❌ BŁĄD!\nLogin: damixsigmaprime\nHasło: kupadupa123');
             }
         });
         
-        // LOGOUT
         document.getElementById('logoutBtn').addEventListener('click', function() {
             loginSection.classList.add('active');
             adminPanel.classList.remove('active');
             loginForm.reset();
         });
         
-        // ==================== REGULAMIN ====================
-        function loadRules() {
-            try {
-                const saved = localStorage.getItem('odpalamycheaterow_rules');
-                currentRules = saved ? JSON.parse(saved) : DEFAULT_RULES;
-            } catch(e) {
-                currentRules = DEFAULT_RULES;
-            }
-            renderRules();
-        }
-        
         function renderRules() {
+            if (!currentRules.length) {
+                rulesEditor.innerHTML = '<div class="loading">Brak regulaminu. Dodaj pierwszą regułę!</div>';
+                return;
+            }
             let html = '';
             currentRules.forEach((rule, index) => {
                 html += `
-                    <div class="rule-editor-item" data-index="${index}">
-                        <input type="text" value="${rule.title.replace(/"/g, '&quot;')}" placeholder="Tytuł reguły">
-                        <textarea placeholder="Opis reguły">${rule.description.replace(/</g, '&lt;')}</textarea>
-                        <button type="button">🗑️ Usuń</button>
+                    <div class="rule-editor-item">
+                        <input type="text" value="${escapeHtml(rule.title)}" placeholder="Tytuł">
+                        <textarea placeholder="Opis">${escapeHtml(rule.description)}</textarea>
+                        <button onclick="deleteRule(${index})">🗑️ Usuń</button>
                     </div>
                 `;
             });
-            html += '<button type="button" class="btn-add" onclick="addRule()">➕ Dodaj regułę</button>';
+            html += '<button class="btn-add" onclick="addRule()">➕ Dodaj regułę</button>';
             rulesEditor.innerHTML = html;
-            
-            document.querySelectorAll('.rule-editor-item button').forEach((btn, index) => {
-                btn.onclick = () => deleteRule(index);
-            });
         }
         
-        function addRule() {
-            currentRules.push({title:'',description:''});
+        window.addRule = function() {
+            currentRules.push({title: '', description: ''});
             renderRules();
-        }
+        };
         
-        function deleteRule(index) {
+        window.deleteRule = function(index) {
             currentRules.splice(index, 1);
             renderRules();
-        }
-        
-        document.getElementById('saveRulesBtn').addEventListener('click', function() {
-            const items = rulesEditor.querySelectorAll('.rule-editor-item');
-            const newRules = [];
-            items.forEach((item) => {
-                const title = item.querySelector('input').value.trim();
-                const desc = item.querySelector('textarea').value.trim();
-                if (title) newRules.push({title, description:desc});
-            });
-            currentRules = newRules;
-            localStorage.setItem('odpalamycheaterow_rules', JSON.stringify(currentRules));
-            saveMessage.style.display = 'block';
-            setTimeout(() => saveMessage.style.display = 'none', 5000);
-        });
-        
-        // ==================== CHANGELOG ====================
-        function loadChangelogAdmin() {
-            try {
-                const saved = localStorage.getItem('odpalamycheaterow_changelog');
-                currentChangelog = saved ? JSON.parse(saved) : DEFAULT_CHANGELOG;
-            } catch(e) {
-                currentChangelog = DEFAULT_CHANGELOG;
-            }
-            renderChangelogAdmin();
-        }
+        };
         
         function renderChangelogAdmin() {
+            if (!currentChangelog.length) {
+                document.getElementById('changelogList').innerHTML = '<div class="loading">Brak wpisów. Dodaj pierwszy wpis!</div>';
+                return;
+            }
             let html = '';
             currentChangelog.forEach((item, index) => {
                 html += `
-                    <div class="changelog-editor-item" data-index="${index}">
+                    <div class="changelog-editor-item">
                         <div style="display: flex; gap: 1rem; margin-bottom: 1rem;">
-                            <input type="text" placeholder="Wersja (np. v1.2.0)" value="${item.version.replace(/"/g, '&quot;')}" style="flex: 1;">
-                            <input type="date" placeholder="Data" value="${item.date}" style="flex: 1;">
+                            <input type="text" value="${escapeHtml(item.version)}" placeholder="Wersja" style="flex: 1;">
+                            <input type="date" value="${item.date}" style="flex: 1;">
                         </div>
-                        <textarea placeholder="Treść changelogu (użyj \n dla nowej linii)" rows="4">${item.content.replace(/</g, '&lt;')}</textarea>
-                        <button type="button" class="delete-changelog-btn">🗑️ Usuń wpis</button>
+                        <textarea placeholder="Treść" rows="4">${escapeHtml(item.content)}</textarea>
+                        <button class="delete-changelog-btn" onclick="deleteChangelogItem(${index})">🗑️ Usuń</button>
                     </div>
                 `;
             });
             document.getElementById('changelogList').innerHTML = html;
-            
-            document.querySelectorAll('.delete-changelog-btn').forEach((btn, index) => {
-                btn.onclick = () => deleteChangelogItem(index);
-            });
         }
         
-        function deleteChangelogItem(index) {
+        window.deleteChangelogItem = function(index) {
             currentChangelog.splice(index, 1);
             renderChangelogAdmin();
-        }
+        };
         
-        function addChangelogItem() {
+        document.getElementById('addChangelogBtn').addEventListener('click', function() {
             const today = new Date().toISOString().split('T')[0];
-            currentChangelog.push({
-                version: "v1.2.0",
-                date: today,
-                content: "Nowa aktualizacja!\n- Dodano nowe funkcje\n- Poprawiono błędy"
-            });
+            currentChangelog.push({version: 'v1.2.0', date: today, content: 'Nowa aktualizacja!\n- Dodano nowe funkcje'});
             renderChangelogAdmin();
-        }
+        });
         
-        function saveChangelog() {
-            const items = document.querySelectorAll('.changelog-editor-item');
+        document.getElementById('saveRulesBtn').addEventListener('click', async function() {
+            const ruleItems = rulesEditor.querySelectorAll('.rule-editor-item');
+            const newRules = [];
+            ruleItems.forEach((item) => {
+                const title = item.querySelector('input').value.trim();
+                const desc = item.querySelector('textarea').value.trim();
+                if (title) newRules.push({title, description: desc});
+            });
+            currentRules = newRules;
+            
+            const changelogItems = document.querySelectorAll('.changelog-editor-item');
             const newChangelog = [];
-            items.forEach((item) => {
+            changelogItems.forEach((item) => {
                 const version = item.querySelector('input[type="text"]').value.trim();
                 const date = item.querySelector('input[type="date"]').value;
                 const content = item.querySelector('textarea').value.trim();
-                if (version && content) {
-                    newChangelog.push({version, date, content});
-                }
+                if (version && content) newChangelog.push({version, date, content});
             });
             currentChangelog = newChangelog;
-            localStorage.setItem('odpalamycheaterow_changelog', JSON.stringify(currentChangelog));
             
-            const saveMessageChangelog = document.getElementById('saveMessageChangelog') || (() => {
-                const div = document.createElement('div');
-                div.id = 'saveMessageChangelog';
-                div.className = 'success';
-                div.style.display = 'none';
-                div.innerHTML = '✅ Zapisano changelog! Odśwież index.html aby zobaczyć zmiany!';
-                document.querySelector('.admin-card').appendChild(div);
-                return div;
-            })();
-            saveMessageChangelog.style.display = 'block';
-            setTimeout(() => saveMessageChangelog.style.display = 'none', 3000);
-        }
+            const success = await saveDataToFirebase();
+            if (success) {
+                saveMessage.style.display = 'block';
+                setTimeout(() => saveMessage.style.display = 'none', 3000);
+            } else {
+                alert('❌ Błąd zapisu!');
+            }
+        });
         
-        // Obsługa zakładek
-        if (tabRulesBtn && tabChangelogBtn) {
-            tabRulesBtn.addEventListener('click', () => {
-                tabRulesBtn.classList.add('active');
-                tabChangelogBtn.classList.remove('active');
-                rulesEditor.style.display = 'block';
-                changelogEditorDiv.style.display = 'none';
-                document.getElementById('saveRulesBtn').style.display = 'block';
-            });
-            tabChangelogBtn.addEventListener('click', () => {
-                tabChangelogBtn.classList.add('active');
-                tabRulesBtn.classList.remove('active');
-                rulesEditor.style.display = 'none';
-                changelogEditorDiv.style.display = 'block';
-                document.getElementById('saveRulesBtn').style.display = 'none';
-                loadChangelogAdmin();
-            });
-        }
+        tabRulesBtn.addEventListener('click', () => {
+            tabRulesBtn.classList.add('active');
+            tabChangelogBtn.classList.remove('active');
+            rulesEditor.style.display = 'block';
+            changelogEditorDiv.style.display = 'none';
+            document.getElementById('saveRulesBtn').style.display = 'block';
+        });
         
-        document.getElementById('addChangelogBtn').addEventListener('click', addChangelogItem);
+        tabChangelogBtn.addEventListener('click', () => {
+            tabChangelogBtn.classList.add('active');
+            tabRulesBtn.classList.remove('active');
+            rulesEditor.style.display = 'none';
+            changelogEditorDiv.style.display = 'block';
+            document.getElementById('saveRulesBtn').style.display = 'block';
+            renderChangelogAdmin();
+        });
         
-        const saveChangelogBtn = document.createElement('button');
-        saveChangelogBtn.id = 'saveChangelogBtn';
-        saveChangelogBtn.className = 'btn-save';
-        saveChangelogBtn.innerHTML = '💾 ZAPISZ CHANGELOG';
-        saveChangelogBtn.style.marginTop = '1rem';
-        saveChangelogBtn.addEventListener('click', saveChangelog);
-        changelogEditorDiv.appendChild(saveChangelogBtn);
-        
-        // Particles
         for(let i=0; i<30; i++) {
             const p = document.createElement('div');
-            p.style.cssText = `position:fixed;width:3px;height:3px;background:rgba(255,107,107,.4);border-radius:50%;left:${Math.random()*100}%;top:${Math.random()*100}%;animation:float ${2+Math.random()*3}s infinite;animation-delay:${Math.random()*3}s;z-index:-1;`;
+            p.style.cssText = `position:fixed;width:3px;height:3px;background:rgba(255,107,107,.4);border-radius:50%;left:${Math.random()*100}%;top:${Math.random()*100}%;animation:float ${2+Math.random()*3}s infinite;z-index:-1;`;
             document.getElementById('particles').appendChild(p);
         }
     </script>
