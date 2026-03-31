@@ -122,6 +122,18 @@ body {
     font-size: 1rem;
 }
 
+.nav-menu .admin-btn {
+    margin-left: 0.5rem;
+}
+
+@media (max-width: 768px) {
+    .nav-menu .admin-btn {
+        margin: 0.5rem auto 0;
+        display: inline-block;
+        text-align: center;
+    }
+}
+
 .admin-btn:hover {
     background: linear-gradient(45deg, #ff5252, #ff8c2e);
     transform: translateY(-2px) scale(1.02);
