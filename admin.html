@@ -41,6 +41,67 @@
         @keyframes fadeInUp{from{opacity:0;transform:translateY(30px);}to{opacity:1;transform:translateY(0);}}
         @keyframes float{0%,100%{transform:translateY(0);}50%{transform:translateY(-20px);}}
         @media(max-width:768px){.admin-card{padding:2rem 1.5rem;}}
+        
+        /* Przycisk Wyjście Premium */
+.btn-exit-premium {
+    position: relative;
+    background: linear-gradient(135deg, #2c3e50, #1a2632);
+    border: none;
+    padding: 0.6rem 1.2rem;
+    border-radius: 40px;
+    color: white;
+    cursor: pointer;
+    font-size: 0.95rem;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.btn-exit-premium .exit-icon {
+    font-size: 1.1rem;
+    transition: transform 0.3s ease;
+}
+
+.btn-exit-premium .exit-text {
+    letter-spacing: 0.5px;
+}
+
+.btn-exit-premium .exit-glow {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    background: radial-gradient(circle, rgba(231, 76, 60, 0.4) 0%, transparent 70%);
+    transform: translate(-50%, -50%);
+    transition: width 0.4s, height 0.4s;
+    pointer-events: none;
+    border-radius: 50%;
+}
+
+.btn-exit-premium:hover {
+    background: linear-gradient(135deg, #e74c3c, #c0392b);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(231, 76, 60, 0.4);
+}
+
+.btn-exit-premium:hover .exit-icon {
+    transform: translateX(3px) rotate(180deg);
+}
+
+.btn-exit-premium:hover .exit-glow {
+    width: 200px;
+    height: 200px;
+}
+
+.btn-exit-premium:active {
+    transform: translateY(1px);
+} 
+        
     </style>
 </head>
 <body>
@@ -51,7 +112,7 @@
     <div class="admin-card">
         <div style="display: flex; justify-content: flex-end; margin-bottom: 1rem;">
             <button id="exitBtn" class="btn-exit" style="background: #6c757d; padding: 0.5rem 1rem; border: none; border-radius: 20px; color: white; cursor: pointer; font-size: 0.9rem; transition: all 0.3s;">
-                🚪 Wyjście
+                 Wyjście
             </button>
         </div>
         <h1>🔧 Panel Administratora</h1>
