@@ -554,14 +554,21 @@ window.addEventListener('error', function(e) {
 
 // IP serwera Minecraft (zmień na swoje!)
 const MC_SERVER_IP = 'odpalamycheaterow.pl';
-const MC_SERVER_PORT = '25565'; // domyślny port, zmień jeśli inny
+const MC_SERVER_PORT = '25565';
 
-// Funkcja sprawdzająca status serwera
+let lastStatus = null;
+let statusInterval = null;
+let statusCheckInProgress = false;
+
+// Funkcja sprawdzająca status serwera z timeoutem
 async function checkServerStatus() {
     const statusElement = document.getElementById('serverStatus');
     const playerCountElement = document.getElementById('playerCountNumber');
     
     if (!statusElement) return;
+    if (statusCheckInProgress) return; // zapobiega równoległym zapytaniom
+    
+    statusCheckInProgress = true;
     
     // Pokaż ładowanie
     statusElement.innerHTML = `
@@ -571,44 +578,46 @@ async function checkServerStatus() {
         </div>
     `;
     
+    // Timeout po 5 sekundach
+    const timeoutPromise = new Promise((_, reject) => {
+        setTimeout(() => reject(new Error('Timeout')), 5000);
+    });
+    
     try {
-        // Użyjemy darmowego API mcsrvstat.us (nie wymaga klucza API)
-        const response = await fetch(`https://api.mcsrvstat.us/2/${MC_SERVER_IP}:${MC_SERVER_PORT}`);
+        // API mcsrvstat.us (bardziej stabilne)
+        const fetchPromise = fetch(`https://api.mcsrvstat.us/2/${MC_SERVER_IP}:${MC_SERVER_PORT}`);
+        const response = await Promise.race([fetchPromise, timeoutPromise]);
         const data = await response.json();
         
         if (data.online) {
             // Serwer online
             statusElement.innerHTML = `
                 <div class="status-online">
-                    <span>Serwer ONLINE</span>
+                    <span>🟢 Serwer ONLINE</span>
                 </div>
             `;
             
-            // Liczba graczy
             const playersOnline = data.players?.online || 0;
             if (playerCountElement) {
                 playerCountElement.textContent = playersOnline;
             }
             
-            // Dodaj efekt do karty
             const card = document.getElementById('serverStatusCard');
             if (card) {
                 card.style.borderLeft = '4px solid #4ade80';
             }
             
-            // Opcjonalnie: pokaż listę graczy (jeśli jest dostępna)
-            if (data.players?.list && data.players.list.length > 0) {
-                const playerList = data.players.list.slice(0, 5).join(', ');
-                if (playerCountElement) {
-                    playerCountElement.title = `Gracze online: ${playerList}${data.players.list.length > 5 ? '...' : ''}`;
-                }
+            // Powiadomienie o zmianie statusu
+            if (lastStatus === false) {
+                showNotification('🟢 Serwer ONLINE', 'Serwer Minecraft jest teraz dostępny!', 'success');
             }
+            lastStatus = true;
             
         } else {
             // Serwer offline
             statusElement.innerHTML = `
                 <div class="status-offline">
-                    <span>Serwer OFFLINE</span>
+                    <span>🔴 Serwer OFFLINE</span>
                 </div>
             `;
             
@@ -620,31 +629,51 @@ async function checkServerStatus() {
             if (card) {
                 card.style.borderLeft = '4px solid #ef4444';
             }
+            
+            if (lastStatus === true) {
+                showNotification('🔴 Serwer OFFLINE', 'Serwer Minecraft jest obecnie wyłączony.', 'error');
+            }
+            lastStatus = false;
         }
         
     } catch (error) {
         console.error('Błąd sprawdzania statusu serwera:', error);
-        statusElement.innerHTML = `
-            <div class="status-offline">
-                <span>❌ Błąd połączenia</span>
-            </div>
-        `;
-        if (playerCountElement) {
-            playerCountElement.textContent = '?';
+        
+        // Spróbuj użyć alternatywnego API
+        try {
+            const altResponse = await fetch(`https://mcapi.us/server/status?ip=${MC_SERVER_IP}&port=${MC_SERVER_PORT}`);
+            const altData = await altResponse.json();
+            
+            if (altData.online) {
+                statusElement.innerHTML = `<div class="status-online"><span>🟢 Serwer ONLINE</span></div>`;
+                if (playerCountElement) playerCountElement.textContent = altData.players.now || 0;
+                lastStatus = true;
+            } else {
+                statusElement.innerHTML = `<div class="status-offline"><span>🔴 Serwer OFFLINE</span></div>`;
+                if (playerCountElement) playerCountElement.textContent = '0';
+                lastStatus = false;
+            }
+        } catch (altError) {
+            statusElement.innerHTML = `
+                <div class="status-offline">
+                    <span>⚠️ Nie można sprawdzić statusu</span>
+                </div>
+            `;
+            if (playerCountElement) playerCountElement.textContent = '?';
         }
     }
+    
+    statusCheckInProgress = false;
 }
 
-// Odświeżanie statusu co 30 sekund
-let statusInterval;
-
 function startStatusChecker() {
-    // Sprawdź od razu
-    checkServerStatus();
+    // Odczekaj 1 sekundę przed pierwszym sprawdzeniem
+    setTimeout(() => {
+        checkServerStatus();
+    }, 1000);
     
-    // Potem co 30 sekund
     if (statusInterval) clearInterval(statusInterval);
-    statusInterval = setInterval(checkServerStatus, 30000);
+    statusInterval = setInterval(checkServerStatus, 60000); // co 60 sekund zamiast 30
 }
 
 function stopStatusChecker() {
