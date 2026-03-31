@@ -929,3 +929,24 @@ body.light-theme .changelog-item {
     color: #ffd93d;
     font-size: 0.9rem;
 }
+
+
+
+.btn-exit {
+    background: #6c757d;
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 20px;
+    color: white;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: all 0.3s;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.btn-exit:hover {
+    background: #5a6268;
+    transform: scale(1.02);
+}
