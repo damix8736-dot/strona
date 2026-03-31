@@ -419,8 +419,8 @@ if (fontSizeSlider && fontSizeValue) {
 // ===================== STATUS SERWERA MINECRAFT =====================
 
 // IP serwera Minecraft (zmień na swoje!)
-const MC_SERVER_IP = 'odpalamycheaterow.pl';
-const MC_SERVER_PORT = '25565';
+const MC_SERVER_IP = 'OdpalamyCheaterow.aternos.me';
+const MC_SERVER_PORT = '31885';
 
 // Funkcja sprawdzająca status serwera
 let lastStatus = null;
