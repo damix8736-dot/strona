@@ -62,7 +62,7 @@ function copyIP() {
 
 // Discord
 function joinDiscord() {
-    window.open('https://discord.gg/odpalamycheaterow', '_blank');
+    window.open('https://discord.gg/Gnq4KE7tf2', '_blank');
     showNotification('💬 Discord', 'Przekierowanie na serwer Discord...', 'info');
 }
 
