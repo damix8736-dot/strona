@@ -441,17 +441,3 @@ if (document.readyState === 'loading') {
 window.addEventListener('error', function(e) {
     console.error('Błąd:', e.error);
 });
-
-
-
-<script>
-    // Przycisk wyjścia
-    const exitBtn = document.getElementById('exitBtn');
-    if (exitBtn) {
-        exitBtn.onclick = function() {
-            window.location.href = 'index.html';
-        };
-    } else {
-        console.log('Przycisk exitBtn nie został znaleziony');
-    }
-</script>
