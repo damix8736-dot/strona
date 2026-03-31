@@ -115,6 +115,8 @@ body {
     display: inline-flex;
     align-items: center;
     gap: 0.5rem;
+    color: white !important; /* wymusza biały kolor tekstu */
+    text-decoration: none;
 }
 
 .admin-btn::before {
@@ -122,8 +124,20 @@ body {
     font-size: 1rem;
 }
 
+.admin-btn:hover {
+    background: linear-gradient(45deg, #ff5252, #ff8c2e);
+    transform: translateY(-2px) scale(1.02);
+    box-shadow: 0 5px 20px rgba(255, 107, 107, 0.6);
+    color: white !important;
+}
+
+/* Usuń podkreślenie i efekt z .nav-link */
 .nav-menu .admin-btn {
     margin-left: 0.5rem;
+}
+
+.nav-menu .admin-btn::after {
+    display: none !important; /* usuwa efekt podkreślenia z .nav-link */
 }
 
 @media (max-width: 768px) {
@@ -132,12 +146,6 @@ body {
         display: inline-block;
         text-align: center;
     }
-}
-
-.admin-btn:hover {
-    background: linear-gradient(45deg, #ff5252, #ff8c2e);
-    transform: translateY(-2px) scale(1.02);
-    box-shadow: 0 5px 20px rgba(255, 107, 107, 0.6);
 }
 
 }
