@@ -8,7 +8,7 @@ const SERVER_IP = 'odpalamycheaterow.aternos.me';
 
 // IP serwera Minecraft (Aternos)
 const MC_SERVER_IP = 'OdpalamyCheaterow.aternos.me';
-const MC_SERVER_PORT = ''; // Aternos nie potrzebuje portu
+const MC_SERVER_PORT = '31885'; // Aternos nie potrzebuje portu
 
 let lastStatus = null;
 let statusInterval = null;
