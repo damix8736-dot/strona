@@ -444,10 +444,14 @@ window.addEventListener('error', function(e) {
 
 
 
-// Przycisk wyjścia - przekierowanie do index.html
-const exitBtn = document.getElementById('exitBtn');
-if (exitBtn) {
-    exitBtn.addEventListener('click', function() {
-        window.location.href = 'index.html';
-    });
-}
+<script>
+    // Przycisk wyjścia
+    const exitBtn = document.getElementById('exitBtn');
+    if (exitBtn) {
+        exitBtn.onclick = function() {
+            window.location.href = 'index.html';
+        };
+    } else {
+        console.log('Przycisk exitBtn nie został znaleziony');
+    }
+</script>
