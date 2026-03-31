@@ -1,15 +1,13 @@
 // ============================================
-// OD PALAMYCHEATEROW - PEŁNY SCRIPT.JS
+// OD PALAMYCHEATEROW - Z FIREBASE
 // ============================================
 
-// IP serwera
-const SERVER_IP = 'odpalamycheaterow.aternos.me';
+const SERVER_IP = 'odpalamycheaterow.pl';
 
 // Nawigacja mobilna
 document.addEventListener('DOMContentLoaded', function() {
     const hamburger = document.querySelector('.hamburger');
     const navMenu = document.querySelector('.nav-menu');
-    
     if (hamburger && navMenu) {
         hamburger.addEventListener('click', function() {
             hamburger.classList.toggle('active');
@@ -18,16 +16,13 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 
-// Smooth scroll dla wszystkich linków
+// Smooth scroll
 document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     anchor.addEventListener('click', function (e) {
         e.preventDefault();
         const target = document.querySelector(this.getAttribute('href'));
         if (target) {
-            target.scrollIntoView({ 
-                behavior: 'smooth', 
-                block: 'start' 
-            });
+            target.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
         const hamburger = document.querySelector('.hamburger');
         const navMenu = document.querySelector('.nav-menu');
@@ -38,12 +33,12 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     });
 });
 
-// Kopiuj IP - z powiadomieniem
+// Kopiuj IP
 function copyIP() {
     navigator.clipboard.writeText(SERVER_IP).then(() => {
         const btn = event ? event.target.closest('button') : document.querySelector('.copy-ip');
-        const originalText = btn ? btn.innerHTML : 'Skopiuj IP';
         if (btn) {
+            const originalText = btn.innerHTML;
             btn.innerHTML = '✅ SKOPIOWANO!';
             btn.style.background = '#10b981';
             btn.style.transform = 'scale(1.05)';
@@ -53,7 +48,7 @@ function copyIP() {
                 btn.style.transform = '';
             }, 2000);
         }
-        showNotification('📋 Skopiowano!', `IP ${SERVER_IP} zostało skopiowane do schowka.`, 'success');
+        showNotification('📋 Skopiowano!', `IP ${SERVER_IP} zostało skopiowane.`, 'success');
     }).catch(() => {
         const textArea = document.createElement('textarea');
         textArea.value = SERVER_IP;
@@ -67,15 +62,14 @@ function copyIP() {
 
 // Discord
 function joinDiscord() {
-    window.open('https://discord.gg/Gnq4KE7tf2', '_blank');
+    window.open('https://discord.gg/odpalamycheaterow', '_blank');
     showNotification('💬 Discord', 'Przekierowanie na serwer Discord...', 'info');
 }
 
-// Particles background
+// Particles
 function createParticles() {
     const particlesContainer = document.getElementById('particles');
     if (!particlesContainer) return;
-    
     for (let i = 0; i < 60; i++) {
         const particle = document.createElement('div');
         particle.style.cssText = `
@@ -94,46 +88,77 @@ function createParticles() {
     }
 }
 
-// Regulamin z localStorage
-function loadRules() {
+// ===================== FIREBASE - ŁADOWANIE DANYCH =====================
+
+// Domyślne dane
+const DEFAULT_RULES = [
+    { title: 'Zakaz używania cheatów', description: 'Automatyczny ban za KillAurę, AutoClicker, Jesus itp.' },
+    { title: 'Szanuj innych graczy', description: 'Brak toksyczności i spamu na czacie' },
+    { title: 'Zakaz exploitów', description: 'Brak dupowania itemów i bugów serwera' },
+    { title: 'Zakaz reklamy', description: 'Promowanie innych serwerów = permaban' }
+];
+
+const DEFAULT_CHANGELOG = [
+    { version: 'v1.0.0', date: '2024-01-15', content: '🎉 Oficjalne uruchomienie serwera!\n- Dodano tryby PvP, SkyWars, BedWars\n- Anti-Cheat system\n- Panel administracyjny' },
+    { version: 'v1.1.0', date: '2024-02-01', content: '✨ Nowości:\n- Dodano tryb Duels\n- Ranking graczy\n- Poprawki wydajności' }
+];
+
+// Ładowanie regulaminu
+async function loadRules() {
     const rulesContent = document.getElementById('rules-content');
     if (!rulesContent) return;
     
+    rulesContent.innerHTML = '<div class="loading">Ładowanie regulaminu...</div>';
+    
+    if (!window.db) {
+        rulesContent.innerHTML = '<div class="changelog-empty">❌ Błąd połączenia z bazą danych</div>';
+        return;
+    }
+    
     try {
-        const savedRules = localStorage.getItem('odpalamycheaterow_rules');
-        const rules = savedRules ? JSON.parse(savedRules) : [
-            {title: 'Zakaz używania cheatów', description: 'Automatyczny ban za KillAurę, AutoClicker, Jesus itp.'},
-            {title: 'Szanuj innych graczy', description: 'Brak toksyczności i spamu na czacie'},
-            {title: 'Zakaz exploitów', description: 'Brak dupowania itemów i bugów serwera'},
-            {title: 'Zakaz reklamy', description: 'Promowanie innych serwerów = permaban'}
-        ];
+        const snapshot = await window.db.ref('rules').once('value');
+        let rules = snapshot.val();
+        
+        if (!rules || rules.length === 0) {
+            rules = DEFAULT_RULES;
+            await window.db.ref('rules').set(rules);
+        }
         
         rulesContent.innerHTML = rules.map((rule, index) => `
             <div class="rule-item">
                 <span class="rule-number">${index + 1}.</span>
                 <div>
-                    <h4>${rule.title}</h4>
-                    <p>${rule.description}</p>
+                    <h4>${escapeHtml(rule.title)}</h4>
+                    <p>${escapeHtml(rule.description)}</p>
                 </div>
             </div>
         `).join('');
     } catch (error) {
-        console.warn('Błąd ładowania regulaminu:', error);
-        rulesContent.innerHTML = '<div class="rule-item"><p>Regulamin tymczasowo niedostępny</p></div>';
+        console.error('Błąd ładowania regulaminu:', error);
+        rulesContent.innerHTML = '<div class="changelog-empty">❌ Błąd ładowania regulaminu</div>';
     }
 }
 
-// ===================== CHANGELOG =====================
-function loadChangelog() {
+// Ładowanie changelogu
+async function loadChangelog() {
     const changelogContent = document.getElementById('changelog-content');
     if (!changelogContent) return;
     
+    changelogContent.innerHTML = '<div class="loading">Ładowanie changelogu...</div>';
+    
+    if (!window.db) {
+        changelogContent.innerHTML = '<div class="changelog-empty">❌ Błąd połączenia z bazą danych</div>';
+        return;
+    }
+    
     try {
-        const savedChangelog = localStorage.getItem('odpalamycheaterow_changelog');
-        const changelog = savedChangelog ? JSON.parse(savedChangelog) : [
-            {version: "v1.0.0", date: "2024-01-15", content: "🎉 Oficjalne uruchomienie serwera!\n- Dodano tryby PvP, SkyWars, BedWars\n- Anti-Cheat system\n- Panel administracyjny"},
-            {version: "v1.1.0", date: "2024-02-01", content: "✨ Nowości:\n- Dodano tryb Duels\n- Ranking graczy\n- Poprawki wydajności"}
-        ];
+        const snapshot = await window.db.ref('changelog').once('value');
+        let changelog = snapshot.val();
+        
+        if (!changelog || changelog.length === 0) {
+            changelog = DEFAULT_CHANGELOG;
+            await window.db.ref('changelog').set(changelog);
+        }
         
         if (changelog.length === 0) {
             changelogContent.innerHTML = '<div class="changelog-empty">✨ Brak wpisów. Admin wkrótce doda changelog!</div>';
@@ -143,24 +168,33 @@ function loadChangelog() {
         changelogContent.innerHTML = changelog.map(item => `
             <div class="changelog-item">
                 <div class="changelog-header">
-                    <span class="changelog-version">${item.version}</span>
-                    <span class="changelog-date">📅 ${item.date}</span>
+                    <span class="changelog-version">${escapeHtml(item.version)}</span>
+                    <span class="changelog-date">📅 ${escapeHtml(item.date)}</span>
                 </div>
-                <div class="changelog-content">${item.content.replace(/\n/g, '<br>')}</div>
+                <div class="changelog-content">${escapeHtml(item.content).replace(/\n/g, '<br>')}</div>
             </div>
         `).join('');
     } catch (error) {
-        console.warn('Błąd ładowania changelogu:', error);
-        changelogContent.innerHTML = '<div class="changelog-empty">⚠️ Błąd ładowania changelogu</div>';
+        console.error('Błąd ładowania changelogu:', error);
+        changelogContent.innerHTML = '<div class="changelog-empty">❌ Błąd ładowania changelogu</div>';
     }
 }
 
-// Navbar scroll effect
+function escapeHtml(str) {
+    if (!str) return '';
+    return str.replace(/[&<>]/g, function(m) {
+        if (m === '&') return '&amp;';
+        if (m === '<') return '&lt;';
+        if (m === '>') return '&gt;';
+        return m;
+    });
+}
+
+// Navbar effect
 let ticking = false;
 function updateNavbar() {
     const navbar = document.querySelector('.navbar');
     if (!navbar) return;
-    
     if (window.scrollY > 100) {
         navbar.style.background = 'rgba(26, 26, 46, 0.98)';
         navbar.style.backdropFilter = 'blur(20px)';
@@ -178,7 +212,7 @@ window.addEventListener('scroll', function() {
     }
 });
 
-// Parallax mouse effect
+// Parallax
 window.addEventListener('mousemove', function(e) {
     const hero = document.querySelector('.hero');
     if (hero) {
@@ -188,7 +222,7 @@ window.addEventListener('mousemove', function(e) {
     }
 });
 
-// Intersection Observer dla sekcji
+// Intersection Observer
 function observeSections() {
     const sections = document.querySelectorAll('.section');
     const observer = new IntersectionObserver((entries) => {
@@ -208,9 +242,8 @@ function observeSections() {
     });
 }
 
-// ===================== USTAWIENIA, MOTYW, POWIADOMIENIA =====================
+// ===================== USTAWIENIA =====================
 
-// Elementy DOM
 const settingsCog = document.getElementById('settingsCog');
 const settingsPanel = document.getElementById('settingsPanel');
 const closeSettingsBtn = document.getElementById('closeSettings');
@@ -223,15 +256,12 @@ const toastContainer = document.getElementById('toastContainer');
 const fontSizeSlider = document.getElementById('fontSizeSlider');
 const fontSizeValue = document.getElementById('fontSizeValue');
 
-// Zmienne stanu
 let notificationsEnabled = true;
 let soundEnabled = true;
 let currentTheme = 'dark';
 let fontSize = 100;
 
-// --- Odczyt ustawień z localStorage ---
 function loadSettings() {
-    // Motyw
     const savedTheme = localStorage.getItem('theme');
     if (savedTheme === 'light') {
         currentTheme = 'light';
@@ -248,13 +278,11 @@ function loadSettings() {
             themeLightBtn.classList.remove('active');
         }
     }
-
-    // Powiadomienia
+    
     const savedNotif = localStorage.getItem('notifications');
     notificationsEnabled = savedNotif !== 'false';
     if (notifToggle) notifToggle.checked = notificationsEnabled;
-
-    // Dźwięk
+    
     const savedSound = localStorage.getItem('sound');
     soundEnabled = savedSound !== 'false';
     if (soundToggle) {
@@ -262,7 +290,6 @@ function loadSettings() {
         soundToggle.disabled = !notificationsEnabled;
     }
     
-    // Rozmiar czcionki
     const savedFontSize = localStorage.getItem('fontSize');
     if (savedFontSize) {
         fontSize = parseInt(savedFontSize);
@@ -272,7 +299,6 @@ function loadSettings() {
     }
 }
 
-// --- Zapisywanie ustawień ---
 function saveSettings() {
     localStorage.setItem('theme', currentTheme);
     localStorage.setItem('notifications', notificationsEnabled);
@@ -280,7 +306,6 @@ function saveSettings() {
     localStorage.setItem('fontSize', fontSize);
 }
 
-// --- Zmiana motywu ---
 function setTheme(theme) {
     currentTheme = theme;
     if (theme === 'light') {
@@ -299,7 +324,6 @@ function setTheme(theme) {
     saveSettings();
 }
 
-// --- Odtwarzanie dźwięku ---
 function playNotificationSound() {
     if (!soundEnabled) return;
     try {
@@ -321,12 +345,11 @@ function playNotificationSound() {
     }
 }
 
-// --- Wyświetlanie powiadomienia (toast) ---
 function showNotification(title, message, type = 'info') {
     if (!notificationsEnabled) return;
     const toast = document.createElement('div');
     toast.className = `toast ${type}`;
-    toast.innerHTML = `<strong>${title}</strong><br><small>${message}</small>`;
+    toast.innerHTML = `<strong>${escapeHtml(title)}</strong><br><small>${escapeHtml(message)}</small>`;
     if (toastContainer) toastContainer.appendChild(toast);
     playNotificationSound();
     setTimeout(() => {
@@ -340,7 +363,6 @@ function testNotification() {
     showNotification('🔔 Test powiadomienia', 'To jest przykładowe powiadomienie z dźwiękiem.', 'success');
 }
 
-// --- Obsługa panelu ustawień ---
 if (settingsCog && settingsPanel && closeSettingsBtn) {
     settingsCog.addEventListener('click', (e) => {
         e.stopPropagation();
@@ -356,7 +378,6 @@ if (settingsCog && settingsPanel && closeSettingsBtn) {
     });
 }
 
-// --- Obsługa przełączników ---
 if (notifToggle) {
     notifToggle.addEventListener('change', (e) => {
         notificationsEnabled = e.target.checked;
@@ -383,8 +404,6 @@ if (themeDarkBtn && themeLightBtn) {
 if (testNotifBtn) {
     testNotifBtn.addEventListener('click', testNotification);
 }
-
-// --- Obsługa suwaka rozmiaru czcionki ---
 if (fontSizeSlider && fontSizeValue) {
     fontSizeSlider.addEventListener('input', (e) => {
         fontSize = parseInt(e.target.value);
@@ -394,12 +413,12 @@ if (fontSizeSlider && fontSizeValue) {
     });
 }
 
-// --- Inicjalizacja wszystkiego ---
-function init() {
+// Inicjalizacja
+async function init() {
     console.log('🚀 OdpalamyCheaterow - Inicjalizacja...');
     createParticles();
-    loadRules();
-    loadChangelog();
+    await loadRules();
+    await loadChangelog();
     observeSections();
     loadSettings();
     
@@ -412,18 +431,12 @@ function init() {
     console.log('✅ Strona gotowa!');
 }
 
-// Uruchom gdy DOM gotowy
 if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', init);
 } else {
     init();
 }
 
-// PWA-like - obsługa offline
-window.addEventListener('online', () => console.log('🌐 Online'));
-window.addEventListener('offline', () => console.log('📴 Offline'));
-
-// Error handling
 window.addEventListener('error', function(e) {
     console.error('Błąd:', e.error);
 });
