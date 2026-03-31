@@ -1,13 +1,99 @@
 // ============================================
-// OD PALAMYCHEATEROW - Z FIREBASE
+// OD PALAMYCHEATEROW - PEŁNY SCRIPT.JS
 // ============================================
 
 const SERVER_IP = 'odpalamycheaterow.aternos.me';
+
+// ===================== STATUS SERWERA MINECRAFT =====================
+
+// IP serwera Minecraft (Aternos)
+const MC_SERVER_IP = 'OdpalamyCheaterow.aternos.me';
+const MC_SERVER_PORT = ''; // Aternos nie potrzebuje portu
+
+let lastStatus = null;
+let statusInterval = null;
+let statusCheckInProgress = false;
+
+async function checkServerStatus() {
+    const statusElement = document.getElementById('serverStatus');
+    const playerCountElement = document.getElementById('playerCountNumber');
+    
+    if (!statusElement) return;
+    if (statusCheckInProgress) return;
+    
+    statusCheckInProgress = true;
+    
+    statusElement.innerHTML = `
+        <div class="status-loading">
+            <div class="loading-spinner"></div>
+            <span>Sprawdzanie statusu...</span>
+        </div>
+    `;
+    
+    try {
+        // API mcsrvstat.us dla Aternos (bez portu)
+        const response = await fetch(`https://api.mcsrvstat.us/2/${MC_SERVER_IP}`);
+        const data = await response.json();
+        
+        if (data.online) {
+            statusElement.innerHTML = `<div class="status-online"><span>🟢 Serwer ONLINE</span></div>`;
+            const playersOnline = data.players?.online || 0;
+            if (playerCountElement) playerCountElement.textContent = playersOnline;
+            
+            const card = document.getElementById('serverStatusCard');
+            if (card) card.style.borderLeft = '4px solid #4ade80';
+            
+            if (lastStatus === false) {
+                showNotification('🟢 Serwer ONLINE', 'Serwer Minecraft jest teraz dostępny!', 'success');
+            }
+            lastStatus = true;
+            
+        } else {
+            statusElement.innerHTML = `<div class="status-offline"><span>🔴 Serwer OFFLINE</span></div>`;
+            if (playerCountElement) playerCountElement.textContent = '0';
+            
+            const card = document.getElementById('serverStatusCard');
+            if (card) card.style.borderLeft = '4px solid #ef4444';
+            
+            if (lastStatus === true) {
+                showNotification('🔴 Serwer OFFLINE', 'Włącz serwer na Aternos!', 'error');
+            }
+            lastStatus = false;
+        }
+        
+    } catch (error) {
+        console.error('Błąd sprawdzania statusu:', error);
+        statusElement.innerHTML = `
+            <div class="status-offline">
+                <span>⚠️ Włącz serwer na Aternos</span>
+            </div>
+        `;
+        if (playerCountElement) playerCountElement.textContent = '?';
+    }
+    
+    statusCheckInProgress = false;
+}
+
+function startStatusChecker() {
+    setTimeout(() => checkServerStatus(), 1000);
+    if (statusInterval) clearInterval(statusInterval);
+    statusInterval = setInterval(checkServerStatus, 60000);
+}
+
+function stopStatusChecker() {
+    if (statusInterval) {
+        clearInterval(statusInterval);
+        statusInterval = null;
+    }
+}
+
+// ===================== KONIEC STATUSU SERWERA =====================
 
 // Nawigacja mobilna
 document.addEventListener('DOMContentLoaded', function() {
     const hamburger = document.querySelector('.hamburger');
     const navMenu = document.querySelector('.nav-menu');
+    
     if (hamburger && navMenu) {
         hamburger.addEventListener('click', function() {
             hamburger.classList.toggle('active');
@@ -62,7 +148,7 @@ function copyIP() {
 
 // Discord
 function joinDiscord() {
-    window.open('https://discord.gg/Gnq4KE7tf2', '_blank');
+    window.open('https://discord.gg/odpalamycheaterow', '_blank');
     showNotification('💬 Discord', 'Przekierowanie na serwer Discord...', 'info');
 }
 
@@ -70,6 +156,7 @@ function joinDiscord() {
 function createParticles() {
     const particlesContainer = document.getElementById('particles');
     if (!particlesContainer) return;
+    
     for (let i = 0; i < 60; i++) {
         const particle = document.createElement('div');
         particle.style.cssText = `
@@ -120,7 +207,6 @@ async function loadRules() {
         let rules = snapshot.val();
         
         if (!rules || rules.length === 0) {
-            // Jeśli brak danych, zapisz domyślne
             rules = DEFAULT_RULES;
             await window.db.ref('rules').set(rules);
         }
@@ -412,97 +498,6 @@ if (fontSizeSlider && fontSizeValue) {
         fontSizeValue.textContent = fontSize + '%';
         saveSettings();
     });
-}
-
-// Inicjalizacja
-
-// ============================================
-// OD PALAMYCHEATEROW - PEŁNY SCRIPT.JS
-// ============================================
-
-// ... cały kod (loadRules, loadChangelog, ustawienia itp.) ...
-
-// ===================== STATUS SERWERA MINECRAFT =====================
-
-// IP serwera Minecraft (zmień na swoje!)
-const MC_SERVER_IP = 'OdpalamyCheaterow.aternos.me';
-const MC_SERVER_PORT = '31885';
-
-let lastStatus = null;
-let statusInterval = null;
-let statusCheckInProgress = false;
-
-async function checkServerStatus() {
-    const statusElement = document.getElementById('serverStatus');
-    const playerCountElement = document.getElementById('playerCountNumber');
-    
-    if (!statusElement) return;
-    if (statusCheckInProgress) return;
-    
-    statusCheckInProgress = true;
-    
-    statusElement.innerHTML = `
-        <div class="status-loading">
-            <div class="loading-spinner"></div>
-            <span>Sprawdzanie statusu...</span>
-        </div>
-    `;
-    
-    const timeoutPromise = new Promise((_, reject) => {
-        setTimeout(() => reject(new Error('Timeout')), 5000);
-    });
-    
-    try {
-        const fetchPromise = fetch(`https://api.mcsrvstat.us/2/${MC_SERVER_IP}:${MC_SERVER_PORT}`);
-        const response = await Promise.race([fetchPromise, timeoutPromise]);
-        const data = await response.json();
-        
-        if (data.online) {
-            statusElement.innerHTML = `<div class="status-online"><span>🟢 Serwer ONLINE</span></div>`;
-            const playersOnline = data.players?.online || 0;
-            if (playerCountElement) playerCountElement.textContent = playersOnline;
-            
-            const card = document.getElementById('serverStatusCard');
-            if (card) card.style.borderLeft = '4px solid #4ade80';
-            
-            if (lastStatus === false) {
-                showNotification('🟢 Serwer ONLINE', 'Serwer Minecraft jest teraz dostępny!', 'success');
-            }
-            lastStatus = true;
-            
-        } else {
-            statusElement.innerHTML = `<div class="status-offline"><span>🔴 Serwer OFFLINE</span></div>`;
-            if (playerCountElement) playerCountElement.textContent = '0';
-            
-            const card = document.getElementById('serverStatusCard');
-            if (card) card.style.borderLeft = '4px solid #ef4444';
-            
-            if (lastStatus === true) {
-                showNotification('🔴 Serwer OFFLINE', 'Serwer Minecraft jest obecnie wyłączony.', 'error');
-            }
-            lastStatus = false;
-        }
-        
-    } catch (error) {
-        console.error('Błąd sprawdzania statusu:', error);
-        statusElement.innerHTML = `<div class="status-offline"><span>⚠️ Nie można sprawdzić statusu</span></div>`;
-        if (playerCountElement) playerCountElement.textContent = '?';
-    }
-    
-    statusCheckInProgress = false;
-}
-
-function startStatusChecker() {
-    setTimeout(() => checkServerStatus(), 1000);
-    if (statusInterval) clearInterval(statusInterval);
-    statusInterval = setInterval(checkServerStatus, 60000);
-}
-
-function stopStatusChecker() {
-    if (statusInterval) {
-        clearInterval(statusInterval);
-        statusInterval = null;
-    }
 }
 
 // ===================== INICJALIZACJA =====================
