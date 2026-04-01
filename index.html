@@ -42,14 +42,13 @@
             <p class="hero-subtitle">Najlepszy serwer PvP gdzie cheaterzy mają szanse!</p>
             <div class="hero-buttons">
                 <button class="btn-primary copy-ip" onclick="copyIP()">
-                    <button class="btn-copy-ip copy-ip" onclick="copyIP()">
-                        <button class="btn-primary copy-ip" onclick="copyIP()">
-                    <span>📋</span> Skopiuj IP
+                    <span class="btn-icon">📋</span>
+                    <span class="btn-text">Skopiuj IP</span>
                 </button>
-               <button class="btn-discord" onclick="joinDiscord()">
-    <span class="discord-icon">💬</span>
-    <span class="discord-text">Dołącz na Discord</span>
-</button>
+                <button class="btn-discord" onclick="joinDiscord()">
+                    <span class="discord-icon">💬</span>
+                    <span class="discord-text">Dołącz na Discord</span>
+                </button>
             </div>
             <div class="server-ip">
                 <code>odpalamycheaterow.aternos.me</code>
@@ -62,9 +61,6 @@
         <div class="container">
             <h2 class="section-title">Informacje o Serwerze</h2>
             <div class="server-grid">
-
-
-              
                 <div class="server-card">
                     <div class="card-icon">🖥️</div>
                     <h3>IP Serwera</h3>
@@ -222,30 +218,25 @@
     <!-- Kontener dla toastów -->
     <div id="toastContainer" class="toast-container"></div>
 
-
     <!-- Firebase SDK -->
-<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
 
-<script>
-    // 🔥 WKLEJ SWOJE DANE Z FIREBASE (skopiowane z konsoli Firebase)
-    const firebaseConfig = {
-        apiKey: "AIzaSyBaUPUZ6wuqUcP-k2Er2O_WYIaso1ax600",      // <- WKLEJ SWOJE
-        authDomain: "odpalamycheaterow-95883.firebaseapp.com",
-        databaseURL: "https://odpalamycheaterow-95883-default-rtdb.europe-west1.firebasedatabase.app",
-        projectId: "odpalamycheaterow-95883",
-        storageBucket: "odpalamycheaterow-95883.firebasestorage.app",
-        messagingSenderId: "62453986470",
-        appId: "1:62453986470:web:7a2d93c5cf582980ed3067"
-    };
-    
-    // Inicjalizacja Firebase
-    firebase.initializeApp(firebaseConfig);
-    const database = firebase.database();
-    
-    // Zapisz referencję do bazy w zmiennej globalnej
-    window.db = database;
-</script>
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyBaUPUZ6wuqUcP-k2Er2O_WYIaso1ax600",
+            authDomain: "odpalamycheaterow-95883.firebaseapp.com",
+            databaseURL: "https://odpalamycheaterow-95883-default-rtdb.europe-west1.firebasedatabase.app",
+            projectId: "odpalamycheaterow-95883",
+            storageBucket: "odpalamycheaterow-95883.firebasestorage.app",
+            messagingSenderId: "62453986470",
+            appId: "1:62453986470:web:7a2d93c5cf582980ed3067"
+        };
+        
+        firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+        window.db = database;
+    </script>
 
     <script src="script.js"></script>
 </body>
