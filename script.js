@@ -4,6 +4,8 @@
 
 const SERVER_IP = 'odpalamycheaterow.aternos.me';
 
+
+
 // Nawigacja mobilna
 document.addEventListener('DOMContentLoaded', function() {
     const hamburger = document.querySelector('.hamburger');
@@ -248,7 +250,6 @@ function observeSections() {
 
 // ===================== USTAWIENIA =====================
 
-// Podstawowe elementy DOM
 const settingsCog = document.getElementById('settingsCog');
 const settingsPanel = document.getElementById('settingsPanel');
 const closeSettingsBtn = document.getElementById('closeSettings');
@@ -261,13 +262,11 @@ const toastContainer = document.getElementById('toastContainer');
 const fontSizeSlider = document.getElementById('fontSizeSlider');
 const fontSizeValue = document.getElementById('fontSizeValue');
 
-// Zmienne stanu
 let notificationsEnabled = true;
 let soundEnabled = true;
 let currentTheme = 'dark';
 let fontSize = 100;
 
-// Funkcje podstawowych ustawień
 function loadSettings() {
     const savedTheme = localStorage.getItem('theme');
     if (savedTheme === 'light') {
@@ -370,7 +369,6 @@ function testNotification() {
     showNotification('🔔 Test powiadomienia', 'To jest przykładowe powiadomienie z dźwiękiem.', 'success');
 }
 
-// Obsługa panelu ustawień (otwieranie/zamykanie)
 if (settingsCog && settingsPanel && closeSettingsBtn) {
     settingsCog.addEventListener('click', (e) => {
         e.stopPropagation();
@@ -386,7 +384,6 @@ if (settingsCog && settingsPanel && closeSettingsBtn) {
     });
 }
 
-// Obsługa podstawowych przełączników
 if (notifToggle) {
     notifToggle.addEventListener('change', (e) => {
         notificationsEnabled = e.target.checked;
@@ -422,424 +419,6 @@ if (fontSizeSlider && fontSizeValue) {
     });
 }
 
-// ===================== NOWE USTAWIENIA =====================
-
-// Elementy nowych ustawień
-const dndMode = document.getElementById('dndMode');
-const animationsToggle = document.getElementById('animationsToggle');
-const accentColorSelect = document.getElementById('accentColorSelect');
-const bgMusicToggle = document.getElementById('bgMusicToggle');
-const musicVolume = document.getElementById('musicVolume');
-const musicVolumeValue = document.getElementById('musicVolumeValue');
-const musicVolumeItem = document.getElementById('musicVolumeItem');
-const dataSaverToggle = document.getElementById('dataSaverToggle');
-const showShortcutsBtn = document.getElementById('showShortcutsBtn');
-const autoDarkModeToggle = document.getElementById('autoDarkModeToggle');
-const notificationStyleSelect = document.getElementById('notificationStyleSelect');
-const cursorEffectSelect = document.getElementById('cursorEffectSelect');
-
-// Zmienne dla nowych ustawień
-let bgMusic = null;
-let dndTimer = null;
-let autoDarkInterval = null;
-let notificationStyle = 'toast';
-
-// ========== TRYB NIE PRZESZKADZAĆ ==========
-function setDNDMode(minutes) {
-    if (dndTimer) clearTimeout(dndTimer);
-    
-    if (minutes > 0) {
-        notificationsEnabled = false;
-        if (notifToggle) notifToggle.checked = false;
-        showNotification('🔇 Tryb Nie przeszkadzać', `Powiadomienia wyłączone na ${minutes} minut.`, 'info');
-        
-        dndTimer = setTimeout(() => {
-            notificationsEnabled = true;
-            if (notifToggle) notifToggle.checked = true;
-            showNotification('🔔 Tryb Nie przeszkadzać wyłączony', 'Powiadomienia zostały włączone.', 'success');
-            dndTimer = null;
-        }, minutes * 60 * 1000);
-    } else if (dndTimer) {
-        clearTimeout(dndTimer);
-        dndTimer = null;
-    }
-    saveSettings();
-}
-
-if (dndMode) {
-    dndMode.addEventListener('change', (e) => {
-        const minutes = parseInt(e.target.value);
-        setDNDMode(minutes);
-    });
-}
-
-// ========== ANIMACJE STRONY ==========
-function setAnimations(enabled) {
-    const sections = document.querySelectorAll('.section, .hero, .feature-card, .server-card');
-    if (enabled) {
-        sections.forEach(s => s.style.animation = '');
-        document.body.classList.remove('animations-off');
-    } else {
-        sections.forEach(s => s.style.animation = 'none');
-        document.body.classList.add('animations-off');
-    }
-}
-
-if (animationsToggle) {
-    animationsToggle.addEventListener('change', (e) => {
-        setAnimations(e.target.checked);
-        saveSettings();
-    });
-}
-
-// ========== KOLOR AKCENTU ==========
-function setAccentColor(color) {
-    const root = document.documentElement;
-    const colors = {
-        default: { primary: '#ff6b6b', secondary: '#4ecdc4' },
-        green: { primary: '#10b981', secondary: '#34d399' },
-        pink: { primary: '#ec489a', secondary: '#f472b6' },
-        purple: { primary: '#8b5cf6', secondary: '#a78bfa' },
-        orange: { primary: '#f97316', secondary: '#fb923c' },
-        rainbow: { primary: 'rainbow', secondary: 'rainbow' }
-    };
-    
-    const selected = colors[color];
-    if (color === 'rainbow') {
-        document.body.classList.add('rainbow-theme');
-        document.querySelectorAll('.btn-primary, .btn-discord, .admin-tab.active').forEach(btn => {
-            btn.classList.add('rainbow-btn');
-        });
-    } else {
-        document.body.classList.remove('rainbow-theme');
-        document.querySelectorAll('.rainbow-btn').forEach(btn => btn.classList.remove('rainbow-btn'));
-        root.style.setProperty('--primary', selected.primary);
-        root.style.setProperty('--secondary', selected.secondary);
-    }
-    saveSettings();
-}
-
-if (accentColorSelect) {
-    accentColorSelect.addEventListener('change', (e) => {
-        setAccentColor(e.target.value);
-    });
-}
-
-// ========== MUZYKA W TLE ==========
-function initBackgroundMusic() {
-    if (!bgMusic) {
-        bgMusic = new Audio('https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3');
-        bgMusic.loop = true;
-        bgMusic.volume = (musicVolume ? musicVolume.value : 30) / 100;
-    }
-}
-
-if (bgMusicToggle) {
-    bgMusicToggle.addEventListener('change', (e) => {
-        if (e.target.checked) {
-            initBackgroundMusic();
-            bgMusic.play().catch(e => console.log('Autoplay blocked:', e));
-            if (musicVolumeItem) musicVolumeItem.style.display = 'flex';
-        } else {
-            if (bgMusic) {
-                bgMusic.pause();
-            }
-            if (musicVolumeItem) musicVolumeItem.style.display = 'none';
-        }
-        saveSettings();
-    });
-}
-
-if (musicVolume) {
-    musicVolume.addEventListener('input', (e) => {
-        const vol = e.target.value;
-        if (musicVolumeValue) musicVolumeValue.textContent = vol + '%';
-        if (bgMusic) bgMusic.volume = vol / 100;
-        saveSettings();
-    });
-}
-
-// ========== TRYB OSZCZĘDZANIA DANYCH ==========
-function setDataSaver(enabled) {
-    if (enabled) {
-        document.body.classList.add('data-saver-active');
-    } else {
-        document.body.classList.remove('data-saver-active');
-    }
-}
-
-if (dataSaverToggle) {
-    dataSaverToggle.addEventListener('change', (e) => {
-        setDataSaver(e.target.checked);
-        saveSettings();
-    });
-}
-
-// ========== SKRÓTY KLAWISZOWE ==========
-function showShortcutsModal() {
-    const modal = document.createElement('div');
-    modal.className = 'shortcuts-modal';
-    modal.innerHTML = `
-        <h4>⌨️ Skróty klawiszowe</h4>
-        <ul>
-            <li><span>📋 Skopiuj IP</span><span class="shortcut-key">Ctrl + K</span></li>
-            <li><span>💬 Otwórz Discord</span><span class="shortcut-key">Ctrl + D</span></li>
-            <li><span>⚙️ Otwórz ustawienia</span><span class="shortcut-key">Ctrl + ,</span></li>
-            <li><span>❌ Zamknij panel</span><span class="shortcut-key">Esc</span></li>
-        </ul>
-        <button class="close-shortcuts">Zamknij</button>
-    `;
-    document.body.appendChild(modal);
-    
-    modal.querySelector('.close-shortcuts').addEventListener('click', () => modal.remove());
-    modal.addEventListener('click', (e) => { if (e.target === modal) modal.remove(); });
-}
-
-if (showShortcutsBtn) {
-    showShortcutsBtn.addEventListener('click', showShortcutsModal);
-}
-
-// Obsługa skrótów klawiszowych
-document.addEventListener('keydown', (e) => {
-    if (e.ctrlKey && e.key === 'k') {
-        e.preventDefault();
-        copyIP();
-    }
-    if (e.ctrlKey && e.key === 'd') {
-        e.preventDefault();
-        joinDiscord();
-    }
-    if (e.ctrlKey && e.key === ',') {
-        e.preventDefault();
-        if (settingsPanel) settingsPanel.classList.toggle('active');
-    }
-    if (e.key === 'Escape') {
-        if (settingsPanel && settingsPanel.classList.contains('active')) {
-            settingsPanel.classList.remove('active');
-        }
-    }
-});
-
-// ========== AUTOMATYCZNY TRYB CIEMNY ==========
-function checkAutoDarkMode() {
-    const hour = new Date().getHours();
-    const isNight = hour >= 20 || hour < 7;
-    
-    if (autoDarkModeToggle && autoDarkModeToggle.checked) {
-        if (isNight && currentTheme !== 'dark') {
-            setTheme('dark');
-        } else if (!isNight && currentTheme !== 'light') {
-            setTheme('light');
-        }
-    }
-}
-
-if (autoDarkModeToggle) {
-    autoDarkModeToggle.addEventListener('change', () => {
-        if (autoDarkModeToggle.checked) {
-            checkAutoDarkMode();
-            if (autoDarkInterval) clearInterval(autoDarkInterval);
-            autoDarkInterval = setInterval(checkAutoDarkMode, 60000);
-        } else {
-            if (autoDarkInterval) clearInterval(autoDarkInterval);
-        }
-        saveSettings();
-    });
-}
-
-// ========== RODZAJE POWIADOMIEŃ ==========
-function showNotificationStyled(title, message, type = 'info') {
-    if (!notificationsEnabled) return;
-    
-    const style = notificationStyle;
-    
-    if (style === 'soundonly') {
-        playNotificationSound();
-        return;
-    }
-    
-    if (style === 'modal') {
-        const modal = document.createElement('div');
-        modal.className = 'notification-modal';
-        modal.innerHTML = `
-            <strong style="color: ${type === 'success' ? '#4ade80' : type === 'error' ? '#ef4444' : '#ffd93d'}">${escapeHtml(title)}</strong>
-            <br><small>${escapeHtml(message)}</small>
-            <br><button onclick="this.parentElement.remove()" style="margin-top: 0.5rem; background: #ff6b6b; border: none; border-radius: 15px; padding: 0.2rem 0.8rem; cursor: pointer;">OK</button>
-        `;
-        document.body.appendChild(modal);
-        playNotificationSound();
-        setTimeout(() => modal.remove(), 5000);
-    } else {
-        const toast = document.createElement('div');
-        toast.className = `toast ${type}`;
-        toast.innerHTML = `<strong>${escapeHtml(title)}</strong><br><small>${escapeHtml(message)}</small>`;
-        if (toastContainer) toastContainer.appendChild(toast);
-        playNotificationSound();
-        setTimeout(() => {
-            toast.style.opacity = '0';
-            toast.style.transform = 'translateX(100%)';
-            setTimeout(() => toast.remove(), 300);
-        }, 5000);
-    }
-}
-
-if (notificationStyleSelect) {
-    notificationStyleSelect.addEventListener('change', (e) => {
-        notificationStyle = e.target.value;
-        saveSettings();
-    });
-}
-
-// Zastąp starą showNotification nową
-window.showNotification = showNotificationStyled;
-
-// ========== EFEKTY KURSORA ==========
-function initCursorEffect(type) {
-    const oldRing = document.querySelector('.cursor-ring');
-    if (oldRing) oldRing.remove();
-    
-    if (type === 'none') return;
-    
-    const ring = document.createElement('div');
-    ring.className = `cursor-ring cursor-${type}`;
-    document.body.appendChild(ring);
-    
-    const mouseMoveHandler = (e) => {
-        ring.style.left = e.clientX + 'px';
-        ring.style.top = e.clientY + 'px';
-    };
-    document.addEventListener('mousemove', mouseMoveHandler);
-    
-    if (type === 'sparks') {
-        const sparkHandler = (e) => {
-            const spark = document.createElement('div');
-            spark.className = 'cursor-spark';
-            spark.style.cssText = `
-                position: fixed;
-                left: ${e.clientX}px;
-                top: ${e.clientY}px;
-                width: 3px;
-                height: 3px;
-                background: #ff6b6b;
-                border-radius: 50%;
-                pointer-events: none;
-                z-index: 9998;
-                animation: sparkFade 0.5s ease-out forwards;
-            `;
-            document.body.appendChild(spark);
-            setTimeout(() => spark.remove(), 500);
-        };
-        document.addEventListener('mousemove', sparkHandler);
-        
-        const style = document.createElement('style');
-        style.textContent = `
-            @keyframes sparkFade {
-                to {
-                    opacity: 0;
-                    transform: scale(2);
-                }
-            }
-        `;
-        document.head.appendChild(style);
-    }
-    
-    if (type === 'ring') {
-        const mouseOverHandler = (e) => {
-            if (e.target.closest('button')) {
-                ring.classList.add('hover');
-            }
-        };
-        const mouseOutHandler = (e) => {
-            if (e.target.closest('button')) {
-                ring.classList.remove('hover');
-            }
-        };
-        document.addEventListener('mouseover', mouseOverHandler);
-        document.addEventListener('mouseout', mouseOutHandler);
-    }
-}
-
-if (cursorEffectSelect) {
-    cursorEffectSelect.addEventListener('change', (e) => {
-        initCursorEffect(e.target.value);
-        saveSettings();
-    });
-}
-
-// ========== ŁADOWANIE NOWYCH USTAWIEN Z localStorage ==========
-function loadNewSettings() {
-    // Animacje
-    const savedAnimations = localStorage.getItem('animationsEnabled');
-    if (savedAnimations !== null && animationsToggle) {
-        animationsToggle.checked = savedAnimations === 'true';
-        setAnimations(animationsToggle.checked);
-    }
-    
-    // Kolor akcentu
-    const savedColor = localStorage.getItem('accentColor');
-    if (savedColor && accentColorSelect) {
-        accentColorSelect.value = savedColor;
-        setAccentColor(savedColor);
-    }
-    
-    // Muzyka
-    const savedMusic = localStorage.getItem('bgMusic');
-    if (savedMusic === 'true' && bgMusicToggle) {
-        bgMusicToggle.checked = true;
-        if (musicVolumeItem) musicVolumeItem.style.display = 'flex';
-        initBackgroundMusic();
-        setTimeout(() => bgMusic?.play().catch(e => console.log('Autoplay blocked')), 1000);
-    }
-    const savedVolume = localStorage.getItem('musicVolume');
-    if (savedVolume && musicVolume) {
-        musicVolume.value = savedVolume;
-        if (musicVolumeValue) musicVolumeValue.textContent = savedVolume + '%';
-        if (bgMusic) bgMusic.volume = savedVolume / 100;
-    }
-    
-    // Oszczędzanie danych
-    const savedDataSaver = localStorage.getItem('dataSaver');
-    if (savedDataSaver !== null && dataSaverToggle) {
-        dataSaverToggle.checked = savedDataSaver === 'true';
-        setDataSaver(dataSaverToggle.checked);
-    }
-    
-    // Auto dark mode
-    const savedAutoDark = localStorage.getItem('autoDarkMode');
-    if (savedAutoDark !== null && autoDarkModeToggle) {
-        autoDarkModeToggle.checked = savedAutoDark === 'true';
-        if (autoDarkModeToggle.checked) checkAutoDarkMode();
-    }
-    
-    // Styl powiadomień
-    const savedNotifStyle = localStorage.getItem('notificationStyle');
-    if (savedNotifStyle && notificationStyleSelect) {
-        notificationStyleSelect.value = savedNotifStyle;
-        notificationStyle = savedNotifStyle;
-    }
-    
-    // Efekt kursora
-    const savedCursorEffect = localStorage.getItem('cursorEffect');
-    if (savedCursorEffect && cursorEffectSelect) {
-        cursorEffectSelect.value = savedCursorEffect;
-        initCursorEffect(savedCursorEffect);
-    }
-}
-
-// Nadpisz saveSettings aby zapisywać nowe ustawienia
-const originalSaveSettings = saveSettings;
-saveSettings = function() {
-    originalSaveSettings();
-    if (animationsToggle) localStorage.setItem('animationsEnabled', animationsToggle.checked);
-    if (accentColorSelect) localStorage.setItem('accentColor', accentColorSelect.value);
-    if (bgMusicToggle) localStorage.setItem('bgMusic', bgMusicToggle.checked);
-    if (musicVolume) localStorage.setItem('musicVolume', musicVolume.value);
-    if (dataSaverToggle) localStorage.setItem('dataSaver', dataSaverToggle.checked);
-    if (autoDarkModeToggle) localStorage.setItem('autoDarkMode', autoDarkModeToggle.checked);
-    if (notificationStyleSelect) localStorage.setItem('notificationStyle', notificationStyleSelect.value);
-    if (cursorEffectSelect) localStorage.setItem('cursorEffect', cursorEffectSelect.value);
-};
-
 // ===================== INICJALIZACJA =====================
 
 async function init() {
@@ -849,7 +428,7 @@ async function init() {
     await loadChangelog();
     observeSections();
     loadSettings();
-    loadNewSettings();
+    
     
     setTimeout(() => {
         if (notificationsEnabled) {
