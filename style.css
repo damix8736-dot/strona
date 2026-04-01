@@ -516,25 +516,102 @@ body {
     -webkit-text-fill-color: transparent;
 }
 
+/* Animowany przycisk Discord Premium */
 .btn-discord {
-    background: linear-gradient(45deg, #7289da, #99aab5);
+    position: relative;
+    background: linear-gradient(135deg, #5865F2, #4752c4);
     padding: 1.5rem 3rem;
     font-size: 1.3rem;
-    box-shadow: 0 10px 30px rgba(114, 137, 218, 0.4);
-    border-radius: 60px;
-    border: none;
     font-weight: 700;
+    border: none;
+    border-radius: 60px;
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     display: inline-flex;
     align-items: center;
     gap: 0.8rem;
     color: white;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+    overflow: hidden;
+    box-shadow: 0 8px 25px rgba(88, 101, 242, 0.4);
+    z-index: 1;
 }
 
+/* Efekt glow przed przyciskiem */
+.btn-discord::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+    transition: left 0.6s ease;
+    z-index: -1;
+}
+
+.btn-discord:hover::before {
+    left: 100%;
+}
+
+/* Efekt pulsowania */
+.btn-discord::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.4) 0%, transparent 70%);
+    transform: translate(-50%, -50%);
+    transition: width 0.5s, height 0.5s;
+    border-radius: 50%;
+    z-index: -1;
+}
+
+.btn-discord:hover::after {
+    width: 300px;
+    height: 300px;
+}
+
+/* Ikona Discord */
+.btn-discord .discord-icon {
+    font-size: 1.8rem;
+    transition: transform 0.3s ease, filter 0.3s ease;
+    filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.5));
+}
+
+.btn-discord:hover .discord-icon {
+    transform: rotate(360deg) scale(1.2);
+    filter: drop-shadow(0 0 15px rgba(255, 255, 255, 0.8));
+}
+
+/* Tekst przycisku */
+.btn-discord .discord-text {
+    letter-spacing: 1px;
+    transition: letter-spacing 0.3s ease;
+}
+
+.btn-discord:hover .discord-text {
+    letter-spacing: 2px;
+}
+
+/* Efekt hover */
 .btn-discord:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 15px 40px rgba(114, 137, 218, 0.6);
+    transform: translateY(-5px) scale(1.05);
+    background: linear-gradient(135deg, #4752c4, #5865F2);
+    box-shadow: 0 15px 40px rgba(88, 101, 242, 0.6);
+}
+
+.btn-discord:active {
+    transform: translateY(-2px) scale(1.02);
+}
+
+/* Opcjonalnie: dodaj efekt fali po kliknięciu */
+.btn-discord:active::after {
+    width: 400px;
+    height: 400px;
+    transition: width 0.2s, height 0.2s;
 }
 
 /* Footer */
