@@ -250,174 +250,433 @@ function observeSections() {
 
 // ===================== USTAWIENIA =====================
 
-const settingsCog = document.getElementById('settingsCog');
-const settingsPanel = document.getElementById('settingsPanel');
-const closeSettingsBtn = document.getElementById('closeSettings');
-const themeDarkBtn = document.getElementById('themeDarkBtn');
-const themeLightBtn = document.getElementById('themeLightBtn');
-const notifToggle = document.getElementById('notifToggle');
-const soundToggle = document.getElementById('soundToggle');
-const testNotifBtn = document.getElementById('testNotificationBtn');
-const toastContainer = document.getElementById('toastContainer');
-const fontSizeSlider = document.getElementById('fontSizeSlider');
-const fontSizeValue = document.getElementById('fontSizeValue');
+// ===================== NOWE USTAWIENIA =====================
 
-let notificationsEnabled = true;
-let soundEnabled = true;
-let currentTheme = 'dark';
-let fontSize = 100;
+// Elementy nowych ustawień
+const dndMode = document.getElementById('dndMode');
+const animationsToggle = document.getElementById('animationsToggle');
+const accentColorSelect = document.getElementById('accentColorSelect');
+const bgMusicToggle = document.getElementById('bgMusicToggle');
+const musicVolume = document.getElementById('musicVolume');
+const musicVolumeValue = document.getElementById('musicVolumeValue');
+const musicVolumeItem = document.getElementById('musicVolumeItem');
+const dataSaverToggle = document.getElementById('dataSaverToggle');
+const showShortcutsBtn = document.getElementById('showShortcutsBtn');
+const autoDarkModeToggle = document.getElementById('autoDarkModeToggle');
+const notificationStyleSelect = document.getElementById('notificationStyle');
+const cursorEffectSelect = document.getElementById('cursorEffect');
 
-function loadSettings() {
-    const savedTheme = localStorage.getItem('theme');
-    if (savedTheme === 'light') {
-        currentTheme = 'light';
-        document.body.classList.add('light-theme');
-        if (themeDarkBtn && themeLightBtn) {
-            themeDarkBtn.classList.remove('active');
-            themeLightBtn.classList.add('active');
-        }
-    } else {
-        currentTheme = 'dark';
-        document.body.classList.remove('light-theme');
-        if (themeDarkBtn && themeLightBtn) {
-            themeDarkBtn.classList.add('active');
-            themeLightBtn.classList.remove('active');
-        }
-    }
+// Zmienne
+let bgMusic = null;
+let dndTimer = null;
+let autoDarkInterval = null;
+let cursorRing = null;
+
+// ========== TRYB NIE PRZESZKADZAĆ ==========
+function setDNDMode(minutes) {
+    if (dndTimer) clearTimeout(dndTimer);
     
-    const savedNotif = localStorage.getItem('notifications');
-    notificationsEnabled = savedNotif !== 'false';
-    if (notifToggle) notifToggle.checked = notificationsEnabled;
-    
-    const savedSound = localStorage.getItem('sound');
-    soundEnabled = savedSound !== 'false';
-    if (soundToggle) {
-        soundToggle.checked = soundEnabled;
-        soundToggle.disabled = !notificationsEnabled;
-    }
-    
-    const savedFontSize = localStorage.getItem('fontSize');
-    if (savedFontSize) {
-        fontSize = parseInt(savedFontSize);
-        document.body.style.fontSize = fontSize + '%';
-        if (fontSizeSlider) fontSizeSlider.value = fontSize;
-        if (fontSizeValue) fontSizeValue.textContent = fontSize + '%';
-    }
-}
-
-function saveSettings() {
-    localStorage.setItem('theme', currentTheme);
-    localStorage.setItem('notifications', notificationsEnabled);
-    localStorage.setItem('sound', soundEnabled);
-    localStorage.setItem('fontSize', fontSize);
-}
-
-function setTheme(theme) {
-    currentTheme = theme;
-    if (theme === 'light') {
-        document.body.classList.add('light-theme');
-        if (themeDarkBtn && themeLightBtn) {
-            themeDarkBtn.classList.remove('active');
-            themeLightBtn.classList.add('active');
-        }
-    } else {
-        document.body.classList.remove('light-theme');
-        if (themeDarkBtn && themeLightBtn) {
-            themeDarkBtn.classList.add('active');
-            themeLightBtn.classList.remove('active');
-        }
+    if (minutes > 0) {
+        notificationsEnabled = false;
+        if (notifToggle) notifToggle.checked = false;
+        showNotification('🔇 Tryb Nie przeszkadzać', `Powiadomienia wyłączone na ${minutes} minut.`, 'info');
+        
+        dndTimer = setTimeout(() => {
+            notificationsEnabled = true;
+            if (notifToggle) notifToggle.checked = true;
+            showNotification('🔔 Tryb Nie przeszkadzać wyłączony', 'Powiadomienia zostały włączone.', 'success');
+            dndTimer = null;
+        }, minutes * 60 * 1000);
+    } else if (dndTimer) {
+        clearTimeout(dndTimer);
+        dndTimer = null;
     }
     saveSettings();
 }
 
-function playNotificationSound() {
-    if (!soundEnabled) return;
-    try {
-        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        const oscillator = audioCtx.createOscillator();
-        const gain = audioCtx.createGain();
-        oscillator.connect(gain);
-        gain.connect(audioCtx.destination);
-        oscillator.frequency.value = 880;
-        gain.gain.value = 0.2;
-        oscillator.start();
-        gain.gain.exponentialRampToValueAtTime(0.00001, audioCtx.currentTime + 0.5);
-        oscillator.stop(audioCtx.currentTime + 0.5);
-        if (audioCtx.state === 'suspended') {
-            audioCtx.resume();
-        }
-    } catch(e) {
-        console.warn("Web Audio nie wspierany");
+if (dndMode) {
+    dndMode.addEventListener('change', (e) => {
+        const minutes = parseInt(e.target.value);
+        setDNDMode(minutes);
+    });
+}
+
+// ========== ANIMACJE STRONY ==========
+function setAnimations(enabled) {
+    const sections = document.querySelectorAll('.section, .hero, .feature-card, .server-card');
+    if (enabled) {
+        sections.forEach(s => s.style.animation = '');
+        document.body.classList.remove('animations-off');
+    } else {
+        sections.forEach(s => s.style.animation = 'none');
+        document.body.classList.add('animations-off');
     }
 }
 
-function showNotification(title, message, type = 'info') {
-    if (!notificationsEnabled) return;
-    const toast = document.createElement('div');
-    toast.className = `toast ${type}`;
-    toast.innerHTML = `<strong>${escapeHtml(title)}</strong><br><small>${escapeHtml(message)}</small>`;
-    if (toastContainer) toastContainer.appendChild(toast);
-    playNotificationSound();
-    setTimeout(() => {
-        toast.style.opacity = '0';
-        toast.style.transform = 'translateX(100%)';
-        setTimeout(() => toast.remove(), 300);
-    }, 5000);
+if (animationsToggle) {
+    animationsToggle.addEventListener('change', (e) => {
+        setAnimations(e.target.checked);
+        saveSettings();
+    });
 }
 
-function testNotification() {
-    showNotification('🔔 Test powiadomienia', 'To jest przykładowe powiadomienie z dźwiękiem.', 'success');
+// ========== KOLOR AKCENTU ==========
+function setAccentColor(color) {
+    const root = document.documentElement;
+    const colors = {
+        default: { primary: '#ff6b6b', secondary: '#4ecdc4' },
+        green: { primary: '#10b981', secondary: '#34d399' },
+        pink: { primary: '#ec489a', secondary: '#f472b6' },
+        purple: { primary: '#8b5cf6', secondary: '#a78bfa' },
+        orange: { primary: '#f97316', secondary: '#fb923c' },
+        rainbow: { primary: 'rainbow', secondary: 'rainbow' }
+    };
+    
+    const selected = colors[color];
+    if (color === 'rainbow') {
+        document.body.classList.add('rainbow-theme');
+        document.querySelectorAll('.btn-primary, .btn-discord, .admin-tab.active').forEach(btn => {
+            btn.classList.add('rainbow-btn');
+        });
+    } else {
+        document.body.classList.remove('rainbow-theme');
+        document.querySelectorAll('.rainbow-btn').forEach(btn => btn.classList.remove('rainbow-btn'));
+        root.style.setProperty('--primary', selected.primary);
+        root.style.setProperty('--secondary', selected.secondary);
+    }
+    saveSettings();
 }
 
-if (settingsCog && settingsPanel && closeSettingsBtn) {
-    settingsCog.addEventListener('click', (e) => {
-        e.stopPropagation();
-        settingsPanel.classList.toggle('active');
+if (accentColorSelect) {
+    accentColorSelect.addEventListener('change', (e) => {
+        setAccentColor(e.target.value);
     });
-    closeSettingsBtn.addEventListener('click', () => {
-        settingsPanel.classList.remove('active');
+}
+
+// ========== MUZYKA W TLE ==========
+function initBackgroundMusic() {
+    if (!bgMusic) {
+        bgMusic = new Audio('https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3');
+        bgMusic.loop = true;
+        bgMusic.volume = (musicVolume ? musicVolume.value : 30) / 100;
+    }
+}
+
+if (bgMusicToggle) {
+    bgMusicToggle.addEventListener('change', (e) => {
+        if (e.target.checked) {
+            initBackgroundMusic();
+            bgMusic.play().catch(e => console.log('Autoplay blocked:', e));
+            if (musicVolumeItem) musicVolumeItem.style.display = 'flex';
+        } else {
+            if (bgMusic) {
+                bgMusic.pause();
+            }
+            if (musicVolumeItem) musicVolumeItem.style.display = 'none';
+        }
+        saveSettings();
     });
-    document.addEventListener('click', (e) => {
-        if (!settingsPanel.contains(e.target) && !settingsCog.contains(e.target)) {
+}
+
+if (musicVolume) {
+    musicVolume.addEventListener('input', (e) => {
+        const vol = e.target.value;
+        if (musicVolumeValue) musicVolumeValue.textContent = vol + '%';
+        if (bgMusic) bgMusic.volume = vol / 100;
+        saveSettings();
+    });
+}
+
+// ========== TRYB OSZCZĘDZANIA DANYCH ==========
+function setDataSaver(enabled) {
+    if (enabled) {
+        document.body.classList.add('data-saver-active');
+        // Zmniejsz interwał odświeżania jeśli istnieje
+        if (statusInterval) {
+            clearInterval(statusInterval);
+            statusInterval = setInterval(checkServerStatus, 120000);
+        }
+    } else {
+        document.body.classList.remove('data-saver-active');
+        if (statusInterval) {
+            clearInterval(statusInterval);
+            statusInterval = setInterval(checkServerStatus, 30000);
+        }
+    }
+}
+
+if (dataSaverToggle) {
+    dataSaverToggle.addEventListener('change', (e) => {
+        setDataSaver(e.target.checked);
+        saveSettings();
+    });
+}
+
+// ========== SKRÓTY KLAWISZOWE ==========
+function showShortcutsModal() {
+    const modal = document.createElement('div');
+    modal.className = 'shortcuts-modal';
+    modal.innerHTML = `
+        <h4>⌨️ Skróty klawiszowe</h4>
+        <ul>
+            <li><span>📋 Skopiuj IP</span><span class="shortcut-key">Ctrl + K</span></li>
+            <li><span>💬 Otwórz Discord</span><span class="shortcut-key">Ctrl + D</span></li>
+            <li><span>⚙️ Otwórz ustawienia</span><span class="shortcut-key">Ctrl + ,</span></li>
+            <li><span>❌ Zamknij panel</span><span class="shortcut-key">Esc</span></li>
+        </ul>
+        <button class="close-shortcuts">Zamknij</button>
+    `;
+    document.body.appendChild(modal);
+    
+    modal.querySelector('.close-shortcuts').addEventListener('click', () => modal.remove());
+    modal.addEventListener('click', (e) => { if (e.target === modal) modal.remove(); });
+}
+
+if (showShortcutsBtn) {
+    showShortcutsBtn.addEventListener('click', showShortcutsModal);
+}
+
+// Obsługa skrótów klawiszowych
+document.addEventListener('keydown', (e) => {
+    if (e.ctrlKey && e.key === 'k') {
+        e.preventDefault();
+        copyIP();
+    }
+    if (e.ctrlKey && e.key === 'd') {
+        e.preventDefault();
+        joinDiscord();
+    }
+    if (e.ctrlKey && e.key === ',') {
+        e.preventDefault();
+        if (settingsPanel) settingsPanel.classList.toggle('active');
+    }
+    if (e.key === 'Escape') {
+        if (settingsPanel && settingsPanel.classList.contains('active')) {
             settingsPanel.classList.remove('active');
         }
-    });
+    }
+});
+
+// ========== AUTOMATYCZNY TRYB CIEMNY ==========
+function checkAutoDarkMode() {
+    const hour = new Date().getHours();
+    const isNight = hour >= 20 || hour < 7;
+    
+    if (autoDarkModeToggle && autoDarkModeToggle.checked) {
+        if (isNight && currentTheme !== 'dark') {
+            setTheme('dark');
+        } else if (!isNight && currentTheme !== 'light') {
+            setTheme('light');
+        }
+    }
 }
 
-if (notifToggle) {
-    notifToggle.addEventListener('change', (e) => {
-        notificationsEnabled = e.target.checked;
-        if (soundToggle) {
-            soundToggle.disabled = !notificationsEnabled;
-            if (!notificationsEnabled) {
-                soundEnabled = false;
-                soundToggle.checked = false;
-            }
+if (autoDarkModeToggle) {
+    autoDarkModeToggle.addEventListener('change', () => {
+        if (autoDarkModeToggle.checked) {
+            checkAutoDarkMode();
+            if (autoDarkInterval) clearInterval(autoDarkInterval);
+            autoDarkInterval = setInterval(checkAutoDarkMode, 60000);
+        } else {
+            if (autoDarkInterval) clearInterval(autoDarkInterval);
         }
         saveSettings();
     });
 }
-if (soundToggle) {
-    soundToggle.addEventListener('change', (e) => {
-        soundEnabled = e.target.checked;
+
+// ========== RODZAJE POWIADOMIEŃ ==========
+let notificationStyle = 'toast';
+
+function showNotificationStyled(title, message, type = 'info') {
+    if (!notificationsEnabled) return;
+    
+    const style = notificationStyle;
+    
+    if (style === 'soundonly') {
+        playNotificationSound();
+        return;
+    }
+    
+    if (style === 'modal') {
+        const modal = document.createElement('div');
+        modal.className = 'notification-modal';
+        modal.innerHTML = `
+            <strong style="color: ${type === 'success' ? '#4ade80' : type === 'error' ? '#ef4444' : '#ffd93d'}">${title}</strong>
+            <br><small>${message}</small>
+            <br><button onclick="this.parentElement.remove()" style="margin-top: 0.5rem; background: #ff6b6b; border: none; border-radius: 15px; padding: 0.2rem 0.8rem; cursor: pointer;">OK</button>
+        `;
+        document.body.appendChild(modal);
+        playNotificationSound();
+        setTimeout(() => modal.remove(), 5000);
+    } else {
+        const toast = document.createElement('div');
+        toast.className = `toast ${type}`;
+        toast.innerHTML = `<strong>${escapeHtml(title)}</strong><br><small>${escapeHtml(message)}</small>`;
+        if (toastContainer) toastContainer.appendChild(toast);
+        playNotificationSound();
+        setTimeout(() => {
+            toast.style.opacity = '0';
+            toast.style.transform = 'translateX(100%)';
+            setTimeout(() => toast.remove(), 300);
+        }, 5000);
+    }
+}
+
+if (notificationStyleSelect) {
+    notificationStyleSelect.addEventListener('change', (e) => {
+        notificationStyle = e.target.value;
         saveSettings();
     });
 }
-if (themeDarkBtn && themeLightBtn) {
-    themeDarkBtn.addEventListener('click', () => setTheme('dark'));
-    themeLightBtn.addEventListener('click', () => setTheme('light'));
+
+// Zastąp starą showNotification nową
+window.showNotification = showNotificationStyled;
+
+// ========== EFEKTY KURSORA ==========
+function initCursorEffect(type) {
+    const oldRing = document.querySelector('.cursor-ring');
+    if (oldRing) oldRing.remove();
+    
+    if (type === 'none') return;
+    
+    const ring = document.createElement('div');
+    ring.className = `cursor-ring cursor-${type}`;
+    document.body.appendChild(ring);
+    
+    document.addEventListener('mousemove', (e) => {
+        ring.style.left = e.clientX + 'px';
+        ring.style.top = e.clientY + 'px';
+    });
+    
+    if (type === 'sparks') {
+        document.addEventListener('mousemove', (e) => {
+            const spark = document.createElement('div');
+            spark.className = 'cursor-spark';
+            spark.style.cssText = `
+                position: fixed;
+                left: ${e.clientX}px;
+                top: ${e.clientY}px;
+                width: 3px;
+                height: 3px;
+                background: #ff6b6b;
+                border-radius: 50%;
+                pointer-events: none;
+                z-index: 9998;
+                animation: sparkFade 0.5s ease-out forwards;
+            `;
+            document.body.appendChild(spark);
+            setTimeout(() => spark.remove(), 500);
+        });
+        
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes sparkFade {
+                to {
+                    opacity: 0;
+                    transform: scale(2);
+                }
+            }
+        `;
+        document.head.appendChild(style);
+    }
+    
+    if (type === 'ring') {
+        document.addEventListener('mouseover', (e) => {
+            if (e.target.closest('button')) {
+                ring.classList.add('hover');
+            }
+        });
+        document.addEventListener('mouseout', (e) => {
+            if (e.target.closest('button')) {
+                ring.classList.remove('hover');
+            }
+        });
+    }
 }
-if (testNotifBtn) {
-    testNotifBtn.addEventListener('click', testNotification);
-}
-if (fontSizeSlider && fontSizeValue) {
-    fontSizeSlider.addEventListener('input', (e) => {
-        fontSize = parseInt(e.target.value);
-        document.body.style.fontSize = fontSize + '%';
-        fontSizeValue.textContent = fontSize + '%';
+
+if (cursorEffectSelect) {
+    cursorEffectSelect.addEventListener('change', (e) => {
+        initCursorEffect(e.target.value);
         saveSettings();
     });
 }
+
+// ========== ŁADOWANIE NOWYCH USTAWIEN Z localStorage ==========
+function loadNewSettings() {
+    // Animacje
+    const savedAnimations = localStorage.getItem('animationsEnabled');
+    if (savedAnimations !== null && animationsToggle) {
+        animationsToggle.checked = savedAnimations === 'true';
+        setAnimations(animationsToggle.checked);
+    }
+    
+    // Kolor akcentu
+    const savedColor = localStorage.getItem('accentColor');
+    if (savedColor && accentColorSelect) {
+        accentColorSelect.value = savedColor;
+        setAccentColor(savedColor);
+    }
+    
+    // Muzyka
+    const savedMusic = localStorage.getItem('bgMusic');
+    if (savedMusic === 'true' && bgMusicToggle) {
+        bgMusicToggle.checked = true;
+        if (musicVolumeItem) musicVolumeItem.style.display = 'flex';
+        initBackgroundMusic();
+        setTimeout(() => bgMusic?.play().catch(e => console.log('Autoplay blocked')), 1000);
+    }
+    const savedVolume = localStorage.getItem('musicVolume');
+    if (savedVolume && musicVolume) {
+        musicVolume.value = savedVolume;
+        if (musicVolumeValue) musicVolumeValue.textContent = savedVolume + '%';
+        if (bgMusic) bgMusic.volume = savedVolume / 100;
+    }
+    
+    // Oszczędzanie danych
+    const savedDataSaver = localStorage.getItem('dataSaver');
+    if (savedDataSaver !== null && dataSaverToggle) {
+        dataSaverToggle.checked = savedDataSaver === 'true';
+        setDataSaver(dataSaverToggle.checked);
+    }
+    
+    // Auto dark mode
+    const savedAutoDark = localStorage.getItem('autoDarkMode');
+    if (savedAutoDark !== null && autoDarkModeToggle) {
+        autoDarkModeToggle.checked = savedAutoDark === 'true';
+        if (autoDarkModeToggle.checked) checkAutoDarkMode();
+    }
+    
+    // Styl powiadomień
+    const savedNotifStyle = localStorage.getItem('notificationStyle');
+    if (savedNotifStyle && notificationStyleSelect) {
+        notificationStyleSelect.value = savedNotifStyle;
+        notificationStyle = savedNotifStyle;
+    }
+    
+    // Efekt kursora
+    const savedCursorEffect = localStorage.getItem('cursorEffect');
+    if (savedCursorEffect && cursorEffectSelect) {
+        cursorEffectSelect.value = savedCursorEffect;
+        initCursorEffect(savedCursorEffect);
+    }
+}
+
+// Nadpisz saveSettings aby zapisywać nowe ustawienia
+const originalSaveSettings = saveSettings;
+saveSettings = function() {
+    originalSaveSettings();
+    if (animationsToggle) localStorage.setItem('animationsEnabled', animationsToggle.checked);
+    if (accentColorSelect) localStorage.setItem('accentColor', accentColorSelect.value);
+    if (bgMusicToggle) localStorage.setItem('bgMusic', bgMusicToggle.checked);
+    if (musicVolume) localStorage.setItem('musicVolume', musicVolume.value);
+    if (dataSaverToggle) localStorage.setItem('dataSaver', dataSaverToggle.checked);
+    if (autoDarkModeToggle) localStorage.setItem('autoDarkMode', autoDarkModeToggle.checked);
+    if (notificationStyleSelect) localStorage.setItem('notificationStyle', notificationStyleSelect.value);
+    if (cursorEffectSelect) localStorage.setItem('cursorEffect', cursorEffectSelect.value);
+};
+
+// Załaduj nowe ustawienia przy starcie
+window.loadNewSettings = loadNewSettings;
 
 // ===================== INICJALIZACJA =====================
 
@@ -428,6 +687,7 @@ async function init() {
     await loadChangelog();
     observeSections();
     loadSettings();
+    loadNewSettings();
     
     
     setTimeout(() => {
