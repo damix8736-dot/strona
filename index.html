@@ -183,65 +183,67 @@
             <button id="closeSettings" class="close-settings">&times;</button>
         </div>
         <div class="settings-content">
-            <div class="setting-item">
-                <span>🌗 Motyw</span>
-                <div class="theme-buttons">
-                    <button id="themeDarkBtn" class="theme-btn active">🌙 Ciemny</button>
-                    <button id="themeLightBtn" class="theme-btn">☀️ Jasny</button>
-                </div>
-            </div>
-            <div class="setting-item">
-                <span>🔔 Powiadomienia</span>
-                <label class="switch">
-                    <input type="checkbox" id="notifToggle">
-                    <span class="slider round"></span>
-                </label>
-            </div>
-            <div class="setting-item">
-                <span>🔊 Dźwięk powiadomień</span>
-                <label class="switch">
-                    <input type="checkbox" id="soundToggle" disabled>
-                    <span class="slider round"></span>
-                </label>
-            </div>
-            <div class="setting-item">
-                <span>🔠 Rozmiar tekstu</span>
-                <div class="font-size-control">
-                    <span id="fontSizeValue" class="font-size-value">100%</span>
-                    <input type="range" id="fontSizeSlider" min="70" max="150" step="5" value="100">
-                </div>
-            </div>
-            <button id="testNotificationBtn" class="test-notif-btn">🔔 Testuj powiadomienie</button>
+    <!-- Motyw -->
+    <div class="setting-item">
+        <span>🌗 Motyw</span>
+        <div class="theme-buttons">
+            <button id="themeDarkBtn" class="theme-btn active">🌙 Ciemny</button>
+            <button id="themeLightBtn" class="theme-btn">☀️ Jasny</button>
         </div>
     </div>
-
-
+    
+    <!-- Powiadomienia -->
+    <div class="setting-item">
+        <span>🔔 Powiadomienia</span>
+        <label class="switch">
+            <input type="checkbox" id="notifToggle">
+            <span class="slider round"></span>
+        </label>
+    </div>
+    
+    <!-- Dźwięk powiadomień -->
+    <div class="setting-item">
+        <span>🔊 Dźwięk powiadomień</span>
+        <label class="switch">
+            <input type="checkbox" id="soundToggle" disabled>
+            <span class="slider round"></span>
+        </label>
+    </div>
+    
+    <!-- Rozmiar tekstu -->
+    <div class="setting-item">
+        <span>🔠 Rozmiar tekstu</span>
+        <div class="font-size-control">
+            <span id="fontSizeValue" class="font-size-value">100%</span>
+            <input type="range" id="fontSizeSlider" min="70" max="150" step="5" value="100">
+        </div>
+    </div>
+    
     <!-- Tryb Nie przeszkadzać -->
-<div class="setting-item">
-    <span>🔇 Tryb "Nie przeszkadzać"</span>
-    <select id="dndMode" class="dnd-select">
-        <option value="0">Wyłączony</option>
-        <option value="15">15 minut</option>
-        <option value="60">1 godzina</option>
-        <option value="180">3 godziny</option>
-        <option value="1440">Do jutra</option>
-    </select>
-</div>
-
-<!-- Animacje strony -->
-<div class="setting-item">
-    <span>✨ Animacje strony</span>
-    <label class="switch">
-        <input type="checkbox" id="animationsToggle" checked>
-        <span class="slider round"></span>
-    </label>
-</div>
-
-<!-- Tryb RGB / Kolor akcentu -->
-<div class="setting-item">
-    <span>🌈 Kolor akcentu</span>
-    <div class="color-control">
-        <select id="accentColorSelect">
+    <div class="setting-item">
+        <span>🔇 Tryb "Nie przeszkadzać"</span>
+        <select id="dndMode" class="setting-select">
+            <option value="0">Wyłączony</option>
+            <option value="15">15 minut</option>
+            <option value="60">1 godzina</option>
+            <option value="180">3 godziny</option>
+            <option value="1440">Do jutra</option>
+        </select>
+    </div>
+    
+    <!-- Animacje strony -->
+    <div class="setting-item">
+        <span>✨ Animacje strony</span>
+        <label class="switch">
+            <input type="checkbox" id="animationsToggle" checked>
+            <span class="slider round"></span>
+        </label>
+    </div>
+    
+    <!-- Kolor akcentu -->
+    <div class="setting-item">
+        <span>🌈 Kolor akcentu</span>
+        <select id="accentColorSelect" class="setting-select">
             <option value="default">🔵 Niebieski (domyślny)</option>
             <option value="green">🟢 Zielony</option>
             <option value="pink">🩷 Różowy</option>
@@ -250,65 +252,71 @@
             <option value="rainbow">🌈 Tęczowy</option>
         </select>
     </div>
-</div>
-
-<!-- Muzyka w tle -->
-<div class="setting-item">
-    <span>🎵 Muzyka w tle</span>
-    <label class="switch">
-        <input type="checkbox" id="bgMusicToggle">
-        <span class="slider round"></span>
-    </label>
-</div>
-<div class="setting-item" id="musicVolumeItem" style="display: none;">
-    <span>🔊 Głośność muzyki</span>
-    <input type="range" id="musicVolume" min="0" max="100" value="30" style="width: 120px;">
-    <span id="musicVolumeValue" style="min-width: 35px;">30%</span>
-</div>
-
-<!-- Tryb oszczędzania danych -->
-<div class="setting-item">
-    <span>📉 Tryb oszczędzania danych</span>
-    <label class="switch">
-        <input type="checkbox" id="dataSaverToggle">
-        <span class="slider round"></span>
-    </label>
-</div>
-
-<!-- Skróty klawiszowe (informacja) -->
-<div class="setting-item">
-    <span>⌨️ Skróty klawiszowe</span>
-    <button id="showShortcutsBtn" class="shortcuts-info-btn" style="background: #4ecdc4; border: none; border-radius: 20px; padding: 0.2rem 0.8rem; cursor: pointer;">ℹ️ Pokaż</button>
-</div>
-
-<!-- Automatyczny tryb ciemny -->
-<div class="setting-item">
-    <span>🌙 Auto tryb ciemny</span>
-    <label class="switch">
-        <input type="checkbox" id="autoDarkModeToggle">
-        <span class="slider round"></span>
-    </label>
-</div>
-
-<!-- Rodzaje powiadomień -->
-<div class="setting-item">
-    <span>🔔 Styl powiadomień</span>
-    <select id="notificationStyle" class="notif-style-select">
-        <option value="toast">Toast (prawy dolny róg)</option>
-        <option value="modal">Modal (środek ekranu)</option>
-        <option value="soundonly">Tylko dźwięk</option>
-    </select>
-</div>
-
-<!-- Efekty kursora -->
-<div class="setting-item">
-    <span>🖱️ Efekty kursora</span>
-    <select id="cursorEffect" class="cursor-effect-select">
-        <option value="none">Brak</option>
-        <option value="basic">Podstawowy (kółko)</option>
-        <option value="sparks">Iskierki</option>
-        <option value="ring">Pierścień świetlny</option>
-    </select>
+    
+    <!-- Muzyka w tle -->
+    <div class="setting-item">
+        <span>🎵 Muzyka w tle</span>
+        <label class="switch">
+            <input type="checkbox" id="bgMusicToggle">
+            <span class="slider round"></span>
+        </label>
+    </div>
+    
+    <!-- Głośność muzyki (ukryta początkowo) -->
+    <div class="setting-item" id="musicVolumeItem" style="display: none;">
+        <span>🔊 Głośność muzyki</span>
+        <div class="volume-control">
+            <input type="range" id="musicVolume" min="0" max="100" value="30" style="width: 100px;">
+            <span id="musicVolumeValue" class="volume-value">30%</span>
+        </div>
+    </div>
+    
+    <!-- Tryb oszczędzania danych -->
+    <div class="setting-item">
+        <span>📉 Tryb oszczędzania danych</span>
+        <label class="switch">
+            <input type="checkbox" id="dataSaverToggle">
+            <span class="slider round"></span>
+        </label>
+    </div>
+    
+    <!-- Automatyczny tryb ciemny -->
+    <div class="setting-item">
+        <span>🌙 Auto tryb ciemny</span>
+        <label class="switch">
+            <input type="checkbox" id="autoDarkModeToggle">
+            <span class="slider round"></span>
+        </label>
+    </div>
+    
+    <!-- Styl powiadomień -->
+    <div class="setting-item">
+        <span>🔔 Styl powiadomień</span>
+        <select id="notificationStyleSelect" class="setting-select">
+            <option value="toast">Toast (prawy dolny róg)</option>
+            <option value="modal">Modal (środek ekranu)</option>
+            <option value="soundonly">Tylko dźwięk</option>
+        </select>
+    </div>
+    
+    <!-- Efekty kursora -->
+    <div class="setting-item">
+        <span>🖱️ Efekty kursora</span>
+        <select id="cursorEffectSelect" class="setting-select">
+            <option value="none">Brak</option>
+            <option value="basic">Podstawowy (kółko)</option>
+            <option value="sparks">Iskierki</option>
+            <option value="ring">Pierścień świetlny</option>
+        </select>
+    </div>
+    
+    <!-- Skróty klawiszowe (informacja) -->
+    <div class="setting-item">
+        <span>⌨️ Skróty klawiszowe</span>
+        <button id="showShortcutsBtn" class="shortcuts-info-btn">ℹ️ Pokaż</button>
+    </div>
+    
+    <button id="testNotificationBtn" class="test-notif-btn">🔔 Testuj powiadomienie</button>
 </div>
 
     <!-- Kontener dla toastów -->
