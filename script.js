@@ -38,7 +38,9 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
 
 // Kopiuj IP
 function copyIP() {
-    navigator.clipboard.writeText(SERVER_IP).then(() => {
+    const ip = SERVER_IP;
+    
+    navigator.clipboard.writeText(ip).then(() => {
         const btn = event ? event.target.closest('button') : document.querySelector('.copy-ip');
         if (btn) {
             const originalText = btn.innerHTML;
@@ -51,15 +53,15 @@ function copyIP() {
                 btn.style.transform = '';
             }, 2000);
         }
-        showNotification('📋 Skopiowano!', IP ${SERVER_IP} zostało skopiowane., 'success');
+        showNotification('📋 Skopiowano!', `IP ${ip} zostało skopiowane do schowka.`, 'success');
     }).catch(() => {
         const textArea = document.createElement('textarea');
-        textArea.value = SERVER_IP;
+        textArea.value = ip;
         document.body.appendChild(textArea);
         textArea.select();
         document.execCommand('copy');
         document.body.removeChild(textArea);
-        showNotification('📋 Skopiowano!', IP ${SERVER_IP} zostało skopiowane., 'success');
+        showNotification('📋 Skopiowano!', `IP ${ip} zostało skopiowane.`, 'success');
     });
 }
 
