@@ -1140,3 +1140,164 @@ body.light-theme .status-offline {
     color: #dc2626;
 }
 
+
+/* Dodatkowe style dla nowych ustawień */
+.dnd-select, .color-control select, .notif-style-select, .cursor-effect-select {
+    background: rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 20px;
+    padding: 0.4rem 0.8rem;
+    color: white;
+    font-size: 0.9rem;
+    cursor: pointer;
+}
+
+.shortcuts-info-btn {
+    background: #4ecdc4;
+    border: none;
+    border-radius: 20px;
+    padding: 0.2rem 0.8rem;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.shortcuts-info-btn:hover {
+    background: #ff6b6b;
+    transform: scale(1.02);
+}
+
+/* Modal powiadomień */
+.notification-modal {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(0,0,0,0.95);
+    backdrop-filter: blur(15px);
+    padding: 1.5rem 2rem;
+    border-radius: 20px;
+    border-left: 4px solid #ff6b6b;
+    z-index: 1004;
+    min-width: 300px;
+    text-align: center;
+    animation: modalFadeIn 0.3s ease;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+}
+
+@keyframes modalFadeIn {
+    from {
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1);
+    }
+}
+
+/* Okno skrótów klawiszowych */
+.shortcuts-modal {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(0,0,0,0.95);
+    backdrop-filter: blur(15px);
+    padding: 1.5rem;
+    border-radius: 20px;
+    z-index: 1004;
+    min-width: 320px;
+    border: 1px solid rgba(255,255,255,0.2);
+    animation: modalFadeIn 0.3s ease;
+}
+
+.shortcuts-modal h4 {
+    color: #ff6b6b;
+    margin-bottom: 1rem;
+    font-family: 'Orbitron', monospace;
+}
+
+.shortcuts-modal ul {
+    list-style: none;
+    padding: 0;
+}
+
+.shortcuts-modal li {
+    padding: 0.5rem 0;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+    display: flex;
+    justify-content: space-between;
+}
+
+.shortcuts-modal .shortcut-key {
+    background: rgba(255,255,255,0.2);
+    padding: 0.2rem 0.6rem;
+    border-radius: 8px;
+    font-family: monospace;
+    font-weight: bold;
+}
+
+.close-shortcuts {
+    margin-top: 1rem;
+    background: #ff6b6b;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    color: white;
+    cursor: pointer;
+    width: 100%;
+}
+
+/* Efekty kursora */
+.cursor-ring {
+    position: fixed;
+    width: 30px;
+    height: 30px;
+    border: 2px solid #ff6b6b;
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9999;
+    transition: transform 0.1s, width 0.2s, height 0.2s;
+    transform: translate(-50%, -50%);
+}
+
+.cursor-ring.hover {
+    width: 45px;
+    height: 45px;
+    border-color: #ffd93d;
+    box-shadow: 0 0 15px rgba(255,107,107,0.5);
+}
+
+/* Kolor tęczowy */
+.rainbow-text, .rainbow-btn {
+    animation: rainbow 2s linear infinite;
+}
+
+@keyframes rainbow {
+    0% { color: #ff0000; text-shadow: 0 0 5px #ff0000; }
+    17% { color: #ff8800; text-shadow: 0 0 5px #ff8800; }
+    33% { color: #ffff00; text-shadow: 0 0 5px #ffff00; }
+    50% { color: #00ff00; text-shadow: 0 0 5px #00ff00; }
+    67% { color: #0088ff; text-shadow: 0 0 5px #0088ff; }
+    83% { color: #8800ff; text-shadow: 0 0 5px #8800ff; }
+    100% { color: #ff0000; text-shadow: 0 0 5px #ff0000; }
+}
+
+/* Oszczędzanie danych */
+.data-saver-active .particle,
+.data-saver-active .feature-card::before,
+.data-saver-active .server-card::before {
+    display: none !important;
+}
+
+.data-saver-active .hero {
+    animation: none !important;
+}
+
+body.light-theme .dnd-select,
+body.light-theme .color-control select,
+body.light-theme .notif-style-select,
+body.light-theme .cursor-effect-select {
+    background: rgba(0,0,0,0.05);
+    color: #1a1a2e;
+}
