@@ -41,36 +41,25 @@ function copyIP() {
     navigator.clipboard.writeText(SERVER_IP).then(() => {
         const btn = event ? event.target.closest('button') : document.querySelector('.copy-ip');
         if (btn) {
-            // Dodaj klasę animacji
-            btn.classList.add('copied');
-            
-            // Zmień tekst tymczasowo
             const originalText = btn.innerHTML;
-            btn.innerHTML = '<span class="copy-icon">✅</span><span class="copy-text">SKOPIOWANO!</span>';
-            btn.style.background = 'linear-gradient(135deg, #22c55e, #16a34a)';
-            
+            btn.innerHTML = '✅ SKOPIOWANO!';
+            btn.style.background = '#10b981';
+            btn.style.transform = 'scale(1.05)';
             setTimeout(() => {
                 btn.innerHTML = originalText;
-                btn.classList.remove('copied');
                 btn.style.background = '';
+                btn.style.transform = '';
             }, 2000);
         }
-        showNotification('📋 Skopiowano!', `IP ${SERVER_IP} zostało skopiowane do schowka.`, 'success');
+        showNotification('📋 Skopiowano!', IP ${SERVER_IP} zostało skopiowane., 'success');
     }).catch(() => {
-        // Fallback dla starszych przeglądarek
         const textArea = document.createElement('textarea');
         textArea.value = SERVER_IP;
         document.body.appendChild(textArea);
         textArea.select();
         document.execCommand('copy');
         document.body.removeChild(textArea);
-        
-        const btn = event ? event.target.closest('button') : document.querySelector('.copy-ip');
-        if (btn) {
-            btn.classList.add('copied');
-            setTimeout(() => btn.classList.remove('copied'), 2000);
-        }
-        showNotification('📋 Skopiowano!', `IP ${SERVER_IP} zostało skopiowane.`, 'success');
+        showNotification('📋 Skopiowano!', IP ${SERVER_IP} zostało skopiowane., 'success');
     });
 }
 
