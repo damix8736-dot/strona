@@ -4,8 +4,6 @@
 
 const SERVER_IP = 'odpalamycheaterow.aternos.me';
 
-
-
 // Nawigacja mobilna
 document.addEventListener('DOMContentLoaded', function() {
     const hamburger = document.querySelector('.hamburger');
@@ -250,6 +248,180 @@ function observeSections() {
 
 // ===================== USTAWIENIA =====================
 
+// Podstawowe elementy DOM
+const settingsCog = document.getElementById('settingsCog');
+const settingsPanel = document.getElementById('settingsPanel');
+const closeSettingsBtn = document.getElementById('closeSettings');
+const themeDarkBtn = document.getElementById('themeDarkBtn');
+const themeLightBtn = document.getElementById('themeLightBtn');
+const notifToggle = document.getElementById('notifToggle');
+const soundToggle = document.getElementById('soundToggle');
+const testNotifBtn = document.getElementById('testNotificationBtn');
+const toastContainer = document.getElementById('toastContainer');
+const fontSizeSlider = document.getElementById('fontSizeSlider');
+const fontSizeValue = document.getElementById('fontSizeValue');
+
+// Zmienne stanu
+let notificationsEnabled = true;
+let soundEnabled = true;
+let currentTheme = 'dark';
+let fontSize = 100;
+
+// Funkcje podstawowych ustawień
+function loadSettings() {
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme === 'light') {
+        currentTheme = 'light';
+        document.body.classList.add('light-theme');
+        if (themeDarkBtn && themeLightBtn) {
+            themeDarkBtn.classList.remove('active');
+            themeLightBtn.classList.add('active');
+        }
+    } else {
+        currentTheme = 'dark';
+        document.body.classList.remove('light-theme');
+        if (themeDarkBtn && themeLightBtn) {
+            themeDarkBtn.classList.add('active');
+            themeLightBtn.classList.remove('active');
+        }
+    }
+    
+    const savedNotif = localStorage.getItem('notifications');
+    notificationsEnabled = savedNotif !== 'false';
+    if (notifToggle) notifToggle.checked = notificationsEnabled;
+    
+    const savedSound = localStorage.getItem('sound');
+    soundEnabled = savedSound !== 'false';
+    if (soundToggle) {
+        soundToggle.checked = soundEnabled;
+        soundToggle.disabled = !notificationsEnabled;
+    }
+    
+    const savedFontSize = localStorage.getItem('fontSize');
+    if (savedFontSize) {
+        fontSize = parseInt(savedFontSize);
+        document.body.style.fontSize = fontSize + '%';
+        if (fontSizeSlider) fontSizeSlider.value = fontSize;
+        if (fontSizeValue) fontSizeValue.textContent = fontSize + '%';
+    }
+}
+
+function saveSettings() {
+    localStorage.setItem('theme', currentTheme);
+    localStorage.setItem('notifications', notificationsEnabled);
+    localStorage.setItem('sound', soundEnabled);
+    localStorage.setItem('fontSize', fontSize);
+}
+
+function setTheme(theme) {
+    currentTheme = theme;
+    if (theme === 'light') {
+        document.body.classList.add('light-theme');
+        if (themeDarkBtn && themeLightBtn) {
+            themeDarkBtn.classList.remove('active');
+            themeLightBtn.classList.add('active');
+        }
+    } else {
+        document.body.classList.remove('light-theme');
+        if (themeDarkBtn && themeLightBtn) {
+            themeDarkBtn.classList.add('active');
+            themeLightBtn.classList.remove('active');
+        }
+    }
+    saveSettings();
+}
+
+function playNotificationSound() {
+    if (!soundEnabled) return;
+    try {
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        const oscillator = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        oscillator.connect(gain);
+        gain.connect(audioCtx.destination);
+        oscillator.frequency.value = 880;
+        gain.gain.value = 0.2;
+        oscillator.start();
+        gain.gain.exponentialRampToValueAtTime(0.00001, audioCtx.currentTime + 0.5);
+        oscillator.stop(audioCtx.currentTime + 0.5);
+        if (audioCtx.state === 'suspended') {
+            audioCtx.resume();
+        }
+    } catch(e) {
+        console.warn("Web Audio nie wspierany");
+    }
+}
+
+function showNotification(title, message, type = 'info') {
+    if (!notificationsEnabled) return;
+    const toast = document.createElement('div');
+    toast.className = `toast ${type}`;
+    toast.innerHTML = `<strong>${escapeHtml(title)}</strong><br><small>${escapeHtml(message)}</small>`;
+    if (toastContainer) toastContainer.appendChild(toast);
+    playNotificationSound();
+    setTimeout(() => {
+        toast.style.opacity = '0';
+        toast.style.transform = 'translateX(100%)';
+        setTimeout(() => toast.remove(), 300);
+    }, 5000);
+}
+
+function testNotification() {
+    showNotification('🔔 Test powiadomienia', 'To jest przykładowe powiadomienie z dźwiękiem.', 'success');
+}
+
+// Obsługa panelu ustawień (otwieranie/zamykanie)
+if (settingsCog && settingsPanel && closeSettingsBtn) {
+    settingsCog.addEventListener('click', (e) => {
+        e.stopPropagation();
+        settingsPanel.classList.toggle('active');
+    });
+    closeSettingsBtn.addEventListener('click', () => {
+        settingsPanel.classList.remove('active');
+    });
+    document.addEventListener('click', (e) => {
+        if (!settingsPanel.contains(e.target) && !settingsCog.contains(e.target)) {
+            settingsPanel.classList.remove('active');
+        }
+    });
+}
+
+// Obsługa podstawowych przełączników
+if (notifToggle) {
+    notifToggle.addEventListener('change', (e) => {
+        notificationsEnabled = e.target.checked;
+        if (soundToggle) {
+            soundToggle.disabled = !notificationsEnabled;
+            if (!notificationsEnabled) {
+                soundEnabled = false;
+                soundToggle.checked = false;
+            }
+        }
+        saveSettings();
+    });
+}
+if (soundToggle) {
+    soundToggle.addEventListener('change', (e) => {
+        soundEnabled = e.target.checked;
+        saveSettings();
+    });
+}
+if (themeDarkBtn && themeLightBtn) {
+    themeDarkBtn.addEventListener('click', () => setTheme('dark'));
+    themeLightBtn.addEventListener('click', () => setTheme('light'));
+}
+if (testNotifBtn) {
+    testNotifBtn.addEventListener('click', testNotification);
+}
+if (fontSizeSlider && fontSizeValue) {
+    fontSizeSlider.addEventListener('input', (e) => {
+        fontSize = parseInt(e.target.value);
+        document.body.style.fontSize = fontSize + '%';
+        fontSizeValue.textContent = fontSize + '%';
+        saveSettings();
+    });
+}
+
 // ===================== NOWE USTAWIENIA =====================
 
 // Elementy nowych ustawień
@@ -263,14 +435,14 @@ const musicVolumeItem = document.getElementById('musicVolumeItem');
 const dataSaverToggle = document.getElementById('dataSaverToggle');
 const showShortcutsBtn = document.getElementById('showShortcutsBtn');
 const autoDarkModeToggle = document.getElementById('autoDarkModeToggle');
-const notificationStyleSelect = document.getElementById('notificationStyle');
-const cursorEffectSelect = document.getElementById('cursorEffect');
+const notificationStyleSelect = document.getElementById('notificationStyleSelect');
+const cursorEffectSelect = document.getElementById('cursorEffectSelect');
 
-// Zmienne
+// Zmienne dla nowych ustawień
 let bgMusic = null;
 let dndTimer = null;
 let autoDarkInterval = null;
-let cursorRing = null;
+let notificationStyle = 'toast';
 
 // ========== TRYB NIE PRZESZKADZAĆ ==========
 function setDNDMode(minutes) {
@@ -391,17 +563,8 @@ if (musicVolume) {
 function setDataSaver(enabled) {
     if (enabled) {
         document.body.classList.add('data-saver-active');
-        // Zmniejsz interwał odświeżania jeśli istnieje
-        if (statusInterval) {
-            clearInterval(statusInterval);
-            statusInterval = setInterval(checkServerStatus, 120000);
-        }
     } else {
         document.body.classList.remove('data-saver-active');
-        if (statusInterval) {
-            clearInterval(statusInterval);
-            statusInterval = setInterval(checkServerStatus, 30000);
-        }
     }
 }
 
@@ -485,8 +648,6 @@ if (autoDarkModeToggle) {
 }
 
 // ========== RODZAJE POWIADOMIEŃ ==========
-let notificationStyle = 'toast';
-
 function showNotificationStyled(title, message, type = 'info') {
     if (!notificationsEnabled) return;
     
@@ -501,8 +662,8 @@ function showNotificationStyled(title, message, type = 'info') {
         const modal = document.createElement('div');
         modal.className = 'notification-modal';
         modal.innerHTML = `
-            <strong style="color: ${type === 'success' ? '#4ade80' : type === 'error' ? '#ef4444' : '#ffd93d'}">${title}</strong>
-            <br><small>${message}</small>
+            <strong style="color: ${type === 'success' ? '#4ade80' : type === 'error' ? '#ef4444' : '#ffd93d'}">${escapeHtml(title)}</strong>
+            <br><small>${escapeHtml(message)}</small>
             <br><button onclick="this.parentElement.remove()" style="margin-top: 0.5rem; background: #ff6b6b; border: none; border-radius: 15px; padding: 0.2rem 0.8rem; cursor: pointer;">OK</button>
         `;
         document.body.appendChild(modal);
@@ -543,13 +704,14 @@ function initCursorEffect(type) {
     ring.className = `cursor-ring cursor-${type}`;
     document.body.appendChild(ring);
     
-    document.addEventListener('mousemove', (e) => {
+    const mouseMoveHandler = (e) => {
         ring.style.left = e.clientX + 'px';
         ring.style.top = e.clientY + 'px';
-    });
+    };
+    document.addEventListener('mousemove', mouseMoveHandler);
     
     if (type === 'sparks') {
-        document.addEventListener('mousemove', (e) => {
+        const sparkHandler = (e) => {
             const spark = document.createElement('div');
             spark.className = 'cursor-spark';
             spark.style.cssText = `
@@ -566,7 +728,8 @@ function initCursorEffect(type) {
             `;
             document.body.appendChild(spark);
             setTimeout(() => spark.remove(), 500);
-        });
+        };
+        document.addEventListener('mousemove', sparkHandler);
         
         const style = document.createElement('style');
         style.textContent = `
@@ -581,16 +744,18 @@ function initCursorEffect(type) {
     }
     
     if (type === 'ring') {
-        document.addEventListener('mouseover', (e) => {
+        const mouseOverHandler = (e) => {
             if (e.target.closest('button')) {
                 ring.classList.add('hover');
             }
-        });
-        document.addEventListener('mouseout', (e) => {
+        };
+        const mouseOutHandler = (e) => {
             if (e.target.closest('button')) {
                 ring.classList.remove('hover');
             }
-        });
+        };
+        document.addEventListener('mouseover', mouseOverHandler);
+        document.addEventListener('mouseout', mouseOutHandler);
     }
 }
 
@@ -675,9 +840,6 @@ saveSettings = function() {
     if (cursorEffectSelect) localStorage.setItem('cursorEffect', cursorEffectSelect.value);
 };
 
-// Załaduj nowe ustawienia przy starcie
-window.loadNewSettings = loadNewSettings;
-
 // ===================== INICJALIZACJA =====================
 
 async function init() {
@@ -688,7 +850,6 @@ async function init() {
     observeSections();
     loadSettings();
     loadNewSettings();
-    
     
     setTimeout(() => {
         if (notificationsEnabled) {
