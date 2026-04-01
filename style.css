@@ -1139,3 +1139,146 @@ body.light-theme .status-online {
 body.light-theme .status-offline {
     color: #dc2626;
 }
+
+
+
+/* ===================== ANIMOWANY PRZYCISK SKOPIUJ IP ===================== */
+
+.btn-copy-ip {
+    position: relative;
+    background: linear-gradient(135deg, #10b981, #059669);
+    padding: 1rem 2rem;
+    font-size: 1.2rem;
+    font-weight: 700;
+    border: none;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.8rem;
+    color: white;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+    overflow: hidden;
+    box-shadow: 0 8px 25px rgba(16, 185, 129, 0.3);
+    z-index: 1;
+}
+
+/* Efekt fali świetlnej */
+.btn-copy-ip::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+    transition: left 0.6s ease;
+    z-index: -1;
+}
+
+.btn-copy-ip:hover::before {
+    left: 100%;
+}
+
+/* Efekt glow */
+.btn-copy-ip::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.5) 0%, transparent 70%);
+    transform: translate(-50%, -50%);
+    transition: width 0.5s, height 0.5s;
+    border-radius: 50%;
+    z-index: -1;
+}
+
+.btn-copy-ip:hover::after {
+    width: 300px;
+    height: 300px;
+}
+
+/* Ikona */
+.btn-copy-ip .copy-icon {
+    font-size: 1.4rem;
+    transition: transform 0.3s ease, filter 0.3s ease;
+}
+
+.btn-copy-ip:hover .copy-icon {
+    transform: scale(1.2);
+    filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.8));
+}
+
+/* Tekst */
+.btn-copy-ip .copy-text {
+    letter-spacing: 0.5px;
+    transition: letter-spacing 0.3s ease;
+}
+
+.btn-copy-ip:hover .copy-text {
+    letter-spacing: 1px;
+}
+
+/* Efekt hover */
+.btn-copy-ip:hover {
+    transform: translateY(-3px) scale(1.02);
+    background: linear-gradient(135deg, #059669, #047857);
+    box-shadow: 0 12px 30px rgba(16, 185, 129, 0.5);
+}
+
+.btn-copy-ip:active {
+    transform: translateY(0) scale(0.98);
+}
+
+/* Animacja sukcesu (po skopiowaniu) */
+.btn-copy-ip.copied {
+    background: linear-gradient(135deg, #22c55e, #16a34a);
+    animation: copySuccess 0.5s ease;
+}
+
+.btn-copy-ip.copied .copy-icon {
+    animation: iconBounce 0.5s ease;
+}
+
+@keyframes copySuccess {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.05);
+        box-shadow: 0 0 30px rgba(34, 197, 94, 0.8);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+@keyframes iconBounce {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.3) rotate(10deg);
+    }
+}
+
+/* Opcjonalnie: efekt pulsowania (przyciąga uwagę) */
+@keyframes copyPulse {
+    0%, 100% {
+        box-shadow: 0 8px 25px rgba(16, 185, 129, 0.3);
+    }
+    50% {
+        box-shadow: 0 8px 35px rgba(16, 185, 129, 0.7);
+    }
+}
+
+.btn-copy-ip:not(:hover) {
+    animation: copyPulse 2s infinite;
+}
+
+.btn-copy-ip:hover {
+    animation: none;
+}
