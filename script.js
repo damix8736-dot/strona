@@ -2,7 +2,7 @@
 // OD PALAMYCHEATEROW - PEŁNY SCRIPT.JS
 // ============================================
 
-const SERVER_IP = 'odpalamycheaterow.aternos.me';
+const SERVER_IP = 'magmc.eu';
 
 
 
