@@ -19,6 +19,7 @@
             min-height: 100vh;
         }
 
+        /* Nawigacja */
         .navbar {
             position: fixed;
             top: 0;
@@ -63,6 +64,12 @@
             color: #ff6b6b;
         }
 
+        .admin-btn {
+            background: linear-gradient(45deg, #ff6b6b, #ff9f4a);
+            padding: 0.5rem 1.2rem;
+            border-radius: 30px;
+        }
+
         .hamburger {
             display: none;
             flex-direction: column;
@@ -77,71 +84,64 @@
             transition: 0.3s;
         }
 
+        /* Główna sekcja mapy */
         .map-container {
             padding-top: 80px;
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 100px 2rem 2rem;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
         }
 
-        .map-header {
-            text-align: center;
-            margin-bottom: 2rem;
-        }
-
-        .map-header h1 {
-            font-family: 'Orbitron', monospace;
-            font-size: 2.5rem;
-            background: linear-gradient(45deg, #ff6b6b, #ffd93d);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            margin-bottom: 0.5rem;
-        }
-
+        /* Panel sterowania */
         .controls-panel {
-            background: rgba(255, 255, 255, 0.08);
-            backdrop-filter: blur(15px);
-            border-radius: 20px;
-            padding: 1.5rem;
-            margin-bottom: 1.5rem;
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(10px);
+            padding: 0.8rem 2rem;
             display: flex;
             flex-wrap: wrap;
             gap: 1rem;
-            align-items: flex-end;
+            align-items: center;
+            justify-content: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
 
         .control-group {
-            flex: 1;
-            min-width: 150px;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
         }
 
         .control-group label {
-            display: block;
-            margin-bottom: 0.5rem;
             color: #4ecdc4;
             font-size: 0.85rem;
+            font-weight: 500;
         }
 
         .control-group input {
-            width: 100%;
-            padding: 0.7rem 1rem;
-            border-radius: 12px;
+            padding: 0.4rem 0.8rem;
+            border-radius: 20px;
             border: 1px solid rgba(255, 255, 255, 0.2);
             background: rgba(255, 255, 255, 0.1);
             color: white;
-            font-size: 0.9rem;
+            width: 100px;
+            text-align: center;
+        }
+
+        .control-group input:focus {
+            outline: none;
+            border-color: #ff6b6b;
         }
 
         .btn-map {
             background: linear-gradient(45deg, #ff6b6b, #ffd93d);
             border: none;
-            padding: 0.7rem 1.5rem;
+            padding: 0.4rem 1.2rem;
             border-radius: 30px;
             color: white;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s;
+            font-size: 0.85rem;
         }
 
         .btn-map:hover {
@@ -149,27 +149,20 @@
             box-shadow: 0 5px 15px rgba(255, 107, 107, 0.4);
         }
 
-        .map-wrapper {
-            background: rgba(0, 0, 0, 0.3);
-            border-radius: 20px;
-            overflow: hidden;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            height: 600px;
+        /* Ramka mapy */
+        .map-frame {
+            flex: 1;
+            width: 100%;
+            border: none;
         }
 
-        iframe {
+        .map-frame iframe {
             width: 100%;
             height: 100%;
             border: none;
         }
 
-        .coords-info {
-            margin-top: 1rem;
-            text-align: center;
-            font-size: 0.85rem;
-            color: #ffd93d;
-        }
-
+        /* Responsywność */
         @media (max-width: 768px) {
             .hamburger { display: flex; }
             .nav-menu {
@@ -182,35 +175,21 @@
                 text-align: center;
                 transition: 0.3s;
                 padding: 2rem 0;
+                gap: 1rem;
             }
             .nav-menu.active { left: 0; }
-            .controls-panel { flex-direction: column; }
-            .btn-map { width: 100%; }
-            .map-wrapper { height: 400px; }
-        }
-
-        .toast {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            background: rgba(0,0,0,0.8);
-            backdrop-filter: blur(10px);
-            padding: 12px 20px;
-            border-radius: 12px;
-            border-left: 4px solid #4ecdc4;
-            z-index: 1002;
-            animation: slideIn 0.3s ease-out;
-        }
-        @keyframes slideIn {
-            from { transform: translateX(100%); opacity: 0; }
-            to { transform: translateX(0); opacity: 1; }
+            .controls-panel { padding: 0.8rem 1rem; gap: 0.5rem; }
+            .control-group { flex-wrap: wrap; justify-content: center; }
+            .btn-map { width: 100%; margin-top: 0.3rem; }
         }
     </style>
 </head>
 <body>
     <nav class="navbar">
         <div class="nav-container">
-            <div class="logo"><h2>⚔️ OdpalamyCheaterow</h2></div>
+            <div class="logo">
+                <h2>⚔️ OdpalamyCheaterow</h2>
+            </div>
             <ul class="nav-menu">
                 <li><a href="index.html" class="nav-link">🏠 Strona Główna</a></li>
                 <li><a href="index.html#server" class="nav-link">🖥️ Serwer</a></li>
@@ -221,38 +200,33 @@
                 <li><a href="index.html#discord" class="nav-link">💬 Discord</a></li>
                 <li><a href="admin.html" class="nav-link admin-btn">🔧 Admin</a></li>
             </ul>
-            <div class="hamburger"><span></span><span></span><span></span></div>
+            <div class="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
         </div>
     </nav>
 
     <div class="map-container">
-        <div class="map-header">
-            <h1>🗺️ Mapa Świata Minecraft</h1>
-            <p>Wpisz seed swojego serwera i swoje koordynaty, aby zobaczyć mapę</p>
-        </div>
-
         <div class="controls-panel">
             <div class="control-group">
-                <label>🌍 Seed serwera</label>
-                <input type="text" id="seedInput" placeholder="np. -123456789" value="12345">
+                <label>🌍 Seed:</label>
+                <input type="text" id="seedInput" placeholder="seed" value="12345">
             </div>
             <div class="control-group">
-                <label>📍 Koordynat X</label>
+                <label>📍 X:</label>
                 <input type="number" id="coordX" placeholder="X" value="0">
             </div>
             <div class="control-group">
-                <label>📍 Koordynat Z</label>
+                <label>📍 Z:</label>
                 <input type="number" id="coordZ" placeholder="Z" value="0">
             </div>
-            <button class="btn-map" id="updateMapBtn">🗺️ Pokaż mapę</button>
+            <button class="btn-map" id="updateMapBtn">🗺️ Przejdź do pozycji</button>
         </div>
 
-        <div class="map-wrapper">
-            <iframe id="chunkbaseFrame" src="https://www.chunkbase.com/apps/map/#seed=12345&x=0&z=0&zoom=5"></iframe>
-        </div>
-
-        <div class="coords-info" id="coordsInfo">
-            💡 Wpisz seed i swoje koordynaty, kliknij "Pokaż mapę"
+        <div class="map-frame">
+            <iframe id="chunkbaseFrame" src="https://www.chunkbase.com/apps/map/#seed=12345&x=0&z=0&zoom=4"></iframe>
         </div>
     </div>
 
@@ -267,30 +241,28 @@
             });
         }
 
-        function showToast(message) {
-            const toast = document.createElement('div');
-            toast.className = 'toast';
-            toast.innerHTML = message;
-            document.body.appendChild(toast);
-            setTimeout(() => toast.remove(), 3000);
-        }
+        // Zamknij menu po kliknięciu linku
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', () => {
+                hamburger.classList.remove('active');
+                navMenu.classList.remove('active');
+            });
+        });
 
         function updateMap() {
             let seed = document.getElementById('seedInput').value.trim();
             let x = document.getElementById('coordX').value || 0;
             let z = document.getElementById('coordZ').value || 0;
             
-            if (!seed) seed = '12345';
+            if (seed === "") seed = "12345";
             
-            const url = `https://www.chunkbase.com/apps/map/#seed=${encodeURIComponent(seed)}&x=${x}&z=${z}&zoom=5`;
+            const url = `https://www.chunkbase.com/apps/map/#seed=${encodeURIComponent(seed)}&x=${x}&z=${z}&zoom=4`;
             document.getElementById('chunkbaseFrame').src = url;
-            
-            document.getElementById('coordsInfo').innerHTML = `📍 Seed: ${seed} | Pozycja: X=${x}, Z=${z} | Mapa załadowana!`;
-            showToast(`🗺️ Mapa zaktualizowana! Seed: ${seed}, pozycja: X=${x}, Z=${z}`);
         }
 
         document.getElementById('updateMapBtn').addEventListener('click', updateMap);
         
+        // Enter w polach
         document.getElementById('seedInput').addEventListener('keypress', (e) => {
             if (e.key === 'Enter') updateMap();
         });
