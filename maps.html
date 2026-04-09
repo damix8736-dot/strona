@@ -2,11 +2,9 @@
 <html lang="pl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>🗺️ Mapa świata - OdpalamyCheaterow</title>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <style>
         * {
             margin: 0;
@@ -21,7 +19,6 @@
             min-height: 100vh;
         }
 
-        /* Navbar */
         .navbar {
             position: fixed;
             top: 0;
@@ -62,13 +59,8 @@
             transition: all 0.3s ease;
         }
 
-        .nav-link:hover {
+        .nav-link:hover, .nav-link.active {
             color: #ff6b6b;
-        }
-
-        .nav-link.active {
-            color: #ff6b6b;
-            border-bottom: 2px solid #ff6b6b;
         }
 
         .hamburger {
@@ -85,7 +77,6 @@
             transition: 0.3s;
         }
 
-        /* Main container */
         .map-container {
             padding-top: 80px;
             max-width: 1400px;
@@ -107,11 +98,6 @@
             margin-bottom: 0.5rem;
         }
 
-        .map-header p {
-            color: #4ecdc4;
-        }
-
-        /* Controls panel */
         .controls-panel {
             background: rgba(255, 255, 255, 0.08);
             backdrop-filter: blur(15px);
@@ -135,10 +121,9 @@
             margin-bottom: 0.5rem;
             color: #4ecdc4;
             font-size: 0.85rem;
-            font-weight: 500;
         }
 
-        .control-group input, .control-group select {
+        .control-group input {
             width: 100%;
             padding: 0.7rem 1rem;
             border-radius: 12px;
@@ -146,11 +131,6 @@
             background: rgba(255, 255, 255, 0.1);
             color: white;
             font-size: 0.9rem;
-        }
-
-        .control-group input:focus, .control-group select:focus {
-            outline: none;
-            border-color: #ff6b6b;
         }
 
         .btn-map {
@@ -169,48 +149,20 @@
             box-shadow: 0 5px 15px rgba(255, 107, 107, 0.4);
         }
 
-        /* Map wrapper */
         .map-wrapper {
             background: rgba(0, 0, 0, 0.3);
             border-radius: 20px;
             overflow: hidden;
             border: 1px solid rgba(255, 255, 255, 0.1);
+            height: 600px;
         }
 
-        #minecraftMap {
-            height: 550px;
+        iframe {
             width: 100%;
-            background: #1a1a2e;
+            height: 100%;
+            border: none;
         }
 
-        /* Legend */
-        .legend {
-            margin-top: 1rem;
-            display: flex;
-            flex-wrap: wrap;
-            gap: 1rem;
-            justify-content: center;
-            padding: 1rem;
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 15px;
-        }
-
-        .legend-item {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            font-size: 0.8rem;
-        }
-
-        .legend-icon {
-            width: 24px;
-            height: 24px;
-            background-size: contain;
-            background-repeat: no-repeat;
-            background-position: center;
-        }
-
-        /* Koordynaty info */
         .coords-info {
             margin-top: 1rem;
             text-align: center;
@@ -218,11 +170,8 @@
             color: #ffd93d;
         }
 
-        /* Responsive */
         @media (max-width: 768px) {
-            .hamburger {
-                display: flex;
-            }
+            .hamburger { display: flex; }
             .nav-menu {
                 position: fixed;
                 left: -100%;
@@ -233,27 +182,14 @@
                 text-align: center;
                 transition: 0.3s;
                 padding: 2rem 0;
-                gap: 1rem;
             }
-            .nav-menu.active {
-                left: 0;
-            }
-            .controls-panel {
-                flex-direction: column;
-            }
-            .control-group {
-                width: 100%;
-            }
-            .btn-map {
-                width: 100%;
-            }
-            #minecraftMap {
-                height: 400px;
-            }
+            .nav-menu.active { left: 0; }
+            .controls-panel { flex-direction: column; }
+            .btn-map { width: 100%; }
+            .map-wrapper { height: 400px; }
         }
 
-        /* Toast */
-        .toast-custom {
+        .toast {
             position: fixed;
             bottom: 20px;
             right: 20px;
@@ -274,9 +210,7 @@
 <body>
     <nav class="navbar">
         <div class="nav-container">
-            <div class="logo">
-                <h2>⚔️ OdpalamyCheaterow</h2>
-            </div>
+            <div class="logo"><h2>⚔️ OdpalamyCheaterow</h2></div>
             <ul class="nav-menu">
                 <li><a href="index.html" class="nav-link">🏠 Strona Główna</a></li>
                 <li><a href="index.html#server" class="nav-link">🖥️ Serwer</a></li>
@@ -287,24 +221,20 @@
                 <li><a href="index.html#discord" class="nav-link">💬 Discord</a></li>
                 <li><a href="admin.html" class="nav-link admin-btn">🔧 Admin</a></li>
             </ul>
-            <div class="hamburger">
-                <span></span>
-                <span></span>
-                <span></span>
-            </div>
+            <div class="hamburger"><span></span><span></span><span></span></div>
         </div>
     </nav>
 
     <div class="map-container">
         <div class="map-header">
-            <h1>🗺️ Mapa Świata</h1>
-            <p>Wpisz seed swojego serwera i swoje koordynaty, aby zobaczyć swoją lokalizację i struktury w okolicy</p>
+            <h1>🗺️ Mapa Świata Minecraft</h1>
+            <p>Wpisz seed swojego serwera i swoje koordynaty, aby zobaczyć mapę</p>
         </div>
 
         <div class="controls-panel">
             <div class="control-group">
                 <label>🌍 Seed serwera</label>
-                <input type="text" id="seedInput" placeholder="np. -123456789 lub 12345" value="12345">
+                <input type="text" id="seedInput" placeholder="np. -123456789" value="12345">
             </div>
             <div class="control-group">
                 <label>📍 Koordynat X</label>
@@ -314,40 +244,15 @@
                 <label>📍 Koordynat Z</label>
                 <input type="number" id="coordZ" placeholder="Z" value="0">
             </div>
-            <div class="control-group">
-                <label>🔍 Pokaż struktury</label>
-                <select id="structuresSelect">
-                    <option value="all">Wszystkie</option>
-                    <option value="village">🏘️ Wioski</option>
-                    <option value="temple">🏛️ Świątynie</option>
-                    <option value="stronghold">🏰 Twierdze</option>
-                    <option value="mineshaft">⛏️ Szyb kopalniany</option>
-                    <option value="monument">🌊 Podwodny monument</option>
-                    <option value="ruins">🏚️ Zrujnowane portale</option>
-                    <option value="outpost">🏹 Posterunek pillagerów</option>
-                    <option value="bastion">👹 Bastion</option>
-                    <option value="fortress">🔥 Netherowa forteca</option>
-                    <option value="endcity">🏙️ End miasto</option>
-                </select>
-            </div>
-            <button class="btn-map" id="updateMapBtn">🗺️ Aktualizuj mapę</button>
-            <button class="btn-map" id="centerOnPlayerBtn" style="background: linear-gradient(45deg, #4ecdc4, #2c8a82);">📍 Centruj na graczu</button>
+            <button class="btn-map" id="updateMapBtn">🗺️ Pokaż mapę</button>
         </div>
 
         <div class="map-wrapper">
-            <div id="minecraftMap"></div>
+            <iframe id="chunkbaseFrame" src="https://www.chunkbase.com/apps/map/#seed=12345&x=0&z=0&zoom=5"></iframe>
         </div>
 
-        <div class="legend">
-            <div class="legend-item"><div class="legend-icon" style="background-image: url('data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 24 24\' fill=\'%23ff6b6b\'%3E%3Cpath d=\'M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z\'/%3E%3C/svg%3E'); background-size: contain;"></div><span>👤 Twój gracz</span></div>
-            <div class="legend-item"><div class="legend-icon" style="background-image: url('data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 24 24\' fill=\'%23a78bfa\'%3E%3Crect x=\'2\' y=\'2\' width=\'20\' height=\'20\' rx=\'2\'/%3E%3C/svg%3E');"></div><span>🏘️ Wioska</span></div>
-            <div class="legend-item"><div class="legend-icon" style="background-image: url('data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 24 24\' fill=\'%23fbbf24\'%3E%3Cpath d=\'M12 2L15 8.5L22 9.5L17 14L18.5 21L12 17.5L5.5 21L7 14L2 9.5L9 8.5L12 2Z\'/%3E%3C/svg%3E');"></div><span>🏛️ Świątynia</span></div>
-            <div class="legend-item"><div class="legend-icon" style="background-image: url('data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 24 24\' fill=\'%236b21a8\'%3E%3Crect x=\'4\' y=\'4\' width=\'16\' height=\'16\' rx=\'2\'/%3E%3C/svg%3E');"></div><span>🏰 Twierdza</span></div>
-            <div class="legend-item"><div class="legend-icon" style="background-image: url('data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 24 24\' fill=\'%23757575\'%3E%3Cpath d=\'M4 4L8 8M20 4L16 8M4 20L8 16M20 20L16 16\' stroke=\'%23757575\' stroke-width=\'2\'/%3E%3C/svg%3E');"></div><span>⛏️ Szyb</span></div>
-            <div class="legend-item"><div class="legend-icon" style="background-image: url('data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 24 24\' fill=\'%233b82f6\'%3E%3Cpath d=\'M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z\'/%3E%3C/svg%3E');"></div><span>🌊 Monument</span></div>
-        </div>
         <div class="coords-info" id="coordsInfo">
-            💡 Wpisz seed serwera i swoje koordynaty, kliknij "Aktualizuj mapę" lub "Centruj na graczu"
+            💡 Wpisz seed i swoje koordynaty, kliknij "Pokaż mapę"
         </div>
     </div>
 
@@ -362,184 +267,39 @@
             });
         }
 
-        // Inicjalizacja mapy
-        let map;
-        let playerMarker = null;
-        let structureMarkers = [];
-        let currentSeed = 12345;
-        let currentX = 0;
-        let currentZ = 0;
-
-        // Ładne ikony SVG dla markerów
-        const playerIcon = L.divIcon({
-            html: '<div style="background: #ff6b6b; width: 16px; height: 16px; border-radius: 50%; border: 2px solid white; box-shadow: 0 0 10px #ff6b6b;"></div>',
-            iconSize: [16, 16],
-            className: 'player-marker'
-        });
-
-        function getStructureIcon(type) {
-            const icons = {
-                village: '<div style="background: #a78bfa; width: 20px; height: 20px; border-radius: 4px; border: 1px solid white; display: flex; align-items: center; justify-content: center; font-size: 12px;">🏘️</div>',
-                temple: '<div style="background: #fbbf24; width: 20px; height: 20px; border-radius: 4px; border: 1px solid white; display: flex; align-items: center; justify-content: center; font-size: 12px;">🏛️</div>',
-                stronghold: '<div style="background: #6b21a8; width: 20px; height: 20px; border-radius: 4px; border: 1px solid white; display: flex; align-items: center; justify-content: center; font-size: 12px;">🏰</div>',
-                mineshaft: '<div style="background: #757575; width: 20px; height: 20px; border-radius: 4px; border: 1px solid white; display: flex; align-items: center; justify-content: center; font-size: 12px;">⛏️</div>',
-                monument: '<div style="background: #3b82f6; width: 20px; height: 20px; border-radius: 4px; border: 1px solid white; display: flex; align-items: center; justify-content: center; font-size: 12px;">🌊</div>',
-                ruins: '<div style="background: #8b5a2b; width: 20px; height: 20px; border-radius: 4px; border: 1px solid white; display: flex; align-items: center; justify-content: center; font-size: 12px;">🏚️</div>',
-                outpost: '<div style="background: #6b7280; width: 20px; height: 20px; border-radius: 4px; border: 1px solid white; display: flex; align-items: center; justify-content: center; font-size: 12px;">🏹</div>',
-                bastion: '<div style="background: #dc2626; width: 20px; height: 20px; border-radius: 4px; border: 1px solid white; display: flex; align-items: center; justify-content: center; font-size: 12px;">👹</div>',
-                fortress: '<div style="background: #ea580c; width: 20px; height: 20px; border-radius: 4px; border: 1px solid white; display: flex; align-items: center; justify-content: center; font-size: 12px;">🔥</div>',
-                endcity: '<div style="background: #d8b4fe; width: 20px; height: 20px; border-radius: 4px; border: 1px solid white; display: flex; align-items: center; justify-content: center; font-size: 12px;">🏙️</div>'
-            };
-            return L.divIcon({
-                html: icons[type] || '<div style="background: #888; width: 16px; height: 16px; border-radius: 2px; border: 1px solid white;"></div>',
-                iconSize: [20, 20],
-                className: 'structure-marker'
-            });
-        }
-
-        // Generowanie struktury wokół koordynatów (symulacja)
-        function generateStructuresAround(seed, x, z, radius = 500) {
-            const structures = [];
-            const structureTypes = ['village', 'temple', 'stronghold', 'mineshaft', 'monument', 'ruins', 'outpost', 'bastion', 'fortress', 'endcity'];
-            
-            // Użyj seed do generowania pseudolosowych pozycji
-            function seededRandom(seedVal, i, j) {
-                const val = Math.sin(seedVal * 12345 + i * 789 + j * 456) * 10000;
-                return val - Math.floor(val);
-            }
-            
-            const numStructures = 8 + Math.floor(seededRandom(seed, x, z) * 12);
-            
-            for (let i = 0; i < numStructures; i++) {
-                const angle = seededRandom(seed, x + i * 7, z + i * 13) * Math.PI * 2;
-                const dist = 100 + seededRandom(seed, x + i * 11, z + i * 17) * radius;
-                const structX = x + Math.cos(angle) * dist;
-                const structZ = z + Math.sin(angle) * dist;
-                const typeIndex = Math.floor(seededRandom(seed, structX, structZ) * structureTypes.length);
-                
-                structures.push({
-                    x: Math.round(structX),
-                    z: Math.round(structZ),
-                    type: structureTypes[typeIndex],
-                    name: getStructureName(structureTypes[typeIndex])
-                });
-            }
-            
-            return structures;
-        }
-
-        function getStructureName(type) {
-            const names = {
-                village: '🏘️ Wioska',
-                temple: '🏛️ Świątynia',
-                stronghold: '🏰 Twierdza',
-                mineshaft: '⛏️ Szyb kopalniany',
-                monument: '🌊 Podwodny monument',
-                ruins: '🏚️ Zrujnowany portal',
-                outpost: '🏹 Posterunek pillagerów',
-                bastion: '👹 Bastion',
-                fortress: '🔥 Netherowa forteca',
-                endcity: '🏙️ End miasto'
-            };
-            return names[type] || '📍 Struktura';
-        }
-
         function showToast(message) {
             const toast = document.createElement('div');
-            toast.className = 'toast-custom';
+            toast.className = 'toast';
             toast.innerHTML = message;
             document.body.appendChild(toast);
             setTimeout(() => toast.remove(), 3000);
         }
 
-        function initMap() {
-            // Użyj mapy kafelkowej Minecraft (alternatywa dla braku API)
-            map = L.map('minecraftMap').setView([0, 0], 3);
+        function updateMap() {
+            let seed = document.getElementById('seedInput').value.trim();
+            let x = document.getElementById('coordX').value || 0;
+            let z = document.getElementById('coordZ').value || 0;
             
-            // Użyj stylizowanej mapy OpenStreetMap z motywem Minecraft
-            L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
-                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OSM</a> & OdpalamyCheaterow',
-                subdomains: 'abcd',
-                maxZoom: 19,
-                minZoom: 2
-            }).addTo(map);
+            if (!seed) seed = '12345';
             
-            // Dodaj siatkę koordynatów
-            const gridLayer = L.gridLayer({
-                attribution: 'Grid'
-            });
+            const url = `https://www.chunkbase.com/apps/map/#seed=${encodeURIComponent(seed)}&x=${x}&z=${z}&zoom=5`;
+            document.getElementById('chunkbaseFrame').src = url;
             
-            updateMapDisplay();
+            document.getElementById('coordsInfo').innerHTML = `📍 Seed: ${seed} | Pozycja: X=${x}, Z=${z} | Mapa załadowana!`;
+            showToast(`🗺️ Mapa zaktualizowana! Seed: ${seed}, pozycja: X=${x}, Z=${z}`);
         }
+
+        document.getElementById('updateMapBtn').addEventListener('click', updateMap);
         
-        function updateMapDisplay() {
-            const seedInput = document.getElementById('seedInput').value;
-            const xInput = parseInt(document.getElementById('coordX').value) || 0;
-            const zInput = parseInt(document.getElementById('coordZ').value) || 0;
-            const structuresFilter = document.getElementById('structuresSelect').value;
-            
-            currentSeed = parseInt(seedInput) || 12345;
-            currentX = xInput;
-            currentZ = zInput;
-            
-            // Wyśrodkuj mapę na graczu
-            map.setView([currentZ, currentX], 6);
-            
-            // Usuń stare markery
-            if (playerMarker) map.removeLayer(playerMarker);
-            structureMarkers.forEach(marker => map.removeLayer(marker));
-            structureMarkers = [];
-            
-            // Dodaj marker gracza
-            playerMarker = L.marker([currentZ, currentX], { icon: playerIcon }).addTo(map);
-            playerMarker.bindTooltip(`📍 Twoja pozycja (X: ${currentX}, Z: ${currentZ})`, { permanent: false, direction: 'top' });
-            
-            // Generuj struktury
-            const allStructures = generateStructuresAround(currentSeed, currentX, currentZ, 800);
-            
-            // Filtruj struktury
-            let filteredStructures = allStructures;
-            if (structuresFilter !== 'all') {
-                filteredStructures = allStructures.filter(s => s.type === structuresFilter);
-            }
-            
-            // Dodaj markery struktur
-            filteredStructures.forEach(struct => {
-                const icon = getStructureIcon(struct.type);
-                const marker = L.marker([struct.z, struct.x], { icon: icon }).addTo(map);
-                marker.bindTooltip(`${struct.name}<br>X: ${struct.x}, Z: ${struct.z}`, { permanent: false, direction: 'top' });
-                structureMarkers.push(marker);
-            });
-            
-            // Aktualizuj info
-            document.getElementById('coordsInfo').innerHTML = `📍 Seed: ${currentSeed} | Twoja pozycja: X=${currentX}, Z=${currentZ} | Znaleziono ${filteredStructures.length} struktur w okolicy`;
-            showToast(`🗺️ Mapa zaktualizowana! Znaleziono ${filteredStructures.length} struktur.`);
-        }
-        
-        function centerOnPlayer() {
-            if (map && playerMarker) {
-                map.setView([currentZ, currentX], 6);
-                showToast(`📍 Wycentrowano na pozycję X: ${currentX}, Z: ${currentZ}`);
-            }
-        }
-        
-        // Event listeners
-        document.getElementById('updateMapBtn').addEventListener('click', updateMapDisplay);
-        document.getElementById('centerOnPlayerBtn').addEventListener('click', centerOnPlayer);
-        
-        // Enter w polach
         document.getElementById('seedInput').addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') updateMapDisplay();
+            if (e.key === 'Enter') updateMap();
         });
         document.getElementById('coordX').addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') updateMapDisplay();
+            if (e.key === 'Enter') updateMap();
         });
         document.getElementById('coordZ').addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') updateMapDisplay();
+            if (e.key === 'Enter') updateMap();
         });
-        
-        // Uruchom mapę
-        initMap();
     </script>
 </body>
 </html>
